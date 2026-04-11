@@ -14,19 +14,11 @@ document.addEventListener('alpine:init', () => {
     mode: 'dark',
     
     init() {
-      // 1. Check local storage
-      const stored = localStorage.getItem('typegrid-theme');
-      if (stored === 'light' || stored === 'dark') {
-        this.set(stored);
-      } 
-      // 2. Fallback to system preference
-      else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-        this.set('light');
-      } else {
-        this.set('dark');
-      }
+      // 1. Inherit theme set by FOUC prevention script
+      const initialTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+      this.set(initialTheme);
       
-      // Listen for system changes
+      // 2. Listen for system preference changes
       if (window.matchMedia) {
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
           if (!localStorage.getItem('typegrid-theme')) {
@@ -49,6 +41,15 @@ document.addEventListener('alpine:init', () => {
         document.head.appendChild(meta);
       }
       meta.content = val === 'dark' ? 'dark light' : 'light dark';
+      
+      // Update theme-color meta tag for mobile browsers
+      let themeColor = document.querySelector('meta[name="theme-color"]');
+      if (!themeColor) {
+        themeColor = document.createElement('meta');
+        themeColor.name = 'theme-color';
+        document.head.appendChild(themeColor);
+      }
+      themeColor.content = val === 'dark' ? '#191724' : '#faf4ed';
     },
     
     toggle() {

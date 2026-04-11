@@ -13,11 +13,10 @@ theme:
   topbar_sections: true
   show_datetime: false
 
-# nav:
-#   - Home: index.md
-#   - Getting Started: setup.md
-#   - Architecture: architecture.md
-#   - Code Guide: code-guide.md
+nav:
+  - Home: index.md
+  - Features: features.md
+  - Architecture: architecture.md
 #   - API Reference: api-reference.md
 #   - Block System: block-system.md
 #   - Internationalization: i18n.md

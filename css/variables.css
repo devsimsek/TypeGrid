@@ -140,49 +140,47 @@
 }
 
 /* Light Mode - Rose Pine Dawn */
-@media (prefers-color-scheme: light) {
-  :root {
-    /* Colors - Rose Pine Dawn Palette */
-    --color-accent: #d9484f;
-    --color-accent-dark: #b7334d;
-    --color-accent-light: #d7677a;
+:root[data-theme="light"] {
+  /* Colors - Rose Pine Dawn Palette */
+  --color-accent: #d9484f;
+  --color-accent-dark: #b7334d;
+  --color-accent-light: #d7677a;
 
-    --color-white: #faf4ed;
-    --color-black: #575279;
-    --color-gray-900: #575279;
-    --color-gray-800: #6e6a86;
-    --color-gray-700: #797593;
-    --color-gray-600: #9893a5;
-    --color-gray-500: #9893a5;
-    --color-gray-400: #b8acb5;
-    --color-gray-300: #d8d7dd;
-    --color-gray-200: #e4dce7;
-    --color-gray-100: #f2e9de;
+  --color-white: #faf4ed;
+  --color-black: #575279;
+  --color-gray-900: #575279;
+  --color-gray-800: #6e6a86;
+  --color-gray-700: #797593;
+  --color-gray-600: #9893a5;
+  --color-gray-500: #9893a5;
+  --color-gray-400: #b8acb5;
+  --color-gray-300: #d8d7dd;
+  --color-gray-200: #e4dce7;
+  --color-gray-100: #f2e9de;
 
-    /* Semantic Colors - Light Mode */
-    --color-text-primary: #575279;
-    --color-text-secondary: #797593;
-    --color-text-muted: #9893a5;
-    --color-text-inverse: #faf4ed;
+  /* Semantic Colors - Light Mode */
+  --color-text-primary: #575279;
+  --color-text-secondary: #797593;
+  --color-text-muted: #9893a5;
+  --color-text-inverse: #faf4ed;
 
-    --color-bg-primary: #faf4ed;
-    --color-bg-secondary: #f2e9de;
-    --color-bg-tertiary: #fffaf3;
+  --color-bg-primary: #faf4ed;
+  --color-bg-secondary: #f2e9de;
+  --color-bg-tertiary: #fffaf3;
 
-    --color-border: #d8d7dd;
-    --color-border-light: #e4dce7;
+  --color-border: #d8d7dd;
+  --color-border-light: #e4dce7;
 
-    --color-focus: #d9484f;
-    --color-focus-ring: rgba(217, 72, 79, 0.2);
+  --color-focus: #d9484f;
+  --color-focus-ring: rgba(217, 72, 79, 0.2);
 
-    /* Rose Pine Dawn Accent Colors */
-    --color-love: #d7677a;
-    --color-gold: #ea9d34;
-    --color-rose: #d9484f;
-    --color-pine: #287980;
-    --color-foam: #56949f;
-    --color-iris: #9d84b7;
-  }
+  /* Rose Pine Dawn Accent Colors */
+  --color-love: #d7677a;
+  --color-gold: #ea9d34;
+  --color-rose: #d9484f;
+  --color-pine: #287980;
+  --color-foam: #56949f;
+  --color-iris: #9d84b7;
 }
 
 /* High Contrast Mode (Accessibility) */

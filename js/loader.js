@@ -393,3 +393,4 @@ class DataLoader {
 
 // Export singleton instance
 const dataLoader = new DataLoader();
+window.dataLoader = dataLoader;

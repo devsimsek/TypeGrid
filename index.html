@@ -7,11 +7,17 @@
   
   <!-- SEO & Meta -->
   <meta name="description" content="TypeGrid — A minimal photographers' portfolio">
-  <meta name="theme-color" content="#191724">
   
-  <!-- Preconnect to optimize loading -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  
+  <!-- Initial Theme Injection to prevent FOUC -->
+  <script>
+    (function() {
+      var stored = localStorage.getItem('typegrid-theme');
+      var isSystemLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+      var theme = stored ? stored : (isSystemLight ? 'light' : 'dark');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+
   <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75' font-family='monospace'>□</text></svg>">
   

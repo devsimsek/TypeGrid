@@ -4,7 +4,9 @@
   "description": "A CLI tool to read local images and generate the typegrid.json API file.",
   "main": "generate.js",
   "scripts": {
-    "generate": "node generate.js"
+    "serve": "npx serve -s .",
+    "generate": "node generate.js",
+    "serve-docs": "mkdocs serve"
   },
   "dependencies": {
     "exifr": "^7.1.3",

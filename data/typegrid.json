@@ -1,0 +1,861 @@
+{
+  "site": {
+    "title": "Lens & Light",
+    "description": "A collection of urban and nature photography exploring light, shadow, and composition.",
+    "base_url": "https://lensandlight.photo",
+    "lang": "en-US",
+    "favicon": "/assets/favicon.ico",
+    "accent": "#ea9a97",
+    "version": "1.0.0",
+    "created_at": "2025-01-01T00:00:00Z",
+    "open_graph": {
+      "title": "Lens & Light — Photography Portfolio",
+      "description": "Urban and nature photography exploring light, shadow, and composition.",
+      "image": "https://lensandlight.photo/assets/og-default.jpg"
+    },
+    "authors": [
+      {
+        "name": "Alex Chen",
+        "url": "https://lensandlight.photo/about",
+        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80",
+        "socials": [
+          {
+            "platform": "twitter",
+            "url": "https://twitter.com/alexchenphotos"
+          },
+          {
+            "platform": "instagram",
+            "url": "https://instagram.com/alexchenphotos"
+          },
+          {
+            "platform": "github",
+            "url": "https://github.com/alexchen"
+          }
+        ]
+      },
+      {
+        "name": "Jordan Park",
+        "url": "https://lensandlight.photo/about",
+        "avatar": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=150&h=150&q=80",
+        "socials": [
+          {
+            "platform": "instagram",
+            "url": "https://instagram.com/jordanparkphoto"
+          },
+          {
+            "platform": "linkedin",
+            "url": "https://linkedin.com/in/jordanpark"
+          }
+        ]
+      }
+    ]
+  },
+  "projects": [
+    {
+      "id": "urban-geometry",
+      "slug": "urban-geometry",
+      "title": "Urban Geometry",
+      "year": 2025,
+      "tags": [
+        "urban",
+        "architecture",
+        "minimal"
+      ],
+      "description": "A photographic exploration of urban geometry, shot on Canon 5D Mark IV with a 24-70mm f/2.8L lens. Captured the essence of the environment highlighting natural textures and lighting.",
+      "excerpt": "Exploring the depths of urban geometry.",
+      "camera": "Canon 5D Mark IV",
+      "lens": "24-70mm f/2.8L",
+      "favorite": true,
+      "images": [
+        {
+          "id": "img-1486406146926-c627a92ad1ab-0",
+          "filename": "photo-1486406146926-c627a92ad1ab.jpg",
+          "url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 718017,
+          "primary": true
+        },
+        {
+          "id": "img-1479839672679-a4648522e74a-1",
+          "filename": "photo-1479839672679-a4648522e74a.jpg",
+          "url": "https://images.unsplash.com/photo-1479839672679-a4648522e74a?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 441330,
+          "primary": false
+        },
+        {
+          "id": "img-1513694203232-719a280e022f-2",
+          "filename": "photo-1513694203232-719a280e022f.jpg",
+          "url": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 422176,
+          "primary": false
+        }
+      ],
+      "seo": {
+        "meta_title": "Urban Geometry — Lens & Light",
+        "meta_description": "Gallery for Urban Geometry.",
+        "canonical_url": "https://lensandlight.photo/projects/urban-geometry/"
+      },
+      "open_graph": {
+        "title": "Urban Geometry",
+        "description": "Gallery for Urban Geometry.",
+        "image": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80"
+      },
+      "created_at": "2025-01-01T10:00:00Z",
+      "updated_at": "2025-01-01T10:00:00Z",
+      "draft": false,
+      "url": "https://lensandlight.photo/projects/urban-geometry/"
+    },
+    {
+      "id": "forest-silence",
+      "slug": "forest-silence",
+      "title": "Forest Silence",
+      "year": 2024,
+      "tags": [
+        "nature",
+        "forest",
+        "moody"
+      ],
+      "description": "A photographic exploration of forest silence, shot on Fujifilm X-T4 with a 35mm f/1.4 lens. Captured the essence of the environment highlighting natural textures and lighting.",
+      "excerpt": "Exploring the depths of forest silence.",
+      "camera": "Fujifilm X-T4",
+      "lens": "35mm f/1.4",
+      "favorite": true,
+      "images": [
+        {
+          "id": "img-1441974231531-c6227db76b6e-0",
+          "filename": "photo-1441974231531-c6227db76b6e.jpg",
+          "url": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 632028,
+          "primary": true
+        },
+        {
+          "id": "img-1472214103451-9374bd1c798e-1",
+          "filename": "photo-1472214103451-9374bd1c798e.jpg",
+          "url": "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 308091,
+          "primary": false
+        },
+        {
+          "id": "img-1464822759023-fed622ff2c3b-2",
+          "filename": "photo-1464822759023-fed622ff2c3b.jpg",
+          "url": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 524375,
+          "primary": false
+        }
+      ],
+      "seo": {
+        "meta_title": "Forest Silence — Lens & Light",
+        "meta_description": "Gallery for Forest Silence.",
+        "canonical_url": "https://lensandlight.photo/projects/forest-silence/"
+      },
+      "open_graph": {
+        "title": "Forest Silence",
+        "description": "Gallery for Forest Silence.",
+        "image": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1920&q=80"
+      },
+      "created_at": "2025-01-02T10:00:00Z",
+      "updated_at": "2025-01-02T10:00:00Z",
+      "draft": false,
+      "url": "https://lensandlight.photo/projects/forest-silence/"
+    },
+    {
+      "id": "coastal-erosion",
+      "slug": "coastal-erosion",
+      "title": "Coastal Erosion",
+      "year": 2024,
+      "tags": [
+        "landscape",
+        "coast",
+        "water"
+      ],
+      "description": "A photographic exploration of coastal erosion, shot on Sony A7R V with a 16-35mm f/2.8 lens. Captured the essence of the environment highlighting natural textures and lighting.",
+      "excerpt": "Exploring the depths of coastal erosion.",
+      "camera": "Sony A7R V",
+      "lens": "16-35mm f/2.8",
+      "favorite": true,
+      "images": [
+        {
+          "id": "img-1471922619028-1b3f94bd2d6b-0",
+          "filename": "photo-1471922619028-1b3f94bd2d6b.jpg",
+          "url": "https://images.unsplash.com/photo-1471922619028-1b3f94bd2d6b?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 701846,
+          "primary": true
+        },
+        {
+          "id": "img-1500534623283-258ce8874104-1",
+          "filename": "photo-1500534623283-258ce8874104.jpg",
+          "url": "https://images.unsplash.com/photo-1500534623283-258ce8874104?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 329785,
+          "primary": false
+        }
+      ],
+      "seo": {
+        "meta_title": "Coastal Erosion — Lens & Light",
+        "meta_description": "Gallery for Coastal Erosion.",
+        "canonical_url": "https://lensandlight.photo/projects/coastal-erosion/"
+      },
+      "open_graph": {
+        "title": "Coastal Erosion",
+        "description": "Gallery for Coastal Erosion.",
+        "image": "https://images.unsplash.com/photo-1471922619028-1b3f94bd2d6b?auto=format&fit=crop&w=1920&q=80"
+      },
+      "created_at": "2025-01-03T10:00:00Z",
+      "updated_at": "2025-01-03T10:00:00Z",
+      "draft": false,
+      "url": "https://lensandlight.photo/projects/coastal-erosion/"
+    },
+    {
+      "id": "neon-nights",
+      "slug": "neon-nights",
+      "title": "Neon Nights",
+      "year": 2023,
+      "tags": [
+        "street",
+        "night",
+        "cyberpunk"
+      ],
+      "description": "A photographic exploration of neon nights, shot on Leica Q2 with a 23mm f/1.7 lens. Captured the essence of the environment highlighting natural textures and lighting.",
+      "excerpt": "Exploring the depths of neon nights.",
+      "camera": "Leica Q2",
+      "lens": "23mm f/1.7",
+      "favorite": false,
+      "images": [
+        {
+          "id": "img-1555861498089-a2e6f43e5c94-0",
+          "filename": "photo-1555861498089-a2e6f43e5c94.jpg",
+          "url": "https://images.unsplash.com/photo-1555861498089-a2e6f43e5c94?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 440122,
+          "primary": true
+        },
+        {
+          "id": "img-1519608487963-8a3c200ab568-1",
+          "filename": "photo-1519608487963-8a3c200ab568.jpg",
+          "url": "https://images.unsplash.com/photo-1519608487963-8a3c200ab568?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 685499,
+          "primary": false
+        }
+      ],
+      "seo": {
+        "meta_title": "Neon Nights — Lens & Light",
+        "meta_description": "Gallery for Neon Nights.",
+        "canonical_url": "https://lensandlight.photo/projects/neon-nights/"
+      },
+      "open_graph": {
+        "title": "Neon Nights",
+        "description": "Gallery for Neon Nights.",
+        "image": "https://images.unsplash.com/photo-1555861498089-a2e6f43e5c94?auto=format&fit=crop&w=1920&q=80"
+      },
+      "created_at": "2025-01-04T10:00:00Z",
+      "updated_at": "2025-01-04T10:00:00Z",
+      "draft": false,
+      "url": "https://lensandlight.photo/projects/neon-nights/"
+    },
+    {
+      "id": "mono-portraits",
+      "slug": "mono-portraits",
+      "title": "Mono Portraits",
+      "year": 2023,
+      "tags": [
+        "portrait",
+        "monochrome",
+        "studio"
+      ],
+      "description": "A photographic exploration of mono portraits, shot on Hasselblad M6 with a 50mm f/1.4 lens. Captured the essence of the environment highlighting natural textures and lighting.",
+      "excerpt": "Exploring the depths of mono portraits.",
+      "camera": "Hasselblad M6",
+      "lens": "50mm f/1.4",
+      "favorite": false,
+      "images": [
+        {
+          "id": "img-1534528741775-53994a69daeb-0",
+          "filename": "photo-1534528741775-53994a69daeb.jpg",
+          "url": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 774360,
+          "primary": true
+        },
+        {
+          "id": "img-1506794778202-cad84cf45f1d-1",
+          "filename": "photo-1506794778202-cad84cf45f1d.jpg",
+          "url": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 565644,
+          "primary": false
+        }
+      ],
+      "seo": {
+        "meta_title": "Mono Portraits — Lens & Light",
+        "meta_description": "Gallery for Mono Portraits.",
+        "canonical_url": "https://lensandlight.photo/projects/mono-portraits/"
+      },
+      "open_graph": {
+        "title": "Mono Portraits",
+        "description": "Gallery for Mono Portraits.",
+        "image": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1920&q=80"
+      },
+      "created_at": "2025-01-05T10:00:00Z",
+      "updated_at": "2025-01-05T10:00:00Z",
+      "draft": false,
+      "url": "https://lensandlight.photo/projects/mono-portraits/"
+    },
+    {
+      "id": "analog-summer",
+      "slug": "analog-summer",
+      "title": "Analog Summer",
+      "year": 2022,
+      "tags": [
+        "film",
+        "35mm",
+        "lifestyle"
+      ],
+      "description": "A photographic exploration of analog summer, shot on Canon AE-1 with a 50mm f/1.8 lens. Captured the essence of the environment highlighting natural textures and lighting.",
+      "excerpt": "Exploring the depths of analog summer.",
+      "camera": "Canon AE-1",
+      "lens": "50mm f/1.8",
+      "favorite": false,
+      "images": [
+        {
+          "id": "img-1499636136210-6a41452227d8-0",
+          "filename": "photo-1499636136210-6a41452227d8.jpg",
+          "url": "https://images.unsplash.com/photo-1499636136210-6a41452227d8?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 338736,
+          "primary": true
+        },
+        {
+          "id": "img-1504280548171-8b00b73c4d59-1",
+          "filename": "photo-1504280548171-8b00b73c4d59.jpg",
+          "url": "https://images.unsplash.com/photo-1504280548171-8b00b73c4d59?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 516483,
+          "primary": false
+        }
+      ],
+      "seo": {
+        "meta_title": "Analog Summer — Lens & Light",
+        "meta_description": "Gallery for Analog Summer.",
+        "canonical_url": "https://lensandlight.photo/projects/analog-summer/"
+      },
+      "open_graph": {
+        "title": "Analog Summer",
+        "description": "Gallery for Analog Summer.",
+        "image": "https://images.unsplash.com/photo-1499636136210-6a41452227d8?auto=format&fit=crop&w=1920&q=80"
+      },
+      "created_at": "2025-01-06T10:00:00Z",
+      "updated_at": "2025-01-06T10:00:00Z",
+      "draft": false,
+      "url": "https://lensandlight.photo/projects/analog-summer/"
+    },
+    {
+      "id": "concrete-brutalism",
+      "slug": "concrete-brutalism",
+      "title": "Concrete Brutalism",
+      "year": 2022,
+      "tags": [
+        "architecture",
+        "brutalism",
+        "monochrome"
+      ],
+      "description": "A photographic exploration of concrete brutalism, shot on Nikon R6 with a 24mm f/1.4 lens. Captured the essence of the environment highlighting natural textures and lighting.",
+      "excerpt": "Exploring the depths of concrete brutalism.",
+      "camera": "Nikon R6",
+      "lens": "24mm f/1.4",
+      "favorite": false,
+      "images": [
+        {
+          "id": "img-1486406146926-c627a92ad1ab-0",
+          "filename": "photo-1486406146926-c627a92ad1ab.jpg",
+          "url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 571059,
+          "primary": true
+        },
+        {
+          "id": "img-1479839672679-a4648522e74a-1",
+          "filename": "photo-1479839672679-a4648522e74a.jpg",
+          "url": "https://images.unsplash.com/photo-1479839672679-a4648522e74a?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 466495,
+          "primary": false
+        },
+        {
+          "id": "img-1513694203232-719a280e022f-2",
+          "filename": "photo-1513694203232-719a280e022f.jpg",
+          "url": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 373846,
+          "primary": false
+        }
+      ],
+      "seo": {
+        "meta_title": "Concrete Brutalism — Lens & Light",
+        "meta_description": "Gallery for Concrete Brutalism.",
+        "canonical_url": "https://lensandlight.photo/projects/concrete-brutalism/"
+      },
+      "open_graph": {
+        "title": "Concrete Brutalism",
+        "description": "Gallery for Concrete Brutalism.",
+        "image": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80"
+      },
+      "created_at": "2025-01-07T10:00:00Z",
+      "updated_at": "2025-01-07T10:00:00Z",
+      "draft": false,
+      "url": "https://lensandlight.photo/projects/concrete-brutalism/"
+    },
+    {
+      "id": "alpine-ridges",
+      "slug": "alpine-ridges",
+      "title": "Alpine Ridges",
+      "year": 2021,
+      "tags": [
+        "mountains",
+        "nature",
+        "landscape"
+      ],
+      "description": "A photographic exploration of alpine ridges, shot on Sony A7III with a 70-200mm f/2.8 lens. Captured the essence of the environment highlighting natural textures and lighting.",
+      "excerpt": "Exploring the depths of alpine ridges.",
+      "camera": "Sony A7III",
+      "lens": "70-200mm f/2.8",
+      "favorite": false,
+      "images": [
+        {
+          "id": "img-1441974231531-c6227db76b6e-0",
+          "filename": "photo-1441974231531-c6227db76b6e.jpg",
+          "url": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 308860,
+          "primary": true
+        },
+        {
+          "id": "img-1472214103451-9374bd1c798e-1",
+          "filename": "photo-1472214103451-9374bd1c798e.jpg",
+          "url": "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 698932,
+          "primary": false
+        },
+        {
+          "id": "img-1464822759023-fed622ff2c3b-2",
+          "filename": "photo-1464822759023-fed622ff2c3b.jpg",
+          "url": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 771626,
+          "primary": false
+        }
+      ],
+      "seo": {
+        "meta_title": "Alpine Ridges — Lens & Light",
+        "meta_description": "Gallery for Alpine Ridges.",
+        "canonical_url": "https://lensandlight.photo/projects/alpine-ridges/"
+      },
+      "open_graph": {
+        "title": "Alpine Ridges",
+        "description": "Gallery for Alpine Ridges.",
+        "image": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1920&q=80"
+      },
+      "created_at": "2025-01-08T10:00:00Z",
+      "updated_at": "2025-01-08T10:00:00Z",
+      "draft": false,
+      "url": "https://lensandlight.photo/projects/alpine-ridges/"
+    },
+    {
+      "id": "desert-dunes",
+      "slug": "desert-dunes",
+      "title": "Desert Dunes",
+      "year": 2021,
+      "tags": [
+        "landscape",
+        "desert",
+        "minimal"
+      ],
+      "description": "A photographic exploration of desert dunes, shot on Fujifilm GFX 100 with a 63mm f/2.8 lens. Captured the essence of the environment highlighting natural textures and lighting.",
+      "excerpt": "Exploring the depths of desert dunes.",
+      "camera": "Fujifilm GFX 100",
+      "lens": "63mm f/2.8",
+      "favorite": false,
+      "images": [
+        {
+          "id": "img-1509316785289-025f5b846b35-0",
+          "filename": "photo-1509316785289-025f5b846b35.jpg",
+          "url": "https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 672511,
+          "primary": true
+        },
+        {
+          "id": "img-1473580044384-7ba9967e16a0-1",
+          "filename": "photo-1473580044384-7ba9967e16a0.jpg",
+          "url": "https://images.unsplash.com/photo-1473580044384-7ba9967e16a0?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 535627,
+          "primary": false
+        }
+      ],
+      "seo": {
+        "meta_title": "Desert Dunes — Lens & Light",
+        "meta_description": "Gallery for Desert Dunes.",
+        "canonical_url": "https://lensandlight.photo/projects/desert-dunes/"
+      },
+      "open_graph": {
+        "title": "Desert Dunes",
+        "description": "Gallery for Desert Dunes.",
+        "image": "https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=1920&q=80"
+      },
+      "created_at": "2025-01-09T10:00:00Z",
+      "updated_at": "2025-01-09T10:00:00Z",
+      "draft": false,
+      "url": "https://lensandlight.photo/projects/desert-dunes/"
+    },
+    {
+      "id": "street-symphony",
+      "slug": "street-symphony",
+      "title": "Street Symphony",
+      "year": 2020,
+      "tags": [
+        "street",
+        "candid",
+        "urban"
+      ],
+      "description": "A photographic exploration of street symphony, shot on Ricoh GR III with a 28mm f/2.8 lens. Captured the essence of the environment highlighting natural textures and lighting.",
+      "excerpt": "Exploring the depths of street symphony.",
+      "camera": "Ricoh GR III",
+      "lens": "28mm f/2.8",
+      "favorite": false,
+      "images": [
+        {
+          "id": "img-1518105779142-d971f22f1b0a-0",
+          "filename": "photo-1518105779142-d971f22f1b0a.jpg",
+          "url": "https://images.unsplash.com/photo-1518105779142-d971f22f1b0a?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 340323,
+          "primary": true
+        },
+        {
+          "id": "img-1495313898144-88b907577dc9-1",
+          "filename": "photo-1495313898144-88b907577dc9.jpg",
+          "url": "https://images.unsplash.com/photo-1495313898144-88b907577dc9?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 467339,
+          "primary": false
+        }
+      ],
+      "seo": {
+        "meta_title": "Street Symphony — Lens & Light",
+        "meta_description": "Gallery for Street Symphony.",
+        "canonical_url": "https://lensandlight.photo/projects/street-symphony/"
+      },
+      "open_graph": {
+        "title": "Street Symphony",
+        "description": "Gallery for Street Symphony.",
+        "image": "https://images.unsplash.com/photo-1518105779142-d971f22f1b0a?auto=format&fit=crop&w=1920&q=80"
+      },
+      "created_at": "2025-01-10T10:00:00Z",
+      "updated_at": "2025-01-10T10:00:00Z",
+      "draft": false,
+      "url": "https://lensandlight.photo/projects/street-symphony/"
+    },
+    {
+      "id": "astro-horizons",
+      "slug": "astro-horizons",
+      "title": "Astro Horizons",
+      "year": 2020,
+      "tags": [
+        "astrophotography",
+        "night",
+        "stars"
+      ],
+      "description": "A photographic exploration of astro horizons, shot on Sony A7S III with a 14mm f/1.8 lens. Captured the essence of the environment highlighting natural textures and lighting.",
+      "excerpt": "Exploring the depths of astro horizons.",
+      "camera": "Sony A7S III",
+      "lens": "14mm f/1.8",
+      "favorite": false,
+      "images": [
+        {
+          "id": "img-1462331940025-496dfbfc7564-0",
+          "filename": "photo-1462331940025-496dfbfc7564.jpg",
+          "url": "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 527542,
+          "primary": true
+        },
+        {
+          "id": "img-1465101162958-f9104085bde0-1",
+          "filename": "photo-1465101162958-f9104085bde0.jpg",
+          "url": "https://images.unsplash.com/photo-1465101162958-f9104085bde0?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 342808,
+          "primary": false
+        }
+      ],
+      "seo": {
+        "meta_title": "Astro Horizons — Lens & Light",
+        "meta_description": "Gallery for Astro Horizons.",
+        "canonical_url": "https://lensandlight.photo/projects/astro-horizons/"
+      },
+      "open_graph": {
+        "title": "Astro Horizons",
+        "description": "Gallery for Astro Horizons.",
+        "image": "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1920&q=80"
+      },
+      "created_at": "2025-01-11T10:00:00Z",
+      "updated_at": "2025-01-11T10:00:00Z",
+      "draft": false,
+      "url": "https://lensandlight.photo/projects/astro-horizons/"
+    },
+    {
+      "id": "motion-blur",
+      "slug": "motion-blur",
+      "title": "Motion Blur",
+      "year": 2019,
+      "tags": [
+        "street",
+        "long-exposure",
+        "night"
+      ],
+      "description": "A photographic exploration of motion blur, shot on Canon 6D with a 35mm f/2 lens. Captured the essence of the environment highlighting natural textures and lighting.",
+      "excerpt": "Exploring the depths of motion blur.",
+      "camera": "Canon 6D",
+      "lens": "35mm f/2",
+      "favorite": false,
+      "images": [
+        {
+          "id": "img-1446776858070-58ce36cc722d-0",
+          "filename": "photo-1446776858070-58ce36cc722d.jpg",
+          "url": "https://images.unsplash.com/photo-1446776858070-58ce36cc722d?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 669903,
+          "primary": true
+        },
+        {
+          "id": "img-1507090886915-d91ab2dfffe4-1",
+          "filename": "photo-1507090886915-d91ab2dfffe4.jpg",
+          "url": "https://images.unsplash.com/photo-1507090886915-d91ab2dfffe4?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 666543,
+          "primary": false
+        }
+      ],
+      "seo": {
+        "meta_title": "Motion Blur — Lens & Light",
+        "meta_description": "Gallery for Motion Blur.",
+        "canonical_url": "https://lensandlight.photo/projects/motion-blur/"
+      },
+      "open_graph": {
+        "title": "Motion Blur",
+        "description": "Gallery for Motion Blur.",
+        "image": "https://images.unsplash.com/photo-1446776858070-58ce36cc722d?auto=format&fit=crop&w=1920&q=80"
+      },
+      "created_at": "2025-01-12T10:00:00Z",
+      "updated_at": "2025-01-12T10:00:00Z",
+      "draft": false,
+      "url": "https://lensandlight.photo/projects/motion-blur/"
+    },
+    {
+      "id": "macro-worlds",
+      "slug": "macro-worlds",
+      "title": "Macro Worlds",
+      "year": 2019,
+      "tags": [
+        "macro",
+        "nature",
+        "details"
+      ],
+      "description": "A photographic exploration of macro worlds, shot on Nikon D850 with a 105mm f/2.8 Macro lens. Captured the essence of the environment highlighting natural textures and lighting.",
+      "excerpt": "Exploring the depths of macro worlds.",
+      "camera": "Nikon D850",
+      "lens": "105mm f/2.8 Macro",
+      "favorite": false,
+      "images": [
+        {
+          "id": "img-1500641123-1c3fc6e4b445-0",
+          "filename": "photo-1500641123-1c3fc6e4b445.jpg",
+          "url": "https://images.unsplash.com/photo-1500641123-1c3fc6e4b445?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 323386,
+          "primary": true
+        },
+        {
+          "id": "img-1504194101292-62db555b4b1a-1",
+          "filename": "photo-1504194101292-62db555b4b1a.jpg",
+          "url": "https://images.unsplash.com/photo-1504194101292-62db555b4b1a?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 615288,
+          "primary": false
+        }
+      ],
+      "seo": {
+        "meta_title": "Macro Worlds — Lens & Light",
+        "meta_description": "Gallery for Macro Worlds.",
+        "canonical_url": "https://lensandlight.photo/projects/macro-worlds/"
+      },
+      "open_graph": {
+        "title": "Macro Worlds",
+        "description": "Gallery for Macro Worlds.",
+        "image": "https://images.unsplash.com/photo-1500641123-1c3fc6e4b445?auto=format&fit=crop&w=1920&q=80"
+      },
+      "created_at": "2025-01-13T10:00:00Z",
+      "updated_at": "2025-01-13T10:00:00Z",
+      "draft": false,
+      "url": "https://lensandlight.photo/projects/macro-worlds/"
+    },
+    {
+      "id": "forgotten-places",
+      "slug": "forgotten-places",
+      "title": "Forgotten Places",
+      "year": 2018,
+      "tags": [
+        "urbex",
+        "architecture",
+        "moody"
+      ],
+      "description": "A photographic exploration of forgotten places, shot on Sony A6400 with a 16-50mm f/3.5-5.6 lens. Captured the essence of the environment highlighting natural textures and lighting.",
+      "excerpt": "Exploring the depths of forgotten places.",
+      "camera": "Sony A6400",
+      "lens": "16-50mm f/3.5-5.6",
+      "favorite": false,
+      "images": [
+        {
+          "id": "img-1513025624733-470217983ff3-0",
+          "filename": "photo-1513025624733-470217983ff3.jpg",
+          "url": "https://images.unsplash.com/photo-1513025624733-470217983ff3?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 720218,
+          "primary": true
+        },
+        {
+          "id": "img-1495932591145-c8bc9110037a-1",
+          "filename": "photo-1495932591145-c8bc9110037a.jpg",
+          "url": "https://images.unsplash.com/photo-1495932591145-c8bc9110037a?auto=format&fit=crop&w=1920&q=80",
+          "width": 1920,
+          "height": 1280,
+          "size": 470089,
+          "primary": false
+        }
+      ],
+      "seo": {
+        "meta_title": "Forgotten Places — Lens & Light",
+        "meta_description": "Gallery for Forgotten Places.",
+        "canonical_url": "https://lensandlight.photo/projects/forgotten-places/"
+      },
+      "open_graph": {
+        "title": "Forgotten Places",
+        "description": "Gallery for Forgotten Places.",
+        "image": "https://images.unsplash.com/photo-1513025624733-470217983ff3?auto=format&fit=crop&w=1920&q=80"
+      },
+      "created_at": "2025-01-14T10:00:00Z",
+      "updated_at": "2025-01-14T10:00:00Z",
+      "draft": false,
+      "url": "https://lensandlight.photo/projects/forgotten-places/"
+    }
+  ],
+  "collections": [
+    {
+      "id": "favorites",
+      "title": "Favorites",
+      "project_ids": [
+        "urban-geometry",
+        "coastal-erosion",
+        "neon-nights"
+      ],
+      "created_at": "2025-01-01T00:00:00Z",
+      "description": "Our most loved and frequently shared work."
+    },
+    {
+      "id": "film-archives",
+      "title": "Film Archives",
+      "project_ids": [
+        "analog-summer",
+        "mono-portraits"
+      ],
+      "created_at": "2024-12-31T00:00:00Z",
+      "description": "Selected 35mm and medium format film photography."
+    }
+  ],
+  "posts": [],
+  "pagination": {
+    "page_size": 12,
+    "total_projects": 14,
+    "total_pages": 2,
+    "pages": []
+  },
+  "socials": {
+    "links": [
+      {
+        "platform": "twitter",
+        "url": "https://twitter.com/lensandlight"
+      },
+      {
+        "platform": "instagram",
+        "url": "https://instagram.com/lensandlight.photo"
+      },
+      {
+        "platform": "email",
+        "url": "mailto:hello@lensandlight.photo"
+      }
+    ],
+    "share_templates": {
+      "project": "https://twitter.com/intent/tweet?text=Check out {title} on Lens & Light&url={url}",
+      "site": "https://twitter.com/intent/tweet?text=Lens & Light — {site_title}&url={url}"
+    }
+  },
+  "settings": {
+    "layout": {
+      "columns_desktop": 3,
+      "columns_tablet": 2,
+      "columns_mobile": 1
+    },
+    "sort": {
+      "field": "year",
+      "order": "desc"
+    },
+    "show_thumbnails": true,
+    "ui": {
+      "monospace_font": "Courier New, monospace",
+      "accent_color": "#ea9a97"
+    }
+  },
+  "meta": {
+    "next_project_id": 15,
+    "version": "1.0.0"
+  }
+}

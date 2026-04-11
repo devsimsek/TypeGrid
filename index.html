@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  <!-- SEO & Meta -->
+  <meta name="description" content="TypeGrid — A minimal photographers' portfolio">
+  <meta name="theme-color" content="#191724">
+  
+  <!-- Preconnect to optimize loading -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75' font-family='monospace'>□</text></svg>">
+  
+  <!-- Stylesheets - Mobile First -->
+  <link rel="stylesheet" href="./css/variables.css">
+  <link rel="stylesheet" href="./css/reset.css">
+  <link rel="stylesheet" href="./css/mobile.css">
+  <link rel="stylesheet" href="./css/responsive.css">
+  
+  <title>TypeGrid</title>
+</head>
+<body x-data="typegrid" @keydown.window="handleKeydown($event)">
+
+  <!-- Header -->
+  <header>
+    <div class="header-inner">
+      <h1 class="site-title">
+        <a href="#/" x-text="site.title || 'TypeGrid'"></a>
+      </h1>
+      <div class="header-actions">
+        <!-- Theme Switcher bound to Alpine Store -->
+        <div class="theme-switcher-container">
+          <button class="theme-switcher" 
+                  @click="$store.theme.toggle()" 
+                  :data-theme="$store.theme.mode"
+                  :title="$store.theme.isDark ? 'Switch to Light Mode (t)' : 'Switch to Dark Mode (t)'"
+                  aria-label="Toggle Theme">
+            <svg class="theme-icon-dark" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+            <svg class="theme-icon-light" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+          </button>
+        </div>
+        <button class="hamburger" aria-label="Toggle menu" @click="navOpen = !navOpen" :class="{'open': navOpen}">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      
+      <!-- Navigation Menu -->
+      <nav :class="{'open': navOpen}" x-cloak>
+        <ul>
+          <li><a href="#/" @click="navOpen = false">Grid</a></li>
+          <li><a href="#" @click.prevent="showHelp = true; navOpen = false">Shortcuts (?)</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="app-main">
+    <!-- Loading State -->
+    <div x-show="isLoading" class="container text-center mt-6">
+      <div class="spinner"></div>
+    </div>
+
+    <!-- Grid View & Tag Filter View -->
+    <div x-show="!isLoading && (route === 'grid' || route === 'tag')" x-cloak>
+      <div class="container">
+        
+        <!-- Tag Filter Header -->
+        <div x-show="route === 'tag'" class="mb-6">
+          <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="#/">Grid</a> <span>/</span> <span x-text="`Tag: ${currentFilter}`"></span>
+          </nav>
+          <h1>Tagged: <code x-text="currentFilter"></code></h1>
+          <p class="text-muted mb-6" x-text="`${paginatedProjects.length} project(s) found`"></p>
+        </div>
+
+        <div class="grid">
+          <template x-for="(project, index) in paginatedProjects" :key="project.id">
+            <a :href="`#/project/${project.slug}`" class="card project-card" :class="{'ring-focus': focusedIndex === index}">
+              <img :src="project.images.find(img => img.primary)?.url || project.images[0]?.url" 
+                   :alt="project.title" 
+                   class="card-image" loading="lazy">
+              <div class="card-content">
+                <h2 class="card-title" x-text="project.title"></h2>
+                <div class="card-meta">
+                  <span class="card-year" x-text="project.year"></span>
+                </div>
+                <p class="card-excerpt" x-show="project.excerpt" x-text="project.excerpt"></p>
+                <div class="card-tags" x-show="project.tags && project.tags.length > 0">
+                  <template x-for="tag in project.tags" :key="tag">
+                    <span class="tag" x-text="tag"></span>
+                  </template>
+                </div>
+              </div>
+            </a>
+          </template>
+        </div>
+        
+        <!-- Empty State -->
+        <div x-show="paginatedProjects.length === 0" class="text-center mt-8">
+          <p class="text-muted">No projects found.</p>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination flex justify-center items-center gap-4 mt-12" x-show="totalPages > 1 && route === 'grid'">
+          <button class="btn btn-small" @click.prevent="prevPage()" :disabled="currentPage === 1" title="Previous Page (h)">← Prev</button>
+          <span class="text-muted text-sm font-mono" x-text="`Page ${currentPage} of ${totalPages}`"></span>
+          <button class="btn btn-small" @click.prevent="nextPage()" :disabled="currentPage === totalPages" title="Next Page (l)">Next →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project Detail View -->
+    <div x-show="!isLoading && route === 'project' && currentProject" x-cloak>
+      <div class="container">
+        <!-- Breadcrumb & Top Album Controls -->
+        <div class="album-controls flex justify-between items-center mb-6 pb-4 border-b">
+          <nav class="breadcrumb mb-0">
+            <a href="#/">Grid</a> <span>/</span> <span x-text="currentProject?.title"></span>
+          </nav>
+        </div>
+
+        <div class="project-detail">
+          <!-- Gallery -->
+          <div class="project-gallery">
+            <template x-for="(img, idx) in currentProject?.images" :key="img.id || idx">
+              <div class="gallery-image" @click="openImage(idx)" style="cursor: zoom-in;" title="Click to view fullscreen">
+                <img :src="img.url" :alt="img.filename" loading="lazy" :width="img.width" :height="img.height">
+              </div>
+            </template>
+          </div>
+          
+          <!-- Project Info -->
+          <div class="project-info">
+            <div class="project-header">
+              <h1 class="project-title" x-text="currentProject?.title"></h1>
+              <div class="project-meta">
+                <div class="meta-item">
+                  <span class="meta-label">Year</span>
+                  <span class="meta-value" x-text="currentProject?.year"></span>
+                </div>
+                <div class="meta-item" x-show="currentProject?.camera">
+                  <span class="meta-label">Camera</span>
+                  <span class="meta-value" x-text="currentProject?.camera"></span>
+                </div>
+                <div class="meta-item" x-show="currentProject?.lens">
+                  <span class="meta-label">Lens</span>
+                  <span class="meta-value" x-text="currentProject?.lens"></span>
+                </div>
+              </div>
+            </div>
+            
+            <p class="project-description" x-show="currentProject?.description" x-text="currentProject?.description"></p>
+            
+            <div class="mt-6" x-show="currentProject?.tags && currentProject.tags.length > 0">
+              <p class="meta-label mb-2">Tags</p>
+              <div class="card-tags">
+                <template x-for="tag in currentProject?.tags" :key="tag">
+                  <a :href="`#/tag/${tag}`" class="tag" x-text="tag"></a>
+                </template>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Next / Previous Album Controls (Bottom) -->
+        <div class="project-navigation mt-12 pt-8 border-t flex justify-between">
+          <a href="#" class="btn btn-small" @click.prevent="handleKeydown({key: 'h'})" title="Previous Project (h)">← Previous Project</a>
+          <a href="#" class="btn btn-small" @click.prevent="handleKeydown({key: 'l'})" title="Next Project (l)">Next Project →</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer with Powered by Branding -->
+  <footer>
+    <div class="footer-content container">
+      <div class="footer-description" x-show="site.description" x-text="site.description"></div>
+      
+      <div class="authors-section" x-show="authors.length > 0" x-cloak>
+        <template x-for="author in authors" :key="author.name">
+          <div class="author-card">
+            <img x-show="author.avatar" :src="author.avatar" :alt="author.name" class="author-avatar">
+            <h3 class="author-name">
+              <a x-show="author.url" :href="author.url" target="_blank" x-text="author.name"></a>
+              <span x-show="!author.url" x-text="author.name"></span>
+            </h3>
+            <div class="author-socials" x-show="author.socials && author.socials.length > 0">
+              <template x-for="social in author.socials" :key="social.platform">
+                <a :href="social.url" target="_blank" class="social-link" :aria-label="social.platform">
+                  <!-- Fallback to text initials if icon missing, handled in CSS previously, here we just show text -->
+                  <span class="social-icon text-sm" x-text="social.platform.substring(0, 2).toUpperCase()"></span>
+                </a>
+              </template>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <div class="site-socials" x-show="socials.links && socials.links.length > 0" x-cloak>
+        <template x-for="social in socials.links" :key="social.platform">
+          <a :href="social.url" target="_blank" class="social-link" :aria-label="social.platform">
+            <span class="social-icon text-sm" x-text="social.platform.substring(0, 2).toUpperCase()"></span>
+          </a>
+        </template>
+      </div>
+
+      <!-- TypeGrid Branding -->
+      <div class="mt-8 pt-4 border-t text-center text-muted font-mono text-sm">
+        Powered by <a href="#" style="color: var(--color-text-primary); text-decoration: underline;">TypeGrid</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Lightbox Viewer (Alpine Managed) -->
+  <div class="lightbox" 
+       x-show="$store.lightbox.isOpen" 
+       x-cloak 
+       tabindex="0" 
+       role="dialog" 
+       aria-modal="true"
+       @keydown.window.escape="$store.lightbox.close()">
+    
+    <div class="lightbox-backdrop" @click="$store.lightbox.close()"></div>
+    
+    <div class="lightbox-container">
+      <div class="lightbox-header">
+        <div class="lightbox-counter" x-text="`${$store.lightbox.currentIndex + 1} / ${$store.lightbox.images.length}`"></div>
+        <div class="flex gap-4">
+          <button class="btn btn-small" @click="$store.lightbox.toggleMetadata()" title="Toggle Metadata (m)">
+            <span x-text="$store.lightbox.showMetadata ? 'Hide Info' : 'Show Info'"></span>
+          </button>
+          <button class="lightbox-close" @click="$store.lightbox.close()" title="Close (Esc)">
+            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="lightbox-main"
+           @mousedown="$store.lightbox.startPan($event)" 
+           @mousemove="$store.lightbox.doPan($event)" 
+           @mouseup="$store.lightbox.endPan()" 
+           @mouseleave="$store.lightbox.endPan()"
+           @touchstart="$store.lightbox.startPan($event)"
+           @touchmove="$store.lightbox.doPan($event)"
+           @touchend="$store.lightbox.endPan()">
+        
+        <button class="lightbox-prev" @click.stop="$store.lightbox.prev()" :disabled="$store.lightbox.currentIndex === 0" title="Previous (h, ←)">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+
+        <div class="lightbox-image-wrapper overflow-hidden relative w-full h-full flex items-center justify-center" style="flex: 1; min-height: 0;">
+          <img class="lightbox-image select-none" 
+               :src="$store.lightbox.currentImage?.url" 
+               :style="$store.lightbox.transformStyle" 
+               draggable="false">
+        </div>
+
+        <button class="lightbox-next" @click.stop="$store.lightbox.next()" :disabled="$store.lightbox.currentIndex === $store.lightbox.images.length - 1" title="Next (l, →)">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+      </div>
+
+      <div class="lightbox-footer" x-show="$store.lightbox.showMetadata" x-transition>
+        <div class="lightbox-meta metadata-grid">
+          <span class="meta-item"><span class="meta-label">File:</span> <code x-text="$store.lightbox.currentImage?.filename"></code></span>
+          <span class="meta-item" x-show="$store.lightbox.currentImage?.width"><span class="meta-label">Dimensions:</span> <span x-text="`${$store.lightbox.currentImage?.width}×${$store.lightbox.currentImage?.height}px`"></span></span>
+          <span class="meta-item" x-show="$store.lightbox.currentImage?.size"><span class="meta-label">Size:</span> <span x-text="formatSize($store.lightbox.currentImage?.size)"></span></span>
+          <span class="meta-item" x-show="currentProject?.camera"><span class="meta-label">Camera:</span> <span x-text="currentProject?.camera"></span></span>
+          <span class="meta-item" x-show="currentProject?.lens"><span class="meta-label">Lens:</span> <span x-text="currentProject?.lens"></span></span>
+        </div>
+        
+        <div class="lightbox-actions flex gap-2 pt-4" style="flex-wrap: wrap;">
+          <button class="btn btn-small" @click="$store.lightbox.zoomOut()" title="Zoom Out (-)">-</button>
+          <button class="btn btn-small" @click="$store.lightbox.resetZoom()" title="Reset Zoom (0)">1:1</button>
+          <button class="btn btn-small" @click="$store.lightbox.zoomIn()" title="Zoom In (+)">+</button>
+          <button class="lightbox-download btn btn-small" @click="$store.lightbox.download()" title="Download (d)">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" style="margin-right: 4px;">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Download
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Help / Shortcuts Modal -->
+  <div class="lightbox" x-show="showHelp" x-cloak style="z-index: 1000;">
+    <div class="lightbox-backdrop" @click="showHelp = false"></div>
+    <div class="lightbox-container" style="width: 90%; max-width: 500px; margin: auto; height: auto; max-height: 90vh; background: var(--color-bg-primary); border: 1px solid var(--color-border); padding: var(--spacing-6); border-radius: 0; overflow-y: auto;">
+      <h2 class="mb-4 border-b pb-4">Keyboard Shortcuts</h2>
+      
+      <h3 class="text-sm text-muted mb-2">Global Navigation</h3>
+      <ul class="mb-6" style="list-style: none;">
+        <li class="mb-2"><code class="font-mono">?</code> <span class="ml-2">Toggle Help</span></li>
+        <li class="mb-2"><code class="font-mono">h/j/k/l</code> <span class="ml-2">Navigate (Left/Down/Up/Right)</span></li>
+        <li class="mb-2"><code class="font-mono">Enter/o</code> <span class="ml-2">Open focused project</span></li>
+        <li class="mb-2"><code class="font-mono">gg / G</code> <span class="ml-2">Scroll to top / bottom</span></li>
+        <li class="mb-2"><code class="font-mono">t</code> <span class="ml-2">Toggle Theme</span></li>
+        <li class="mb-2"><code class="font-mono">Esc</code> <span class="ml-2">Go back to Grid</span></li>
+      </ul>
+      
+      <h3 class="text-sm text-muted mb-2">Photo Viewer</h3>
+      <ul class="mb-6" style="list-style: none;">
+        <li class="mb-2"><code class="font-mono">h/l</code> or <code class="font-mono">←/→</code> <span class="ml-2">Previous/Next Photo</span></li>
+        <li class="mb-2"><code class="font-mono">+/-</code> <span class="ml-2">Zoom In/Out</span></li>
+        <li class="mb-2"><code class="font-mono">0</code> <span class="ml-2">Reset Zoom (1:1)</span></li>
+        <li class="mb-2"><code class="font-mono">z</code> <span class="ml-2">Toggle Zoom</span></li>
+        <li class="mb-2"><code class="font-mono">d</code> <span class="ml-2">Download Image</span></li>
+        <li class="mb-2"><code class="font-mono">m</code> <span class="ml-2">Toggle Metadata</span></li>
+        <li class="mb-2"><code class="font-mono">Esc</code> <span class="ml-2">Close Viewer</span></li>
+      </ul>
+      
+      <button class="btn w-full justify-center mt-4" @click="showHelp = false">Close</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="./js/loader.js"></script>
+  <script src="./js/alpine-app.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</body>
+</html>

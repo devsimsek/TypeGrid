@@ -1,0 +1,38 @@
+site_name: TypeGrid
+site_description: TypeGrid - Modern Photography Portfolio for Engineers
+site_author: devsimsek
+
+theme:
+  name: shadcn
+  show_title: true
+  show_stargazers: true
+  pygments_style:
+    light: shadcn-light
+    dark: github-dark
+  icon: heroicons:rocket-launch
+  topbar_sections: true
+  show_datetime: false
+
+# nav:
+#   - Home: index.md
+#   - Getting Started: setup.md
+#   - Architecture: architecture.md
+#   - Code Guide: code-guide.md
+#   - API Reference: api-reference.md
+#   - Block System: block-system.md
+#   - Internationalization: i18n.md
+#   - Caching: caching.md
+#   - Error Codes: error-codes.md
+#   - Testing: testing.md
+#   - Deployment: deployment.md
+#   - Migration Guide: migration-guide.md
+#   - SDK Integration: sdk-integration.md
+
+markdown_extensions:
+  admonition:
+  codehilite:
+  fenced_code:
+  footnotes:
+  tables:
+  pymdownx.blocks.details:
+  pymdownx.tabbed:

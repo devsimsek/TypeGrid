@@ -1,0 +1,203 @@
+/* CSS Variables - Rose Pine Theme */
+
+:root {
+  /* Rose Pine Moon (Dark Mode - Default) */
+  --color-accent: #ea9a97;
+  --color-accent-dark: #d9484f;
+  --color-accent-light: #eb6f92;
+
+  /* Colors - Rose Pine Moon Palette */
+  --color-white: #e0def4;
+  --color-black: #191724;
+  --color-gray-900: #191724;
+  --color-gray-800: #1f1d2e;
+  --color-gray-700: #26233a;
+  --color-gray-600: #403d52;
+  --color-gray-500: #6e6a86;
+  --color-gray-400: #908caa;
+  --color-gray-300: #b5adbd;
+  --color-gray-200: #d8d7dd;
+  --color-gray-100: #e0def4;
+
+  /* Colors - Semantic */
+  --color-text-primary: #e0def4;
+  --color-text-secondary: #908caa;
+  --color-text-muted: #6e6a86;
+  --color-text-inverse: #191724;
+
+  --color-bg-primary: #191724;
+  --color-bg-secondary: #1f1d2e;
+  --color-bg-tertiary: #26233a;
+
+  --color-border: #403d52;
+  --color-border-light: #26233a;
+
+  --color-focus: #ea9a97;
+  --color-focus-ring: rgba(234, 154, 151, 0.2);
+
+  /* Rose Pine Accent Colors */
+  --color-love: #eb6f92;
+  --color-gold: #f6c177;
+  --color-rose: #ea9a97;
+  --color-pine: #3e8fb0;
+  --color-foam: #9ccfd8;
+  --color-iris: #c4a7e7;
+
+  /* Typography - All Monospaced */
+  --font-mono: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
+  --font-sans: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
+
+  /* Font Sizes - Mobile First */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  --font-size-3xl: 1.875rem;  /* 30px */
+  --font-size-4xl: 2.25rem;   /* 36px */
+  --font-size-5xl: 3rem;      /* 48px */
+
+  /* Font Weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+
+  /* Line Heights */
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  --line-height-loose: 2;
+
+  /* Spacing - Based on 8px unit */
+  --spacing-unit: 8px;
+  --spacing-0: 0;
+  --spacing-1: 0.25rem;   /* 4px */
+  --spacing-2: 0.5rem;    /* 8px */
+  --spacing-3: 0.75rem;   /* 12px */
+  --spacing-4: 1rem;      /* 16px */
+  --spacing-5: 1.25rem;   /* 20px */
+  --spacing-6: 1.5rem;    /* 24px */
+  --spacing-7: 1.75rem;   /* 28px */
+  --spacing-8: 2rem;      /* 32px */
+  --spacing-10: 2.5rem;   /* 40px */
+  --spacing-12: 3rem;     /* 48px */
+  --spacing-16: 4rem;     /* 64px */
+  --spacing-20: 5rem;     /* 80px */
+
+  /* Border Radius - NO ROUNDING */
+  --radius-none: 0;
+  --radius-sm: 0;
+  --radius-base: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
+  --radius-full: 0;
+
+  /* Shadows */
+  --shadow-none: none;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-base: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.35);
+  --shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.4);
+
+  /* Transitions */
+  --transition-fast: 150ms ease-in-out;
+  --transition-base: 200ms ease-in-out;
+  --transition-slow: 300ms ease-in-out;
+
+  /* Z-Index Scale */
+  --z-hide: -1;
+  --z-base: 0;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal-backdrop: 400;
+  --z-modal: 500;
+  --z-tooltip: 600;
+
+  /* Touch Target (Accessibility) */
+  --touch-target: 44px;
+
+  /* Breakpoints (for reference, used in media queries) */
+  --breakpoint-mobile: 0;
+  --breakpoint-tablet: 768px;
+  --breakpoint-desktop: 1024px;
+
+  /* Layout */
+  --max-content-width: 1200px;
+  --gutter-mobile: 1rem;
+  --gutter-tablet: 1.5rem;
+  --gutter-desktop: 2rem;
+
+  /* Grid Columns (mobile first) */
+  --columns-mobile: 1;
+  --columns-tablet: 2;
+  --columns-desktop: 3;
+}
+
+/* Light Mode - Rose Pine Dawn */
+@media (prefers-color-scheme: light) {
+  :root {
+    /* Colors - Rose Pine Dawn Palette */
+    --color-accent: #d9484f;
+    --color-accent-dark: #b7334d;
+    --color-accent-light: #d7677a;
+
+    --color-white: #faf4ed;
+    --color-black: #575279;
+    --color-gray-900: #575279;
+    --color-gray-800: #6e6a86;
+    --color-gray-700: #797593;
+    --color-gray-600: #9893a5;
+    --color-gray-500: #9893a5;
+    --color-gray-400: #b8acb5;
+    --color-gray-300: #d8d7dd;
+    --color-gray-200: #e4dce7;
+    --color-gray-100: #f2e9de;
+
+    /* Semantic Colors - Light Mode */
+    --color-text-primary: #575279;
+    --color-text-secondary: #797593;
+    --color-text-muted: #9893a5;
+    --color-text-inverse: #faf4ed;
+
+    --color-bg-primary: #faf4ed;
+    --color-bg-secondary: #f2e9de;
+    --color-bg-tertiary: #fffaf3;
+
+    --color-border: #d8d7dd;
+    --color-border-light: #e4dce7;
+
+    --color-focus: #d9484f;
+    --color-focus-ring: rgba(217, 72, 79, 0.2);
+
+    /* Rose Pine Dawn Accent Colors */
+    --color-love: #d7677a;
+    --color-gold: #ea9d34;
+    --color-rose: #d9484f;
+    --color-pine: #287980;
+    --color-foam: #56949f;
+    --color-iris: #9d84b7;
+  }
+}
+
+/* High Contrast Mode (Accessibility) */
+@media (prefers-contrast: more) {
+  :root {
+    --shadow-sm: none;
+    --shadow-base: 1px 1px 0 rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* Reduced Motion (Accessibility) */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition-fast: 0ms ease-in-out;
+    --transition-base: 0ms ease-in-out;
+    --transition-slow: 0ms ease-in-out;
+  }
+}

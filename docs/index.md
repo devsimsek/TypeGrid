@@ -27,10 +27,22 @@ Then visit `http://localhost:8000` in your browser.
 
 TypeGrid reads from `data/typegrid.json` on load. This file acts as your database and API. 
 
-To add a new project:
+To add a new project manually:
 1. Open `data/typegrid.json`.
 2. Add a new object to the `projects` array.
 3. Refresh the page.
+
+### Auto-Generating the API (Local Images)
+
+If you host your images locally in the `/images/` directory (grouped into subdirectories for each project), you can use the built-in API Generator to automatically populate your portfolio!
+
+1. Place your project folders inside `/images/` (e.g., `/images/my-trip/photo1.jpg`).
+2. Install the generator dependencies and run the script:
+   ```bash
+   npm install
+   npm run generate
+   ```
+3. The generator will scan your directories, extract EXIF data (Camera, Lens, Date), calculate exact dimensions, and rewrite your `typegrid.json` automatically while preserving your global site settings.
 
 Alpine.js handles the routing, rendering, and state management completely client-side.
 

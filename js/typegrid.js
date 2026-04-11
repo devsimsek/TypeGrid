@@ -293,7 +293,10 @@ document.addEventListener('alpine:init', () => {
     
     handleKeydown(e) {
       // Ignore if user is typing in an input
-      if (['INPUT', 'TEXTAREA'].includes(e.target.tagName) || e.ctrlKey || e.metaKey || e.altKey) {
+      if (e.target && e.target.tagName && ['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
+        return;
+      }
+      if (e.ctrlKey || e.metaKey || e.altKey) {
         return;
       }
       

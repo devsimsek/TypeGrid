@@ -6,7 +6,7 @@
     "lang": "en-US",
     "favicon": "/assets/favicon.ico",
     "accent": "#ea9a97",
-    "version": "3.1.0",
+    "version": "3.1.1",
     "created_at": "2025-01-01T00:00:00Z",
     "open_graph": {
       "title": "Lens & Light — Photography Portfolio",
@@ -861,6 +861,6 @@
   },
   "meta": {
     "next_project_id": 15,
-    "version": "3.1.0"
+    "version": "3.1.1"
   }
 }

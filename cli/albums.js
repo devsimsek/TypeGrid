@@ -412,10 +412,19 @@ async function showImagePreview(index) {
     // Attempt to render image if it's a local file path
     if (img.url && (img.url.startsWith('/images/') || img.url.startsWith('./images/'))) {
       const fullPath = path.join(publicImagesPath, img.url);
-      if (fs.existsSync(fullPath)) {
+      
+      let renderPath = fullPath;
+      if (img.url_thumb) {
+        const thumbPath = path.join(publicImagesPath, img.url_thumb);
+        if (fs.existsSync(thumbPath)) {
+          renderPath = thumbPath;
+        }
+      }
+
+      if (fs.existsSync(renderPath)) {
         const availableWidth = Math.max(10, previewBox.width - 4);
         const availableHeight = Math.max(5, previewBox.height - 10);
-        const imageStr = await terminalImage.file(fullPath, { width: availableWidth, height: availableHeight });
+        const imageStr = await terminalImage.file(renderPath, { width: availableWidth, height: availableHeight });
         previewBox.setContent(metaText + imageStr);
       } else {
         previewBox.setContent(metaText + '[Local file not found]\nPath: ' + fullPath);

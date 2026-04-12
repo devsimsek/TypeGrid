@@ -9,7 +9,7 @@ const blessed = require('blessed');
 const IMAGES_DIR = path.join(__dirname, '../images');
 const DATA_FILE = path.join(__dirname, '../data/typegrid.json');
 const VALID_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.avif']);
-const TARGET_VERSION = "3.1.3";
+const TARGET_VERSION = "3.1.4";
 
 // --- Helpers ---
 function slugify(text) {
@@ -38,6 +38,8 @@ function runMigrations(apiData) {
           if (!img.tags) img.tags = [];
           if (img.lens === undefined) img.lens = null;
           if (img.camera === undefined) img.camera = null;
+          if (img.url && img.url.startsWith('/images/')) img.url = '.' + img.url;
+          if (img.url_thumb && img.url_thumb.startsWith('/images/')) img.url_thumb = '.' + img.url_thumb;
         });
       });
     }
@@ -238,7 +240,7 @@ async function runWizard() {
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      const relativeUrl = `/images/${entry.name}/${file}`;
+      const relativeUrl = `./images/${entry.name}/${file}`;
 
       const existingImage = projectImages.find(img => img.filename && img.filename.toLowerCase() === file.toLowerCase());
       if (existingImage) {
@@ -255,7 +257,7 @@ async function runWizard() {
             screen.render();
           }
           if (!existingImage.url_thumb) {
-            existingImage.url_thumb = `/images/${entry.name}/${thumbName}`;
+            existingImage.url_thumb = `./images/${entry.name}/${thumbName}`;
           }
           if (!existingImage.color) {
             const imgStats = await sharp(path.join(projectDir, file)).stats();
@@ -286,7 +288,7 @@ async function runWizard() {
         if (!fs.existsSync(thumbPath)) {
           await sharp(filePath).resize({ width: 1200, withoutEnlargement: true }).webp({ quality: 80 }).toFile(thumbPath);
         }
-        url_thumb = `/images/${entry.name}/${thumbName}`;
+        url_thumb = `./images/${entry.name}/${thumbName}`;
 
         const imgStats = await sharp(filePath).stats();
         if (imgStats && imgStats.dominant) {

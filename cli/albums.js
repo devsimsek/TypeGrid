@@ -48,6 +48,14 @@ function saveData() {
   fs.writeFileSync(dataPath, JSON.stringify(typegridData, null, 2), 'utf-8');
 }
 
+if (typegridData.projects) {
+  typegridData.projects.forEach(p => {
+    p.images.forEach(img => {
+      if (img.url && img.url.startsWith('/images/')) { img.url = '.' + img.url; needsSave = true; }
+      if (img.url_thumb && img.url_thumb.startsWith('/images/')) { img.url_thumb = '.' + img.url_thumb; needsSave = true; }
+    });
+  });
+}
 if (needsSave) saveData();
 
 // Create screen
@@ -657,7 +665,7 @@ async function handleScanExif() {
       }
       
       const folderName = path.basename(path.dirname(targetPath));
-      img.url_thumb = `/images/${folderName}/${thumbName}`;
+      img.url_thumb = `./images/${folderName}/${thumbName}`;
       updated = true;
 
       const imgStats = await sharp(targetPath).stats();
@@ -738,7 +746,7 @@ function handleAutoscan() {
 
   const folderName = path.basename(albumFolder);
   const unmapped = files.filter(f => {
-    const relUrl = `/images/${folderName}/${f}`;
+    const relUrl = `./images/${folderName}/${f}`;
     return !existingUrls.includes(relUrl) && !existingFilenames.includes(f);
   });
 
@@ -763,7 +771,7 @@ function handleAutoscan() {
       if (!err && val) {
         const fullPath = path.join(albumFolder, file);
         const folderName = path.basename(albumFolder);
-        const relUrl = `/images/${folderName}/${file}`;
+        const relUrl = `./images/${folderName}/${file}`;
         
         let width = 1920, height = 1080;
         try { const dims = sizeOf(fullPath); width = dims.width; height = dims.height; } catch(e) {}
@@ -777,7 +785,7 @@ function handleAutoscan() {
           if (!fs.existsSync(thumbPath)) {
             await sharp(fullPath).resize({ width: 1200, withoutEnlargement: true }).webp({ quality: 80 }).toFile(thumbPath);
           }
-          url_thumb = `/images/${folderName}/${thumbName}`;
+          url_thumb = `./images/${folderName}/${thumbName}`;
 
           const imgStats = await sharp(fullPath).stats();
           if (imgStats && imgStats.dominant) {

@@ -25,7 +25,7 @@ Then visit `http://localhost:8000` in your browser.
 
 ## Editing Your Portfolio
 
-TypeGrid reads from `data/typegrid.json` on load. This file acts as your database and API. 
+TypeGrid reads from `data/typegrid.json` on load. This file acts as your database and API. Read the [API Reference](api.md) for the complete JSON schema.
 
 To add a new project manually:
 1. Open `data/typegrid.json`.
@@ -48,4 +48,4 @@ Alpine.js handles the routing, rendering, and state management completely client
 
 ---
 
-Explore the [Features](features.md) and [Architecture](architecture.md) pages for deep dives into TypeGrid's capabilities and structural design.
+Explore the [Features](features.md), [Architecture](architecture.md), and [API Reference](api.md) pages for deep dives into TypeGrid's capabilities and structural design.

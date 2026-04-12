@@ -293,8 +293,9 @@
           <span class="meta-item"><span class="meta-label">File:</span> <code x-text="$store.lightbox.currentImage?.filename"></code></span>
           <span class="meta-item" x-show="$store.lightbox.currentImage?.width"><span class="meta-label">Dimensions:</span> <span x-text="`${$store.lightbox.currentImage?.width}×${$store.lightbox.currentImage?.height}px`"></span></span>
           <span class="meta-item" x-show="$store.lightbox.currentImage?.size"><span class="meta-label">Size:</span> <span x-text="formatSize($store.lightbox.currentImage?.size)"></span></span>
-          <span class="meta-item" x-show="currentProject?.camera"><span class="meta-label">Camera:</span> <span x-text="currentProject?.camera"></span></span>
-          <span class="meta-item" x-show="currentProject?.lens"><span class="meta-label">Lens:</span> <span x-text="currentProject?.lens"></span></span>
+          <span class="meta-item" x-show="$store.lightbox.currentImage?.camera || currentProject?.camera"><span class="meta-label">Camera:</span> <span x-text="$store.lightbox.currentImage?.camera || currentProject?.camera"></span></span>
+          <span class="meta-item" x-show="$store.lightbox.currentImage?.lens || currentProject?.lens"><span class="meta-label">Lens:</span> <span x-text="$store.lightbox.currentImage?.lens || currentProject?.lens"></span></span>
+          <span class="meta-item" x-show="$store.lightbox.currentImage?.tags && $store.lightbox.currentImage.tags.length > 0"><span class="meta-label">Tags:</span> <span x-text="$store.lightbox.currentImage.tags.join(', ')"></span></span>
         </div>
         
         <div class="lightbox-actions flex gap-2 pt-4" style="flex-wrap: wrap;">

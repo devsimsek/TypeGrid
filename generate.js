@@ -2,25 +2,20 @@ const fs = require('fs');
 const path = require('path');
 const sizeOf = require('image-size');
 const exifr = require('exifr');
+const readline = require('readline');
 
 const IMAGES_DIR = path.join(__dirname, 'images');
 const DATA_FILE = path.join(__dirname, 'data', 'typegrid.json');
-
-// Ensure directories exist
-if (!fs.existsSync(IMAGES_DIR)) {
-  fs.mkdirSync(IMAGES_DIR, { recursive: true });
-  console.log(`[Info] Created ${IMAGES_DIR}. Please add subdirectories with images to generate projects.`);
-  process.exit(0);
-}
-
-if (!fs.existsSync(path.join(__dirname, 'data'))) {
-  fs.mkdirSync(path.join(__dirname, 'data'), { recursive: true });
-}
-
-// Supported image extensions
 const VALID_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp']);
+const TARGET_VERSION = "2.1.0";
 
-// Helper to generate a slug from a string
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+const question = (query) => new Promise(resolve => rl.question(query, resolve));
+
 function slugify(text) {
   return text.toString().toLowerCase()
     .replace(/\s+/g, '-')
@@ -30,37 +25,74 @@ function slugify(text) {
     .replace(/-+$/, '');
 }
 
-// Generate the API
-async function generateAPI() {
-  console.log('[Info] Scanning local images directory...');
+/**
+ * Migration engine to gracefully upgrade older TypeGrid data shapes.
+ */
+function runMigrations(apiData) {
+  if (!apiData.meta) apiData.meta = { version: "1.0.0" };
+  let version = apiData.meta.version;
+
+  if (version === "1.0.0" || version === "2.0.0") {
+    console.log(`[Migration] Upgrading database from v${version} to v${TARGET_VERSION}...`);
+    
+    if (apiData.projects) {
+      apiData.projects.forEach(p => {
+        p.images.forEach(img => {
+          // V2.1.0 introduces image-level tags, cameras, and lenses
+          if (!img.tags) img.tags = [];
+          if (img.lens === undefined) img.lens = null;
+          if (img.camera === undefined) img.camera = null;
+        });
+      });
+    }
+    
+    apiData.meta.version = TARGET_VERSION;
+    console.log(`[Migration] Successfully upgraded to v${TARGET_VERSION}.`);
+  }
   
-  // Load existing config to preserve site settings if it exists
+  return apiData;
+}
+
+async function generateAPI() {
+  console.log('\n=== TypeGrid Interactive API Generator ===\n');
+
+  if (!fs.existsSync(IMAGES_DIR)) {
+    fs.mkdirSync(IMAGES_DIR, { recursive: true });
+    console.log(`[Info] Created ${IMAGES_DIR}. Please add subdirectories with images to generate projects.`);
+    rl.close();
+    return;
+  }
+
+  if (!fs.existsSync(path.join(__dirname, 'data'))) {
+    fs.mkdirSync(path.join(__dirname, 'data'), { recursive: true });
+  }
+
   let apiData = {};
   if (fs.existsSync(DATA_FILE)) {
     try {
       apiData = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
-      console.log('[Info] Found existing typegrid.json, preserving site settings.');
+      console.log('[Info] Found existing typegrid.json. Checking migrations...');
+      apiData = runMigrations(apiData);
     } catch (e) {
-      console.warn('[Warn] Existing typegrid.json is invalid, starting fresh.');
+      console.warn('[Warn] Existing typegrid.json is invalid. Starting fresh.');
     }
   }
 
-  // Base Data Structure
   const site = apiData.site || {
     title: "Local TypeGrid Portfolio",
     description: "Auto-generated local image gallery.",
     base_url: "",
     lang: "en-US",
     accent: "#ea9a97",
-    version: "2.0.0",
+    version: TARGET_VERSION,
     created_at: new Date().toISOString(),
     authors: []
   };
 
-  const projects = [];
+  const existingProjects = apiData.projects || [];
+  const processedProjects = [];
   const entries = fs.readdirSync(IMAGES_DIR, { withFileTypes: true });
 
-  // Process subdirectories as projects
   for (const entry of entries) {
     if (!entry.isDirectory()) continue;
 
@@ -70,30 +102,80 @@ async function generateAPI() {
 
     if (files.length === 0) continue;
 
-    console.log(`[Process] Building project: ${entry.name} (${files.length} images)`);
+    const slug = slugify(entry.name);
+    let title = entry.name.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+    let project = existingProjects.find(p => p.id === slug);
+    let isNewProject = !project;
+
+    if (isNewProject) {
+      console.log(`\n[+] Discovered New Album: "${title}"`);
+      const tagsInput = await question(`    Enter comma-separated tags for this album (or press Enter to skip): `);
+      const tags = tagsInput.split(',').map(s => s.trim()).filter(Boolean);
+      
+      project = {
+        id: slug,
+        slug: slug,
+        title: title,
+        year: new Date().getFullYear(),
+        tags: tags,
+        description: `Gallery for ${title}.`,
+        excerpt: `${files.length} photos`,
+        camera: null,
+        lens: null,
+        favorite: false,
+        images: [],
+        seo: {
+          meta_title: `${title} — ${site.title}`,
+          meta_description: `Viewing gallery: ${title}`,
+          canonical_url: `/projects/${slug}/`
+        },
+        open_graph: {
+          title: title,
+          description: `Gallery for ${title}.`,
+          image: ''
+        },
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        draft: false,
+        url: `/projects/${slug}/`
+      };
+    } else {
+      console.log(`\n[~] Existing Album Found: "${project.title}"`);
+    }
 
     const projectImages = [];
-    let projectCamera = '';
-    let projectLens = '';
-    let projectYear = new Date().getFullYear();
+    let albumCamera = project.camera;
+    let albumLens = project.lens;
+    let albumYear = project.year;
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      const filePath = path.join(projectDir, file);
       const relativeUrl = `./images/${entry.name}/${file}`;
       
+      // Prevent overwriting existing images
+      const existingImage = project.images.find(img => img.filename === file);
+      
+      if (existingImage) {
+        console.log(`    - [Skip] Image "${file}" already tracked in config.`);
+        projectImages.push(existingImage);
+        continue;
+      }
+
+      console.log(`    - [Process] Reading EXIF for new image "${file}"...`);
+      
+      const filePath = path.join(projectDir, file);
       const stats = fs.statSync(filePath);
-      let dimensions = { width: 1920, height: 1080 }; // Fallback
+      let dimensions = { width: 1920, height: 1080 };
       
       try {
         dimensions = sizeOf(filePath);
       } catch (e) {
-        console.warn(`[Warn] Could not read dimensions for ${file}`);
+        console.warn(`      [Warn] Could not extract dimensions for ${file}`);
       }
 
-      // Extract EXIF
-      let camera = '';
-      let lens = '';
+      let camera = null;
+      let lens = null;
       let date = stats.birthtime;
 
       try {
@@ -101,77 +183,87 @@ async function generateAPI() {
         if (exif) {
           const make = exif.Make || '';
           const model = exif.Model || '';
-          camera = [make, model].filter(Boolean).join(' ').trim();
-          lens = exif.LensModel || '';
+          camera = [make, model].filter(Boolean).join(' ').trim() || null;
+          lens = exif.LensModel || null;
           date = exif.CreateDate || exif.DateTimeOriginal || date;
         }
       } catch (e) {
-        // EXIF parsing failed, ignore silently
+        // Silently skip if EXIF is missing/corrupted
       }
 
-      // Track project-level meta (use first image's EXIF as default)
-      if (i === 0) {
-        projectCamera = camera;
-        projectLens = lens;
-        projectYear = new Date(date).getFullYear();
+      // Use the first new image to seed album defaults if they are blank
+      if (isNewProject && i === 0) {
+         albumCamera = albumCamera || camera;
+         albumLens = albumLens || lens;
+         albumYear = new Date(date).getFullYear() || albumYear;
       }
 
       projectImages.push({
-        id: `img-${slugify(entry.name)}-${i}`,
+        id: `img-${slug}-${Date.now()}-${i}`,
         filename: file,
         url: relativeUrl,
         width: dimensions.width,
         height: dimensions.height,
         size: stats.size,
-        primary: i === 0
+        primary: false,
+        tags: [], // New images default to empty tags
+        camera: camera,
+        lens: lens
       });
     }
 
-    const slug = slugify(entry.name);
-    const title = entry.name.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    // Guarantee at least one primary image for thumbnails
+    if (projectImages.length > 0 && !projectImages.some(img => img.primary)) {
+      projectImages[0].primary = true;
+    }
 
-    projects.push({
-      id: slug,
-      slug: slug,
-      title: title,
-      year: projectYear || new Date().getFullYear(),
-      tags: [slug.split('-')[0]],
-      description: `Gallery for ${title}.`,
-      excerpt: `${files.length} photos`,
-      camera: projectCamera || null,
-      lens: projectLens || null,
-      favorite: false,
-      images: projectImages,
-      seo: {
-        meta_title: `${title} — ${site.title}`,
-        meta_description: `Viewing gallery: ${title}`,
-        canonical_url: `/projects/${slug}/`
-      },
-      open_graph: {
-        title: title,
-        description: `Gallery for ${title}.`,
-        image: projectImages[0].url
-      },
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      draft: false,
-      url: `/projects/${slug}/`
-    });
+    // Merge changes
+    project.images = projectImages;
+    project.camera = project.camera || albumCamera;
+    project.lens = project.lens || albumLens;
+    project.year = albumYear;
+    project.excerpt = `${projectImages.length} photos`;
+    
+    if (isNewProject && projectImages.length > 0) {
+      project.open_graph.image = projectImages[0].url;
+    }
+
+    processedProjects.push(project);
   }
 
-  // Sort projects by year descending
-  projects.sort((a, b) => b.year - a.year);
+  // Handle deletions: Ask user if a project in JSON no longer exists in /images/ directory
+  const finalProjects = [];
+  for (const existing of existingProjects) {
+    const existsOnDisk = processedProjects.some(p => p.id === existing.id);
+    if (!existsOnDisk) {
+      const keep = await question(`\n[Collision] Album "${existing.title}" is in config but missing from /images/ directory.\nKeep it in the config anyway? (Y/n): `);
+      if (keep.trim().toLowerCase() !== 'n') {
+        finalProjects.push(existing);
+      } else {
+        console.log(`    -> Removed "${existing.title}" from configuration.`);
+      }
+    }
+  }
+  
+  for (const processed of processedProjects) {
+    if (!finalProjects.some(p => p.id === processed.id)) {
+      finalProjects.push(processed);
+    }
+  }
 
-  // Compile final JSON payload
+  // Sort logically by year
+  finalProjects.sort((a, b) => b.year - a.year);
+
+  // Re-assemble TypeGrid API
   const finalJSON = {
     site: site,
-    projects: projects,
+    projects: finalProjects,
     collections: apiData.collections || [],
     posts: apiData.posts || [],
     pagination: {
       page_size: apiData.pagination?.page_size || 12,
-      total_projects: projects.length,
-      total_pages: Math.ceil(projects.length / (apiData.pagination?.page_size || 12)),
+      total_projects: finalProjects.length,
+      total_pages: Math.ceil(finalProjects.length / (apiData.pagination?.page_size || 12)),
       pages: []
     },
     socials: apiData.socials || { links: [], share_templates: {} },
@@ -182,16 +274,19 @@ async function generateAPI() {
       ui: { monospace_font: "monospace", accent_color: site.accent }
     },
     meta: {
-      next_project_id: projects.length + 1,
-      version: "2.0.0"
+      next_project_id: finalProjects.length + 1,
+      version: TARGET_VERSION
     }
   };
 
   fs.writeFileSync(DATA_FILE, JSON.stringify(finalJSON, null, 2));
-  console.log(`[Success] Generated API with ${projects.length} local projects saved to ${DATA_FILE}`);
+  console.log(`\n[Success] API successfully generated! Tracked ${finalProjects.length} albums in ${DATA_FILE}\n`);
+  
+  rl.close();
 }
 
 generateAPI().catch(err => {
-  console.error('[Error] Failed to generate API:', err);
+  console.error('\n[Error] Failed to generate API:', err);
+  rl.close();
   process.exit(1);
 });

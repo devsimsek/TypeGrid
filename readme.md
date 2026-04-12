@@ -1,8 +1,5 @@
 ## TypeGrid
 
-Author: devsimsek
-Date: April 12, 2026
-
 ### Overview
 
 TypeGrid is a static, minimal photographers' portfolio with a monospace, retro-UI aesthetic. The app reads a single JSON "API" (typegrid.json) and renders per-project pages with SEO/Open Graph and social share support. Client-side edits export a new JSON (and optional ZIP with images). Pagination is supported per-project (page files optional).

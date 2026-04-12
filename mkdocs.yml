@@ -18,14 +18,6 @@ nav:
   - Features: features.md
   - Architecture: architecture.md
   - API Reference: api.md
-#   - Block System: block-system.md
-#   - Internationalization: i18n.md
-#   - Caching: caching.md
-#   - Error Codes: error-codes.md
-#   - Testing: testing.md
-#   - Deployment: deployment.md
-#   - Migration Guide: migration-guide.md
-#   - SDK Integration: sdk-integration.md
 
 markdown_extensions:
   admonition:

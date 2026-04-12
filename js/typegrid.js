@@ -188,6 +188,10 @@ document.addEventListener('alpine:init', () => {
     currentProject: null,
     currentFilter: null,
     
+    // Sorting state
+    sortField: 'year',
+    sortOrder: 'desc',
+    
     // Pagination state
     currentPage: 1,
     totalPages: 1,
@@ -209,7 +213,15 @@ document.addEventListener('alpine:init', () => {
           this.site = window.dataLoader.getSite() || {};
           this.authors = window.dataLoader.getAuthors() || [];
           this.socials = window.dataLoader.getSocials() || {};
+          
+          const settings = window.dataLoader.getSettings();
+          if (settings && settings.sort) {
+            this.sortField = settings.sort.field || 'year';
+            this.sortOrder = settings.sort.order || 'desc';
+          }
+          
           this.projects = window.dataLoader.getProjects() || [];
+          this.applySorting();
         }
         
         this.handleRoute();
@@ -287,6 +299,26 @@ document.addEventListener('alpine:init', () => {
       if (this.currentPage > 1) {
         window.location.hash = `#/?page=${this.currentPage - 1}`;
       }
+    },
+    
+    applySorting() {
+      // Sort projects using dataLoader
+      this.projects = window.dataLoader.sortProjects(
+        window.dataLoader.getProjects(),
+        this.sortField,
+        this.sortOrder
+      );
+      // Update dataLoader's internal projects array so pagination works correctly
+      if (window.dataLoader.data) {
+        window.dataLoader.data.projects = this.projects;
+      }
+    },
+    
+    changeSort(field, order) {
+      this.sortField = field;
+      this.sortOrder = order;
+      this.applySorting();
+      this.handleRoute(); // Refresh current view
     },
     
     // --- Vim-like Keyboard Navigation ---

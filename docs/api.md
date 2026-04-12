@@ -56,6 +56,7 @@ An array of projects. Each project generates a detail page and a card in the gri
 | `id` / `slug` | `string` | Unique identifier (e.g., `urban-geometry`). |
 | `title` | `string` | Display title. |
 | `year` | `integer` | Year the project was shot. |
+| `place` | `integer` | (Optional) Numeric value used for custom curated sorting (lower numbers appear first). |
 | `tags` | `array[string]` | Tags for categorization and filtering. |
 | `description` | `string` | Long-form description shown on the project page. |
 | `excerpt` | `string` | Short description used on grid cards and SEO tags. |

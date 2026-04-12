@@ -7,7 +7,7 @@ const readline = require('readline');
 const IMAGES_DIR = path.join(__dirname, 'images');
 const DATA_FILE = path.join(__dirname, 'data', 'typegrid.json');
 const VALID_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp']);
-const TARGET_VERSION = "2.1.0";
+const TARGET_VERSION = "2.2.0";
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -32,11 +32,14 @@ function runMigrations(apiData) {
   if (!apiData.meta) apiData.meta = { version: "1.0.0" };
   let version = apiData.meta.version;
 
-  if (version === "1.0.0" || version === "2.0.0") {
+  if (version === "1.0.0" || version === "2.0.0" || version === "2.1.0") {
     console.log(`[Migration] Upgrading database from v${version} to v${TARGET_VERSION}...`);
     
     if (apiData.projects) {
       apiData.projects.forEach(p => {
+        // V2.2.0 introduces album placement order
+        if (p.place === undefined) p.place = null;
+        
         p.images.forEach(img => {
           // V2.1.0 introduces image-level tags, cameras, and lenses
           if (!img.tags) img.tags = [];
@@ -113,11 +116,15 @@ async function generateAPI() {
       const tagsInput = await question(`    Enter comma-separated tags for this album (or press Enter to skip): `);
       const tags = tagsInput.split(',').map(s => s.trim()).filter(Boolean);
       
+      const placeInput = await question(`    Enter album placement order (number, or press Enter to skip): `);
+      const place = placeInput.trim() ? parseInt(placeInput, 10) : null;
+      
       project = {
         id: slug,
         slug: slug,
         title: title,
         year: new Date().getFullYear(),
+        place: place,
         tags: tags,
         description: `Gallery for ${title}.`,
         excerpt: `${files.length} photos`,
@@ -251,8 +258,24 @@ async function generateAPI() {
     }
   }
 
-  // Sort logically by year
-  finalProjects.sort((a, b) => b.year - a.year);
+  // Sort logically based on config or fallback to place/year
+  const sortField = apiData.settings?.sort?.field || "year";
+  const sortOrder = apiData.settings?.sort?.order || "desc";
+
+  finalProjects.sort((a, b) => {
+    let valA = a[sortField];
+    let valB = b[sortField];
+    
+    // Special fallback handling if values are missing or null
+    if (valA === null || valA === undefined) valA = sortOrder === "asc" ? Infinity : -Infinity;
+    if (valB === null || valB === undefined) valB = sortOrder === "asc" ? Infinity : -Infinity;
+
+    if (valA < valB) return sortOrder === "asc" ? -1 : 1;
+    if (valA > valB) return sortOrder === "asc" ? 1 : -1;
+    
+    // Tie-breaker: Always fallback to year descending
+    return b.year - a.year;
+  });
 
   // Re-assemble TypeGrid API
   const finalJSON = {

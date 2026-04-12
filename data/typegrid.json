@@ -845,8 +845,8 @@
       "columns_mobile": 1
     },
     "sort": {
-      "field": "year",
-      "order": "desc"
+      "field": "place",
+      "order": "asc"
     },
     "show_thumbnails": true,
     "ui": {

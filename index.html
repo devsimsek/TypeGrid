@@ -89,13 +89,30 @@
     <div x-show="!isLoading && (route === 'grid' || route === 'tag')" x-cloak>
       <div class="container">
         
-        <!-- Tag Filter Header -->
-        <div x-show="route === 'tag'" class="mb-6">
-          <nav class="breadcrumb" aria-label="Breadcrumb">
-            <a href="#/">Grid</a> <span>/</span> <span x-text="`Tag: ${currentFilter}`"></span>
-          </nav>
-          <h1>Tagged: <code x-text="currentFilter"></code></h1>
-          <p class="text-muted mb-6" x-text="`${paginatedProjects.length} project(s) found`"></p>
+        <!-- Header & Sorting -->
+        <div class="flex justify-between items-end mb-6 border-b pb-4">
+          <div>
+            <div x-show="route === 'tag'">
+              <nav class="breadcrumb mb-2" aria-label="Breadcrumb">
+                <a href="#/">Grid</a> <span>/</span> <span x-text="`Tag: ${currentFilter}`"></span>
+              </nav>
+              <h1 class="mb-0" style="margin-bottom: 0;">Tagged: <code x-text="currentFilter"></code></h1>
+              <p class="text-muted mb-0 mt-2" style="margin-bottom: 0;" x-text="`${paginatedProjects.length} project(s) found`"></p>
+            </div>
+            <div x-show="route === 'grid'">
+              <h2 class="mb-0" style="margin-bottom: 0;">Projects</h2>
+            </div>
+          </div>
+          
+          <div class="sort-controls flex items-center gap-2">
+            <span class="text-sm text-muted">Sort:</span>
+            <select class="text-sm" style="padding: 4px 8px; cursor: pointer;" @change="changeSort($event.target.value.split(',')[0], $event.target.value.split(',')[1])">
+              <option value="place,asc" :selected="sortField === 'place' && sortOrder === 'asc'">Curated</option>
+              <option value="year,desc" :selected="sortField === 'year' && sortOrder === 'desc'">Latest</option>
+              <option value="year,asc" :selected="sortField === 'year' && sortOrder === 'asc'">Oldest</option>
+              <option value="title,asc" :selected="sortField === 'title' && sortOrder === 'asc'">A-Z</option>
+            </select>
+          </div>
         </div>
 
         <div class="grid">

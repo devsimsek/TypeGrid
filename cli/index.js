@@ -45,7 +45,8 @@ function showMainMenu() {
       '1. Manage Albums',
       '2. Site Configuration',
       '3. Auto-Generate API',
-      '4. Exit'
+      '4. Check for Updates',
+      '5. Exit'
     ],
     style: {
       selected: {
@@ -78,6 +79,9 @@ function showMainMenu() {
         script = 'generate.js';
         break;
       case 3:
+        script = 'update.js';
+        break;
+      case 4:
         process.exit(0);
         break;
     }

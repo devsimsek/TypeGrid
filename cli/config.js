@@ -56,7 +56,7 @@ const categoryList = blessed.list({
   keys: true, vi: true, mouse: true, border: { type: 'line' },
   style: { fg: 'white', selected: { bg: '#ea9a97', fg: 'black' }, border: { fg: '#ea9a97' } },
   label: ' Configuration ',
-  items: ['Site Details', 'Sorting Configuration', 'Pagination Settings', 'Global Social Links']
+  items: ['Site Details', 'Sorting Configuration', 'Pagination Settings', 'Global Social Links', 'Author Details']
 });
 
 const optionList = blessed.list({
@@ -104,6 +104,11 @@ function renderOptions() {
     apiData.socials.links.forEach(link => {
       opts.push(`[Delete] ${link.platform}: ${link.url}`);
     });
+  } else if (currentCategoryIndex === 4) {
+    const author = (apiData.site.authors && apiData.site.authors[0]) || {};
+    opts.push(`Name: ${author.name || ''}`);
+    opts.push(`URL: ${author.url || ''}`);
+    opts.push(`Avatar: ${author.avatar || ''}`);
   }
   optionList.setItems(opts);
   screen.render();
@@ -181,7 +186,7 @@ optionList.key(['enter', 'e'], () => {
     } else { // Delete
       const linkIdx = idx - 1;
       question.ask(`Delete ${apiData.socials.links[linkIdx].platform} link? (y/n)`, (err, val) => {
-        if (!err && val && val.toLowerCase() === 'y') {
+        if (!err && val) {
           apiData.socials.links.splice(linkIdx, 1);
           saveData();
           renderOptions();
@@ -192,6 +197,22 @@ optionList.key(['enter', 'e'], () => {
         optionList.focus();
       });
     }
+  } else if (currentCategoryIndex === 4) { // Author Details
+    if (!apiData.site.authors) apiData.site.authors = [{}];
+    if (!apiData.site.authors[0]) apiData.site.authors[0] = {};
+    const fields = ['name', 'url', 'avatar'];
+    const labels = ['Author Name', 'Author URL', 'Author Avatar URL'];
+    const field = fields[idx];
+    prompt.input(`Enter ${labels[idx]}:`, apiData.site.authors[0][field] || '', (err, val) => {
+      if (!err && val !== null) {
+        apiData.site.authors[0][field] = val;
+        saveData();
+        renderOptions();
+        optionList.select(idx);
+      } else {
+        screen.render();
+      }
+    });
   }
 });
 

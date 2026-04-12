@@ -42,7 +42,11 @@ If you host your images locally in the `/images/` directory (grouped into subdir
    npm install
    npm run generate
    ```
-3. The generator will scan your directories, extract EXIF data (Camera, Lens, Date), calculate exact dimensions, and rewrite your `typegrid.json` automatically while preserving your global site settings.
+3. The interactive CLI will scan your directories and automatically rewrite your `typegrid.json` by doing the following:
+   - **Extract EXIF Data:** Pulls Camera, Lens, and Date for individual images and calculates exact dimensions.
+   - **Prompt for New Albums:** Asks you to input tags when it discovers a new directory.
+   - **Non-Destructive Updates:** Preserves your existing custom titles, descriptions, SEO overrides, and skips already tracked images.
+   - **Collision Handling:** Prompts for confirmation before deleting albums from the config that no longer exist in the `/images/` directory.
 
 Alpine.js handles the routing, rendering, and state management completely client-side.
 

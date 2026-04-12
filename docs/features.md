@@ -49,3 +49,11 @@ The UI is built from the ground up for mobile devices first.
 ## 🗄️ JSON Data-Driven
 Your entire site is generated from a single `data/typegrid.json` file. 
 There is no database to configure. Simply update the JSON file to add new projects, collections, or change site-wide SEO metadata. TypeGrid handles the rest, automatically paginating large galleries and generating dynamic routes.
+
+## 🛠️ Interactive API Generator CLI
+If you prefer to host images locally, TypeGrid includes a powerful interactive CLI (`npm run generate`) to build your API automatically:
+- **Smart EXIF Extraction**: Automatically extracts Camera, Lens, and Date metadata from your photos.
+- **Non-Destructive**: Never overwrites existing custom titles, descriptions, SEO configurations, or manually added tags.
+- **Interactive Prompts**: Prompts you for tags when it detects a new album folder, and asks for confirmation before removing albums that are missing from the disk.
+- **Image-Level Schemas**: Supports individual image tags, camera, and lens data, gracefully falling back to album-level defaults.
+- **Automated Version Migrations**: Seamlessly upgrades older `typegrid.json` shapes to the latest schema without data loss.

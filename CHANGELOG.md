@@ -5,6 +5,14 @@ All notable changes to TypeGrid will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.4] - 2026-04-14
+
+### Fixed
+- Resolved a critical bug where the `Auto-Generate API` tool wiped out custom image order and rebuilt it alphabetically by discarding existing `typegrid.json` configurations.
+- Fixed the API Generator overwriting custom `excerpt` properties on already existing albums.
+- Added physical file/folder deletion prompts to the TUI `[d]` actions. Previously, deleting an item in the TUI only removed it from JSON, causing the `Auto-Generate API` script to constantly resurrect the deleted items because they still existed on disk.
+
+
 ## [3.0.3] - 2026-04-14
 
 ### Fixed

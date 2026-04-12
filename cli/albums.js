@@ -329,11 +329,45 @@ function handleDeleteAlbum() {
   if (!project) return;
   question.ask(`Are you sure you want to delete album "${project.title}"? (y/n)`, (err, val) => {
     if (!err && val) {
+      let albumFolder = path.join(publicImagesPath, 'images', project.slug || project.id);
+      if (!fs.existsSync(albumFolder)) {
+        const imagesDir = path.join(publicImagesPath, 'images');
+        if (fs.existsSync(imagesDir)) {
+          const slugify = (text) => text.toString().toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-]+/g, '').replace(/\-\-+/g, '-').replace(/^-+/, '').replace(/-+$/, '');
+          const targetSlug = project.slug || project.id;
+          const folders = fs.readdirSync(imagesDir, { withFileTypes: true }).filter(d => d.isDirectory());
+          const matched = folders.find(f => slugify(f.name) === targetSlug);
+          if (matched) {
+            albumFolder = path.join(imagesDir, matched.name);
+          }
+        }
+      }
+
       projects.splice(currentAlbumIndex, 1);
       saveData();
       currentAlbumIndex = Math.max(0, Math.min(currentAlbumIndex, projects.length - 1));
       updateAlbumList();
       showAlbumImages(currentAlbumIndex);
+
+      if (fs.existsSync(albumFolder)) {
+        question.ask(`Also delete the physical folder from disk? (y/n)`, (err2, val2) => {
+          if (!err2 && val2) {
+            try {
+              fs.rmSync(albumFolder, { recursive: true, force: true });
+              toast('Album and folder deleted.');
+            } catch (e) {
+              toast('Album removed, but failed to delete folder.');
+            }
+          } else {
+            toast('Album removed.');
+          }
+          albumList.focus();
+          screen.render();
+        });
+        return;
+      } else {
+        toast('Album removed.');
+      }
     }
     albumList.focus();
     screen.render();
@@ -829,12 +863,38 @@ function handleDeleteImage() {
   const project = projects[currentAlbumIndex];
   if (!project || !project.images || project.images.length === 0) return;
 
+  const img = project.images[currentImageIndex];
+  let targetPath = null;
+  if (img.url && (img.url.startsWith('/images/') || img.url.startsWith('./images/'))) {
+    targetPath = path.join(publicImagesPath, img.url);
+  }
+
   question.ask('Are you sure you want to remove this image from the album? (y/n)', (err, val) => {
     if (!err && val) {
       project.images.splice(currentImageIndex, 1);
       saveData();
       updateAlbumList();
       showAlbumImages(currentAlbumIndex);
+
+      if (targetPath && fs.existsSync(targetPath)) {
+        question.ask('Also delete the physical file from disk? (y/n)', (err2, val2) => {
+          if (!err2 && val2) {
+            try {
+              fs.unlinkSync(targetPath);
+              toast('Image removed and file deleted.');
+            } catch (e) {
+              toast('Image removed, but failed to delete file.');
+            }
+          } else {
+            toast('Image removed from album.');
+          }
+          imageList.focus();
+          screen.render();
+        });
+        return;
+      } else {
+        toast('Image removed from album.');
+      }
     }
     imageList.focus();
     screen.render();

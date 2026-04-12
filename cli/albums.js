@@ -7,6 +7,7 @@ const terminalImageModule = require('terminal-image');
 const terminalImage = terminalImageModule.default || terminalImageModule;
 const sizeOf = require('image-size');
 const exifr = require('exifr');
+const sharp = require('sharp');
 
 const dataPath = path.join(__dirname, '../data/typegrid.json');
 const publicImagesPath = path.join(__dirname, '../'); // To resolve /images/...
@@ -635,8 +636,28 @@ async function handleScanExif() {
   }
 
   try {
-    toast('Scanning EXIF & Size...');
+    toast('Scanning EXIF, Thumbnail & Size...');
     let updated = false;
+
+    try {
+      const parsed = path.parse(targetPath);
+      const thumbName = `${parsed.name}-thumb.webp`;
+      const thumbPath = path.join(path.dirname(targetPath), thumbName);
+      if (!fs.existsSync(thumbPath)) {
+        await sharp(targetPath).resize({ width: 1200, withoutEnlargement: true }).webp({ quality: 80 }).toFile(thumbPath);
+      }
+      
+      const folderName = path.basename(path.dirname(targetPath));
+      img.url_thumb = `/images/${folderName}/${thumbName}`;
+      updated = true;
+
+      const imgStats = await sharp(targetPath).stats();
+      if (imgStats && imgStats.dominant) {
+        const { r, g, b } = imgStats.dominant;
+        img.color = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+      }
+    } catch (e) {}
+
     try {
       const exifData = await exifr.parse(targetPath);
       if (exifData) {
@@ -738,7 +759,24 @@ function handleAutoscan() {
         let width = 1920, height = 1080;
         try { const dims = sizeOf(fullPath); width = dims.width; height = dims.height; } catch(e) {}
         
-        let camera, lens, date;
+
+        let camera, lens, date, color, url_thumb;
+        try {
+          const parsed = path.parse(fullPath);
+          const thumbName = `${parsed.name}-thumb.webp`;
+          const thumbPath = path.join(albumFolder, thumbName);
+          if (!fs.existsSync(thumbPath)) {
+            await sharp(fullPath).resize({ width: 1200, withoutEnlargement: true }).webp({ quality: 80 }).toFile(thumbPath);
+          }
+          url_thumb = `/images/${folderName}/${thumbName}`;
+
+          const imgStats = await sharp(fullPath).stats();
+          if (imgStats && imgStats.dominant) {
+            const { r, g, b } = imgStats.dominant;
+            color = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+          }
+        } catch (e) {}
+
         try {
           const exifData = await exifr.parse(fullPath);
           if (exifData) {
@@ -758,6 +796,8 @@ function handleAutoscan() {
           camera: camera || '',
           lens: lens || '',
           tags: [],
+          color: color,
+          url_thumb: url_thumb,
           primary: project.images.length === 0
         });
         saveData();

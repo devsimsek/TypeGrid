@@ -2,13 +2,14 @@ const fs = require('fs');
 const path = require('path');
 const sizeOf = require('image-size');
 const exifr = require('exifr');
+const sharp = require('sharp');
 const blessed = require('blessed');
 
 // --- Constants & Config ---
 const IMAGES_DIR = path.join(__dirname, '../images');
 const DATA_FILE = path.join(__dirname, '../data/typegrid.json');
 const VALID_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.avif']);
-const TARGET_VERSION = "3.0.5";
+const TARGET_VERSION = "3.1.0";
 
 // --- Helpers ---
 function slugify(text) {
@@ -163,7 +164,7 @@ async function runWizard() {
 
     const projectDir = path.join(IMAGES_DIR, entry.name);
     const files = fs.readdirSync(projectDir)
-      .filter(file => VALID_EXTENSIONS.has(path.extname(file).toLowerCase()));
+      .filter(file => VALID_EXTENSIONS.has(path.extname(file).toLowerCase()) && !file.endsWith("-thumb.webp"));
 
     if (files.length === 0) continue;
     scannedCount++;
@@ -250,9 +251,28 @@ async function runWizard() {
 
       try { dimensions = sizeOf(filePath); } catch (e) {}
 
+
       let camera = null, lens = null, date = stats.birthtime;
+      let color = null, url_thumb = null;
 
       try {
+        const parsed = path.parse(filePath);
+        const thumbName = `${parsed.name}-thumb.webp`;
+        const thumbPath = path.join(projectDir, thumbName);
+        if (!fs.existsSync(thumbPath)) {
+          await sharp(filePath).resize({ width: 1200, withoutEnlargement: true }).webp({ quality: 80 }).toFile(thumbPath);
+        }
+        url_thumb = `/images/${entry.name}/${thumbName}`;
+
+        const imgStats = await sharp(filePath).stats();
+        if (imgStats && imgStats.dominant) {
+          const { r, g, b } = imgStats.dominant;
+          color = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+        }
+      } catch (e) {}
+
+      try {
+
         const exif = await exifr.parse(filePath).catch(() => null);
         if (exif) {
           const make = exif.Make || '';
@@ -279,7 +299,9 @@ async function runWizard() {
         primary: false,
         tags: [],
         camera: camera,
-        lens: lens
+        lens: lens,
+        color: color,
+        url_thumb: url_thumb
       });
     }
 

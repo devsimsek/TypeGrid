@@ -198,10 +198,12 @@
                 :class="{'ring-focus': focusedIndex === index}"
               >
                 <img
-                  :src="project.images.find(img => img.primary)?.url || project.images[0]?.url"
+                  :src="(project.images.find(img => img.primary) || project.images[0])?.url_thumb || (project.images.find(img => img.primary) || project.images[0])?.url"
                   :alt="project.title"
                   class="card-image"
                   loading="lazy"
+                  decoding="async"
+                  :style="`background-color: ${(project.images.find(img => img.primary) || project.images[0])?.color || 'transparent'};`"
                 />
                 <div class="card-content">
                   <h2 class="card-title" x-text="project.title"></h2>
@@ -287,9 +289,11 @@
                   title="Click to view fullscreen"
                 >
                   <img
-                    :src="img.url"
+                    :src="img.url_thumb || img.url"
                     :alt="img.filename"
                     loading="lazy"
+                    decoding="async"
+                    :style="`background-color: ${img.color || 'transparent'};`"
                     :width="img.width"
                     :height="img.height"
                   />

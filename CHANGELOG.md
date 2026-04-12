@@ -5,6 +5,14 @@ All notable changes to TypeGrid will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2026-04-14
+
+### Added
+- **Performance:** Integrated `sharp` into the CLI to automatically generate ultra-fast `1200px` WebP thumbnails for all local images.
+- **Performance:** Integrated dominant color extraction to provide beautifully seamless `background-color` placeholders while full images load.
+- **Frontend:** Updated the portfolio grid and project list to utilize lazy-loading (`loading="lazy"`), asynchronous decoding (`decoding="async"`), and the new WebP thumbnails. The original full-res files are now exclusively fetched only when users open the fullscreen Lightbox.
+
+
 ## [3.0.5] - 2026-04-14
 
 ### Fixed

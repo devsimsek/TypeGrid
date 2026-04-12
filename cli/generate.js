@@ -9,7 +9,7 @@ const blessed = require('blessed');
 const IMAGES_DIR = path.join(__dirname, '../images');
 const DATA_FILE = path.join(__dirname, '../data/typegrid.json');
 const VALID_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.avif']);
-const TARGET_VERSION = "3.1.2";
+const TARGET_VERSION = "3.1.3";
 
 // --- Helpers ---
 function slugify(text) {
@@ -220,8 +220,9 @@ async function runWizard() {
 
     const projectImages = [];
     if (!isNewProject && project.images) {
+      const lowerFiles = files.map(f => f.toLowerCase());
       for (const img of project.images) {
-        if (!img.filename || (img.url && img.url.startsWith('http')) || files.includes(img.filename)) {
+        if (!img.filename || (img.url && img.url.startsWith('http')) || lowerFiles.includes(img.filename.toLowerCase())) {
           projectImages.push(img);
         }
       }
@@ -239,8 +240,9 @@ async function runWizard() {
       const file = files[i];
       const relativeUrl = `/images/${entry.name}/${file}`;
 
-      const existingImage = projectImages.find(img => img.filename === file);
+      const existingImage = projectImages.find(img => img.filename && img.filename.toLowerCase() === file.toLowerCase());
       if (existingImage) {
+        existingImage.url = relativeUrl;
         // Retroactively generate missing thumbnails and colors for existing images
         try {
           const parsed = path.parse(path.join(projectDir, file));
@@ -359,13 +361,17 @@ async function runWizard() {
   }
 
   // --- STEP 3: Cleanup Collisions ---
-  logBox.add('\n--- Cleaning up missing albums ---');
+  logBox.add('\n--- Assembling final list and cleaning missing albums ---');
   screen.render();
 
   const finalProjects = [];
+  
+  // 1. Push all existing projects IN THEIR EXACT ORIGINAL ORDER
   for (const existing of existingProjects) {
-    const existsOnDisk = processedProjects.some(p => p.id === existing.id);
-    if (!existsOnDisk) {
+    const processed = processedProjects.find(p => p.id === existing.id);
+    if (processed) {
+      finalProjects.push(processed);
+    } else {
       const keep = await askBool(`Album "${existing.title}" is in config but missing from /images/ directory. Keep it in config anyway? (y/n)`, true);
       if (keep) {
         finalProjects.push(existing);
@@ -377,29 +383,15 @@ async function runWizard() {
     }
   }
 
-  for (const processed of processedProjects) {
-    if (!finalProjects.some(p => p.id === processed.id)) {
-      finalProjects.push(processed);
+  // 2. Insert any BRAND NEW projects at their requested place, or append them
+  const newProjects = processedProjects.filter(p => !existingProjects.some(ep => ep.id === p.id));
+  for (const newProj of newProjects) {
+    if (newProj.place && newProj.place > 0 && newProj.place <= finalProjects.length + 1) {
+      finalProjects.splice(newProj.place - 1, 0, newProj);
+    } else {
+      finalProjects.push(newProj);
     }
   }
-
-  // Sort logically
-  const sortField = apiData.settings?.sort?.field || "place";
-  const sortOrder = apiData.settings?.sort?.order || "asc";
-
-  finalProjects.sort((a, b) => {
-    let valA = a[sortField];
-    let valB = b[sortField];
-
-    if (valA === null || valA === undefined) valA = sortOrder === "asc" ? Infinity : -Infinity;
-    if (valB === null || valB === undefined) valB = sortOrder
- === "asc" ? Infinity : -Infinity;
-
-    if (valA < valB) return sortOrder === "asc" ? -1 : 1;
-    if (valA > valB) return sortOrder === "asc" ? 1 : -1;
-
-    return b.year - a.year;
-  });
 
   // Re-index places strictly to avoid gaps
   finalProjects.forEach((p, idx) => p.place = idx + 1);

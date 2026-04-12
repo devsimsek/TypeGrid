@@ -5,6 +5,13 @@ All notable changes to TypeGrid will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.3] - 2026-04-14
+
+### Fixed
+- Addressed an unhandled case where the Auto-Generate API tool clobbered album array order. Previously, the CLI forcefully sorted albums at the end of the script using fallback logic. The CLI now rigidly retains the exact array order as saved in `typegrid.json` and perfectly inserts newly discovered albums into their prompted placement.
+- Fixed an issue where the generator dropped and resurrected existing images (wiping their metadata) if the filename casing didn't exactly match the file system (e.g. `.JPG` vs `.jpg`). File resolution is now safely case-insensitive.
+
+
 ## [3.1.2] - 2026-04-14
 
 ### Added

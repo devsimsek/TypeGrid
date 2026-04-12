@@ -127,15 +127,19 @@ function renderOptions() {
       opts.push(`[Delete] ${link.platform}: ${link.url}`);
     });
   } else if (currentCategoryIndex === 5) {
-    const author = apiData.site.authors[0];
-    opts.push(`Name: ${author.name || ''}`);
-    opts.push(`URL: ${author.url || ''}`);
-    opts.push(`Avatar: ${author.avatar || ''}`);
+    opts.push(`[+] Add New Author`);
+    apiData.site.authors.forEach((author, i) => {
+      opts.push(`[Author ${i+1}] Name: ${author.name || ''}`);
+      opts.push(`[Author ${i+1}] URL: ${author.url || ''}`);
+      opts.push(`[Author ${i+1}] Avatar: ${author.avatar || ''}`);
+      opts.push(`[Author ${i+1}] [-] Delete Author`);
+    });
   } else if (currentCategoryIndex === 6) {
-    const authorSocials = apiData.site.authors[0].socials;
     opts.push(`[+] Add New Author Link`);
-    authorSocials.forEach(link => {
-      opts.push(`[Delete] ${link.platform}: ${link.url}`);
+    apiData.site.authors.forEach((author, i) => {
+      (author.socials || []).forEach(link => {
+        opts.push(`[Author ${i+1}] [Delete] ${link.platform}: ${link.url}`);
+      });
     });
   }
   optionList.setItems(opts);
@@ -259,48 +263,92 @@ optionList.key(['enter', 'e'], () => {
       });
     }
   } else if (currentCategoryIndex === 5) { // Author Details
-    const fields = ['name', 'url', 'avatar'];
-    const labels = ['Author Name', 'Author URL', 'Author Avatar URL'];
-    const field = fields[idx];
-    prompt.input(`Enter ${labels[idx]}:`, apiData.site.authors[0][field] || '', (err, val) => {
-      if (!err && val !== null) {
-        apiData.site.authors[0][field] = val;
-        saveData();
-        renderOptions();
-        optionList.select(idx);
-      } else {
-        screen.render();
-      }
-    });
-  } else if (currentCategoryIndex === 6) { // Author Socials
-    const authorSocials = apiData.site.authors[0].socials;
-    if (idx === 0) { // Add
-      prompt.input('Enter platform name (e.g. twitter, instagram):', '', (err, platform) => {
-        if (err || !platform) { screen.render(); return; }
-        prompt.input('Enter full URL:', '', (err, url) => {
-          if (!err && url) {
-            authorSocials.push({ platform: platform.toLowerCase(), url });
+    if (idx === 0) {
+      apiData.site.authors.push({ name: '', url: '', avatar: '', socials: [] });
+      saveData();
+      renderOptions();
+      optionList.select(apiData.site.authors.length * 4 - 3);
+    } else {
+      const authorIdx = Math.floor((idx - 1) / 4);
+      const fieldIdx = (idx - 1) % 4;
+      if (fieldIdx === 3) {
+        question.ask(`Delete Author ${authorIdx + 1}? (y/n)`, (err, val) => {
+          if (!err && val) {
+            apiData.site.authors.splice(authorIdx, 1);
             saveData();
             renderOptions();
-            optionList.select(authorSocials.length);
+            optionList.select(0);
+          } else {
+            screen.render();
+          }
+          optionList.focus();
+        });
+      } else {
+        const fields = ['name', 'url', 'avatar'];
+        const labels = ['Author Name', 'Author URL', 'Author Avatar URL'];
+        const field = fields[fieldIdx];
+        prompt.input(`Enter ${labels[fieldIdx]}:`, apiData.site.authors[authorIdx][field] || '', (err, val) => {
+          if (!err && val !== null) {
+            apiData.site.authors[authorIdx][field] = val;
+            saveData();
+            renderOptions();
+            optionList.select(idx);
           } else {
             screen.render();
           }
         });
+      }
+    }
+  } else if (currentCategoryIndex === 6) { // Author Socials
+    if (idx === 0) { // Add
+      if (apiData.site.authors.length === 0) return;
+      let promptStr = 'Enter Author Number (1';
+      if (apiData.site.authors.length > 1) promptStr += `-${apiData.site.authors.length}`;
+      promptStr += '):';
+      prompt.input(promptStr, '1', (err, num) => {
+        const aIdx = parseInt(num, 10) - 1;
+        if (err || isNaN(aIdx) || aIdx < 0 || aIdx >= apiData.site.authors.length) { screen.render(); return; }
+        prompt.input('Enter platform name (e.g. twitter, instagram):', '', (err, platform) => {
+          if (err || !platform) { screen.render(); return; }
+          prompt.input('Enter full URL:', '', (err, url) => {
+            if (!err && url) {
+              if (!apiData.site.authors[aIdx].socials) apiData.site.authors[aIdx].socials = [];
+              apiData.site.authors[aIdx].socials.push({ platform: platform.toLowerCase(), url });
+              saveData();
+              renderOptions();
+              optionList.select(idx);
+            } else {
+              screen.render();
+            }
+          });
+        });
       });
     } else { // Delete
-      const linkIdx = idx - 1;
-      question.ask(`Delete Author's ${authorSocials[linkIdx].platform} link? (y/n)`, (err, val) => {
-        if (!err && val) {
-          authorSocials.splice(linkIdx, 1);
-          saveData();
-          renderOptions();
-          optionList.select(Math.max(0, idx - 1));
-        } else {
-          screen.render();
+      let targetIdx = idx - 1;
+      let foundAIdx = -1;
+      let foundSIdx = -1;
+      for (let i = 0; i < apiData.site.authors.length; i++) {
+        const socials = apiData.site.authors[i].socials || [];
+        if (targetIdx < socials.length) {
+          foundAIdx = i;
+          foundSIdx = targetIdx;
+          break;
         }
-        optionList.focus();
-      });
+        targetIdx -= socials.length;
+      }
+      if (foundAIdx !== -1) {
+        question.ask(`Delete Author ${foundAIdx + 1}'s ${apiData.site.authors[foundAIdx].socials[foundSIdx].platform} link? (y/n)`, (err, val) => {
+          if (!err && val) {
+            apiData.site.authors[foundAIdx].socials.splice(foundSIdx, 1);
+            saveData();
+            renderOptions();
+            optionList.select(Math.max(0, idx - 1));
+          } else {
+            screen.render();
+          }
+          optionList.focus();
+        });
+      }
     }
   }
 });

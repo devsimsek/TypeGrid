@@ -9,8 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **Explicit Reorder (`r`)**: Added a dedicated `r` keybinding to both Album and Image lists in the TUI to easily move items to specific positions.
+- **Config TUI Expansion**: Added UI & Layout settings (columns, thumbnails, font), Site Language, and Favicon to the Configurator.
+- **Multi-Author Support**: Overhauled the Config TUI to natively manage infinite Authors and their isolated nested social links.
+- **Album Toggles**: Added `f` to toggle Album Favorite status and `v` to toggle Album Draft (Visibility) status in the Album Manager.
+
+### Changed
+- Swapped raw `exec()` shell commands with the robust cross-platform `open` npm package for launching images (`o`), securely handling absolute `https://` URLs and complex local paths on macOS/Windows/Linux.
 
 ### Fixed
+- Resolved a crash (`TypeError: val.toLowerCase is not a function`) when answering `y/n` prompts for album deletion and OTA updates.
 - Fixed an issue where the `?` Help menu displayed the outdated site version instead of the CLI version.
 - Improved the OTA updater to use strict Semantic Versioning comparisons.
 - Auto-syncs `typegrid.json` version strings with `package.json` upon TUI launch.

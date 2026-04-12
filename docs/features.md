@@ -56,8 +56,8 @@ If you prefer to host images locally, TypeGrid includes a suite of powerful inte
 ### 🖥️ Terminal User Interface (TUI)
 Run `npm run albums` to launch a fully-featured, raw mode Album Manager right in your terminal.
 - **Visual Previews**: View your local images as ASCII/ANSI previews directly in your terminal.
-- **Album Management**: Create, edit (title, year, description, tags), and delete albums without touching JSON.
-- **Image Management**: Add, delete, and reorder images using Vim bindings (`Shift+J` / `Shift+K`).
+- **Album Management**: Create (`c`), edit (`e`), delete (`d`), toggle favorite (`f`), toggle visibility/draft (`v`), and reorder (`r` or `Shift+J/K`) albums without touching JSON.
+- **Image Management**: Add (`a`), delete (`d`), open (`o`), and reorder (`r` or `Shift+J/K`) images.
 - **Granular Edits**: Quickly edit individual image properties (`t` for tags, `c` for camera, `l` for lens).
 - **Set Primary**: Mark any image as the album cover instantly (`p`).
 - **Autoscan**: Press `s` to automatically scan an album's folder on disk, extracting EXIF data and adding new photos.
@@ -65,5 +65,5 @@ Run `npm run albums` to launch a fully-featured, raw mode Album Manager right in
 
 ### ⚙️ API Generator & Configurator
 - **API Generator (`npm run generate`)**: A batch scanner that auto-generates your `typegrid.json` from the `/images/` directory. It features smart EXIF extraction, collision handling, and non-destructive updates.
-- **Configurator (`npm run config`)**: An interactive wizard to maintain site settings, sorting algorithms, pagination, themes, and footer social links.
+- **Configurator (`npm run config`)**: An interactive wizard to maintain site settings (language, favicon), layout & UI (columns, thumbnails, font), sorting algorithms, pagination, multiple authors, and global/author social links.
 - **Automated Migrations**: Upgrades older `typegrid.json` shapes to the latest schema without data loss.

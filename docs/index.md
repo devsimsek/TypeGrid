@@ -41,8 +41,8 @@ npm run albums
 ```
 
 - **Visual Navigation:** View your albums, images, and visual ASCII previews directly in the terminal.
-- **Album Management:** Create (`c`), edit (`e`), and delete (`d`) albums.
-- **Image Management:** Add (`a`), delete (`d`), and reorder images using Vim bindings (`Shift+J` / `Shift+K`).
+- **Album Management:** Create (`c`), edit (`e`), delete (`d`), toggle favorite (`f`), toggle visibility/draft (`v`), and reorder (`r` or `Shift+J/K`) albums.
+- **Image Management:** Add (`a`), delete (`d`), open in system viewer (`o`), and reorder (`r` or `Shift+J/K`) images.
 - **Metadata Editing:** Quickly edit tags (`t`), camera (`c`), lens (`l`), or edit everything (`e`). Set primary images (`p`).
 - **Autoscan:** Press `s` to automatically scan an album's folder on disk, extract EXIF data, calculate dimensions, and import new photos seamlessly.
 - **Updates:** Press `u` to check for and install OTA updates from the TypeGrid repository.

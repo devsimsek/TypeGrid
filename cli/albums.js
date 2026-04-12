@@ -103,7 +103,7 @@ const helpBox = blessed.box({
     fg: 'gray',
     border: { fg: 'gray' }
   },
-  content: ' [?] Help | [q] Quit | [u] Update | Albums: [c]reate [e]dit [d]elete [s]can | Images: [a]dd [d]elete [e]dit [t]ags [c]amera [l]ens [p]rimary [o]pen [J/K]move'
+  content: ' [?] Help | [q] Quit | [u] Update | Albums: [c]reate [e]dit [d]elete [s]can [J/K]move | Images: [a]dd [d]elete [e]dit [t]ags [c]amera [l]ens [p]rimary [o]pen [J/K]move'
 });
 
 const helpModal = blessed.box({
@@ -111,8 +111,8 @@ const helpModal = blessed.box({
   top: 'center', left: 'center', width: '80%', height: '80%',
   border: 'line', hidden: true,
   style: { border: { fg: '#ea9a97' } },
-  label: ` Help & Info (v${typegridData.site?.version || '1.0.0'}) `,
-  content: '\n Global:\n  [q / C-c] Quit\n  [?] Toggle Help\n  [u] Check for Updates\n\n Albums List:\n  [l / Enter / Right] Focus Images\n  [c] Create Album\n  [e] Edit Album Info\n  [d] Delete Album\n  [s] Autoscan Folder\n\n Images List:\n  [h / Esc / Left] Back to Albums\n  [J / K] Move Image Down/Up\n  [a] Add Image\n  [d] Delete Image\n  [e] Edit All Metadata\n  [t] Edit Tags\n  [c] Edit Camera\n  [l] Edit Lens\n  [p] Set as Primary\n  [o] Open Image\n  [s] Autoscan Folder\n\nPress any key to close.'
+  label: ` Help & Info (v${typegridData.site?.version || '2.3.0'}) `,
+  content: '\n Global:\n  [q / C-c] Quit\n  [?] Toggle Help\n  [u] Check for Updates\n\n Albums List:\n  [l / Enter / Right] Focus Images\n  [J / K] Move Album Down/Up\n  [c] Create Album\n  [e] Edit Album Info\n  [d] Delete Album\n  [s] Autoscan Folder\n\n Images List:\n  [h / Esc / Left] Back to Albums\n  [J / K] Move Image Down/Up\n  [a] Add Image\n  [d] Delete Image\n  [e] Edit All Metadata\n  [t] Edit Tags\n  [c] Edit Camera\n  [l] Edit Lens\n  [p] Set as Primary\n  [o] Open Image\n  [s] Autoscan Folder\n\nPress any key to close.'
 });
 
 // Modals
@@ -232,6 +232,7 @@ function handleCreateAlbum() {
         year: new Date().getFullYear(),
         tags: [],
         description: "",
+        place: projects.length + 1,
         images: []
       };
       
@@ -335,6 +336,22 @@ async function showImagePreview(index) {
   } catch (err) {
     previewBox.setContent(metaText + '[Error rendering image preview: ' + err.message + ']');
   }
+  screen.render();
+}
+
+// Album reorder helper
+function swapAlbums(idx1, idx2) {
+  if (idx1 < 0 || idx2 < 0 || idx1 >= projects.length || idx2 >= projects.length) return;
+  const temp = projects[idx1];
+  projects[idx1] = projects[idx2];
+  projects[idx2] = temp;
+  
+  projects.forEach((p, i) => { p.place = i + 1; });
+  
+  saveData();
+  updateAlbumList();
+  albumList.select(idx2);
+  showAlbumImages(idx2);
   screen.render();
 }
 
@@ -708,6 +725,14 @@ albumList.key(['d', 'delete'], () => {
 // Global Keybindings
 screen.key(['u'], () => {
   handleUpdate();
+});
+
+albumList.key(['S-k', 'K'], () => {
+  swapAlbums(currentAlbumIndex, currentAlbumIndex - 1);
+});
+
+albumList.key(['S-j', 'J'], () => {
+  swapAlbums(currentAlbumIndex, currentAlbumIndex + 1);
 });
 
 // Help Menu Global

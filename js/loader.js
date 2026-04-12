@@ -75,10 +75,17 @@ class DataLoader {
       throw new Error('Projects must be an array');
     }
 
-    // Validate each project
+    // Validate and filter projects
+    const validProjects = [];
     for (let i = 0; i < data.projects.length; i++) {
-      this._validateProject(data.projects[i], i);
+      try {
+        this._validateProject(data.projects[i], i);
+        validProjects.push(data.projects[i]);
+      } catch (error) {
+        console.warn(`[TypeGrid] Skipping invalid project: ${error.message}`);
+      }
     }
+    data.projects = validProjects;
 
     // Set defaults for optional fields
     data.collections = data.collections || [];

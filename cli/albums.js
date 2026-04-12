@@ -323,6 +323,7 @@ function handleEditAlbum() {
           project.title = title;
           project.year = parseInt(year, 10) || new Date().getFullYear();
           project.description = desc;
+          project.tags = tags.split(',').map(t => t.trim()).filter(t => t);
           saveData();
           toast('Album updated.');
           updateAlbumList();
@@ -556,7 +557,10 @@ function handleAddImage() {
     updateAlbumList();
     showAlbumImages(currentAlbumIndex);
     imageList.select(project.images.length - 1);
+    currentImageIndex = project.images.length - 1;
     imageList.focus();
+    
+    handleScanExif().catch(() => {});
   });
 
   addInput.on('cancel', () => {
@@ -616,7 +620,7 @@ function handleSetPrimary() {
   });
   saveData();
   toast('Set as Primary Image.');
-  updateImageList();
+  showAlbumImages(currentAlbumIndex);
   showImagePreview(currentImageIndex);
 }
 
@@ -746,7 +750,7 @@ function handleAutoscan() {
     return;
   }
 
-  const files = fs.readdirSync(albumFolder).filter(f => /\.(jpe?g|png|webp|avif)$/i.test(f));
+  const files = fs.readdirSync(albumFolder).filter(f => /\.(jpe?g|png|webp|avif)$/i.test(f) && !f.endsWith('-thumb.webp'));
   const existingUrls = (project.images || []).map(img => img.url);
   const existingFilenames = (project.images || []).map(img => img.filename);
 
@@ -873,26 +877,27 @@ async function handleUpdate() {
       
       question.ask(`Update to v${remotePkg.version}?\n\n${latestChanges.substring(0, 200)}...\n\n(y/n)`, async (err, val) => {
         if (!err && val) {
-          previewBox.setContent('Updating files from GitHub...');
-          screen.render();
-          
-          const files = [
-            'package.json',
-            'index.html',
-            'cli/index.js',
-            'cli/albums.js',
-            'cli/generate.js',
-            'cli/config.js',
-            'css/reset.css',
-            'css/variables.css',
-            'css/responsive.css',
-            'css/mobile.css',
-            'js/typegrid.js',
-            'js/loader.js'
-          ];
-          
-          if (!errHtml && htmlVal) files.push('index.html');
-          for (const file of files) {
+          question.ask(`Overwrite index.html?\n\nWarning: Custom frontend edits (analytics, extra CSS) will be lost if you hit 'y'. (y/n)`, async (errHtml, htmlVal) => {
+            previewBox.setContent('Updating files from GitHub...');
+            screen.render();
+            
+            const files = [
+              'package.json',
+              'cli/index.js',
+              'cli/albums.js',
+              'cli/generate.js',
+              'cli/config.js',
+              'css/reset.css',
+              'css/variables.css',
+              'css/responsive.css',
+              'css/mobile.css',
+              'js/typegrid.js',
+              'js/loader.js'
+            ];
+            
+            if (!errHtml && htmlVal) files.push('index.html');
+            
+            for (const file of files) {
             try {
               const content = await fetchUrl(`https://raw.githubusercontent.com/devsimsek/TypeGrid/main/${file}`);
               if (content && content !== '404: Not Found') {
@@ -936,7 +941,12 @@ function handleDeleteImage() {
 
   question.ask('Are you sure you want to remove this image from the album? (y/n)', (err, val) => {
     if (!err && val) {
+      const wasPrimary = img.primary === true;
       project.images.splice(currentImageIndex, 1);
+      
+      if (wasPrimary && project.images.length > 0) {
+        project.images[0].primary = true;
+      }
       saveData();
       updateAlbumList();
       showAlbumImages(currentAlbumIndex);

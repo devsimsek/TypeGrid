@@ -292,7 +292,7 @@ function handleDeleteAlbum() {
   const project = projects[currentAlbumIndex];
   if (!project) return;
   question.ask(`Are you sure you want to delete album "${project.title}"? (y/n)`, (err, val) => {
-    if (!err && val && val.toLowerCase() === 'y') {
+    if (!err && val) {
       projects.splice(currentAlbumIndex, 1);
       saveData();
       currentAlbumIndex = Math.max(0, Math.min(currentAlbumIndex, projects.length - 1));
@@ -653,7 +653,7 @@ async function handleUpdate() {
       const latestChanges = changelog.split('\n## ').slice(0, 2).join('\n## ');
       
       question.ask(`Update to v${remotePkg.version}?\n\n${latestChanges.substring(0, 200)}...\n\n(y/n)`, async (err, val) => {
-        if (!err && val && val.toLowerCase() === 'y') {
+        if (!err && val) {
           previewBox.setContent('Updating files from GitHub...');
           screen.render();
           

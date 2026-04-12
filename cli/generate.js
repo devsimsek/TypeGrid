@@ -8,7 +8,7 @@ const blessed = require('blessed');
 const IMAGES_DIR = path.join(__dirname, '../images');
 const DATA_FILE = path.join(__dirname, '../data/typegrid.json');
 const VALID_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.avif']);
-const TARGET_VERSION = "2.3.1";
+const TARGET_VERSION = "3.0.0";
 
 // --- Helpers ---
 function slugify(text) {
@@ -48,6 +48,27 @@ function runMigrations(apiData) {
 // --- Screen Setup ---
 const screen = blessed.screen({ smartCSR: true, title: 'TypeGrid API Generator', warnings: true, fullUnicode: true });
 
+const msg = blessed.message({
+  parent: screen,
+  top: 'center',
+  left: 'center',
+  width: 'shrink',
+  height: 'shrink',
+  padding: { top: 1, bottom: 1, left: 2, right: 2 },
+  tags: true,
+  border: { type: 'line' },
+  style: {
+    fg: 'white',
+    bg: 'blue',
+    border: { fg: 'white', bg: 'blue' }
+  },
+  hidden: true
+});
+
+function toast(text, time = 2) {
+  msg.display(`{center}${text}{/center}`, time, () => {});
+}
+
 const logBox = blessed.log({
   parent: screen,
   top: 'center', left: 'center',
@@ -60,12 +81,14 @@ const logBox = blessed.log({
 
 const prompt = blessed.prompt({
   parent: screen, top: 'center', left: 'center', width: '60%', height: 'shrink',
-  border: 'line', hidden: true, style: { border: { fg: '#ea9a97' } }
+  border: 'line', hidden: true, tags: true, padding: 1,
+  style: { fg: 'white', bold: true, border: { fg: '#ea9a97' } }
 });
 
 const question = blessed.question({
   parent: screen, top: 'center', left: 'center', width: '60%', height: 'shrink',
-  border: 'line', hidden: true, style: { border: { fg: '#ea9a97' } }
+  border: 'line', hidden: true, tags: true, padding: 1,
+  style: { fg: 'white', bold: true, border: { fg: '#ea9a97' } }
 });
 
 screen.key(['q', 'C-c'], () => process.exit(0));
@@ -354,6 +377,7 @@ async function runWizard() {
   };
 
   fs.writeFileSync(DATA_FILE, JSON.stringify(finalJSON, null, 2));
+  toast('API Generated Successfully!');
 
   logBox.add(`\n======================================================`);
   logBox.add(`  SUCCESS! API Generated ✨`);

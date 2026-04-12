@@ -57,6 +57,27 @@ const screen = blessed.screen({
   fullUnicode: true
 });
 
+const msg = blessed.message({
+  parent: screen,
+  top: 'center',
+  left: 'center',
+  width: 'shrink',
+  height: 'shrink',
+  padding: { top: 1, bottom: 1, left: 2, right: 2 },
+  tags: true,
+  border: { type: 'line' },
+  style: {
+    fg: 'white',
+    bg: 'blue',
+    border: { fg: 'white', bg: 'blue' }
+  },
+  hidden: true
+});
+
+function toast(text, time = 2) {
+  msg.display(`{center}${text}{/center}`, time, () => {});
+}
+
 // Layouts
 const albumList = blessed.list({
   parent: screen,
@@ -103,6 +124,7 @@ const previewBox = blessed.box({
   width: '40%',
   height: '90%',
   border: { type: 'line' },
+  tags: true,
   style: {
     fg: 'white',
     border: { fg: '#ea9a97' }
@@ -212,7 +234,13 @@ const prompt = blessed.prompt({
   height: 'shrink',
   border: 'line',
   hidden: true,
-  style: { border: { fg: '#ea9a97' } }
+  tags: true,
+  padding: 1,
+  style: {
+    fg: 'white',
+    bold: true,
+    border: { fg: '#ea9a97' }
+  }
 });
 
 const question = blessed.question({
@@ -223,7 +251,13 @@ const question = blessed.question({
   height: 'shrink',
   border: 'line',
   hidden: true,
-  style: { border: { fg: '#ea9a97' } }
+  tags: true,
+  padding: 1,
+  style: {
+    fg: 'white',
+    bold: true,
+    border: { fg: '#ea9a97' }
+  }
 });
 
 // Helpers
@@ -278,8 +312,8 @@ function handleEditAlbum() {
           project.title = title;
           project.year = parseInt(year, 10) || new Date().getFullYear();
           project.description = desc;
-          project.tags = tags.split(',').map(t => t.trim()).filter(Boolean);
           saveData();
+          toast('Album updated.');
           updateAlbumList();
           albumList.select(currentAlbumIndex);
         });
@@ -305,7 +339,7 @@ function handleDeleteAlbum() {
 }
 
 function updateAlbumList() {
-  albumList.setItems(projects.map(p => `${p.title} (${p.images ? p.images.length : 0})${p.favorite ? ' [Fav]' : ''}${p.draft ? ' [Draft]' : ''}`));
+  albumList.setItems(projects.map(p => `${p.title} (${p.images ? p.images.length : 0})${p.favorite ? ' {yellow-fg}[Fav]{/yellow-fg}' : ''}${p.draft ? ' {red-fg}[Draft]{/red-fg}' : ''}`));
   screen.render();
 }
 
@@ -316,7 +350,7 @@ function showAlbumImages(index) {
     imageList.setItems(['(No images)']);
     previewBox.setContent('No images in this album.');
   } else {
-    imageList.setItems(project.images.map(img => img.filename || img.url || 'Unknown Image'));
+    imageList.setItems(project.images.map(img => `${img.filename || img.url || 'Unknown Image'}${img.primary ? ' {blue-fg}[Primary]{/blue-fg}' : ''}`));
     showImagePreview(0);
   }
   screen.render();
@@ -334,7 +368,7 @@ async function showImagePreview(index) {
   const img = project.images[index];
   let metaText = `ID: ${img.id || 'N/A'}\nFile: ${img.filename || 'N/A'}\nURL: ${img.url || 'N/A'}\nSize: ${img.width || '?'}x${img.height || '?'}\nPrimary: ${img.primary ? 'Yes' : 'No'}\nCamera: ${img.camera || 'N/A'}\nLens: ${img.lens || 'N/A'}\nTags: ${(img.tags || []).join(', ') || 'None'}\n\n`;
 
-  previewBox.setContent(metaText + 'Loading preview...');
+  previewBox.setContent(metaText + '\n{cyan-fg}[ Loading Preview... ]{/cyan-fg}\n');
   screen.render();
 
   try {
@@ -521,6 +555,8 @@ function handleSetPrimary() {
     img.primary = (idx === currentImageIndex);
   });
   saveData();
+  toast('Set as Primary Image.');
+  updateImageList();
   showImagePreview(currentImageIndex);
 }
 
@@ -807,15 +843,16 @@ albumList.key(['f'], () => {
   if (!project) return;
   project.favorite = !project.favorite;
   saveData();
+  toast(project.favorite ? 'Marked as Favorite.' : 'Removed from Favorites.');
   updateAlbumList();
   albumList.select(currentAlbumIndex);
 });
 
 albumList.key(['v'], () => {
   const project = projects[currentAlbumIndex];
-  if (!project) return;
   project.draft = !project.draft;
   saveData();
+  toast(project.draft ? 'Marked as Draft.' : 'Marked as Published.');
   updateAlbumList();
   albumList.select(currentAlbumIndex);
 });

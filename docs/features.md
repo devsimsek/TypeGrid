@@ -53,8 +53,10 @@ There is no database to configure. Simply update the JSON file to add new projec
 ## 🛠️ Interactive CLI Tools & TUI
 If you prefer to host images locally, TypeGrid includes a suite of powerful interactive CLI tools to manage your portfolio effortlessly:
 
-### 🖥️ Terminal User Interface (TUI)
-Run `npm run albums` to launch a fully-featured, raw mode Album Manager right in your terminal.
+### 🖥️ Unified Master CLI (TUI)
+Run `npm run typegrid` to launch a fully-featured, raw mode master menu right in your terminal, which provides access to the Album Manager, Configurator, and API Generator.
+
+#### 📁 Album Manager
 - **Visual Previews**: View your local images as ASCII/ANSI previews directly in your terminal.
 - **Album Management**: Create (`c`), edit (`e`), delete (`d`), toggle favorite (`f`), toggle visibility/draft (`v`), and reorder (`r` or `Shift+J/K`) albums without touching JSON.
 - **Image Management**: Add (`a`), delete (`d`), open (`o`), and reorder (`r` or `Shift+J/K`) images.
@@ -63,7 +65,7 @@ Run `npm run albums` to launch a fully-featured, raw mode Album Manager right in
 - **Autoscan**: Press `s` to automatically scan an album's folder on disk, extracting EXIF data and adding new photos.
 - **OTA Updates**: Press `u` to check for and install over-the-air updates from the TypeGrid repository.
 
-### ⚙️ API Generator & Configurator
-- **API Generator (`npm run generate`)**: A batch scanner that auto-generates your `typegrid.json` from the `/images/` directory. It features smart EXIF extraction, collision handling, and non-destructive updates.
-- **Configurator (`npm run config`)**: An interactive wizard to maintain site settings (language, favicon), layout & UI (columns, thumbnails, font), sorting algorithms, pagination, multiple authors, and global/author social links.
+#### ⚙️ Configurator & API Generator
+- **Configurator**: An interactive wizard to maintain site settings (language, favicon), layout & UI (columns, thumbnails, font), sorting algorithms, pagination, multiple authors, and global/author social links.
+- **API Generator**: A batch scanner that auto-generates your `typegrid.json` from the `/images/` directory. It features smart EXIF extraction, collision handling, and non-destructive updates.
 - **Automated Migrations**: Upgrades older `typegrid.json` shapes to the latest schema without data loss.

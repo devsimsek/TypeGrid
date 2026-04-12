@@ -5,6 +5,18 @@ All notable changes to TypeGrid will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2026-04-14
+
+### Added
+- **Unified CLI Entrypoint (`npm run typegrid`)**: Merged `albums.js`, `config.js`, and `generate.js` into a single master CLI with a main menu.
+- **Toast Notifications**: Added a global transient notification system across all TUI screens for immediate feedback on saves, deletions, and generation events.
+- **Visual Polish & Colors**: Added colorized tags (`[Fav]`, `[Draft]`, `[Primary]`) and syntax highlighting for configuration fields to improve readability.
+- **Loading States**: Introduced stylized `[ Loading Preview... ]` indicators to prevent the UI from feeling frozen during heavy ANSI image rendering operations.
+
+### Changed
+- **Modal & Prompt Styling**: Improved padding, borders, and bolding of all `blessed` prompts and questions to feel like native dialog boxes.
+- **Config Spacing & Grouping**: Added spacing and colored section headers to complex lists (like Author Details in Config) for easier management.
+
 ## [2.3.1] - 2026-04-14
 
 ### Added

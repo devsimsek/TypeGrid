@@ -3,7 +3,7 @@ const path = require('path');
 const blessed = require('blessed');
 
 const DATA_FILE = path.join(__dirname, '../data/typegrid.json');
-const TARGET_VERSION = "2.3.1";
+const TARGET_VERSION = "3.0.0";
 
 // Load data
 let apiData = {};
@@ -56,6 +56,27 @@ function saveData() {
 // Screen setup
 const screen = blessed.screen({ smartCSR: true, title: 'TypeGrid Configurator', warnings: true, fullUnicode: true });
 
+const msg = blessed.message({
+  parent: screen,
+  top: 'center',
+  left: 'center',
+  width: 'shrink',
+  height: 'shrink',
+  padding: { top: 1, bottom: 1, left: 2, right: 2 },
+  tags: true,
+  border: { type: 'line' },
+  style: {
+    fg: 'white',
+    bg: 'blue',
+    border: { fg: 'white', bg: 'blue' }
+  },
+  hidden: true
+});
+
+function toast(text, time = 2) {
+  msg.display(`{center}${text}{/center}`, time, () => {});
+}
+
 // Layouts
 const categoryList = blessed.list({
   parent: screen, top: 0, left: 0, width: '30%', height: '90%',
@@ -91,12 +112,14 @@ const helpBox = blessed.box({
 // Modals
 const prompt = blessed.prompt({
   parent: screen, top: 'center', left: 'center', width: '60%', height: 'shrink',
-  border: 'line', hidden: true, style: { border: { fg: '#ea9a97' } }
+  border: 'line', hidden: true, tags: true, padding: 1,
+  style: { fg: 'white', bold: true, border: { fg: '#ea9a97' } }
 });
 
 const question = blessed.question({
   parent: screen, top: 'center', left: 'center', width: '50%', height: 'shrink',
-  border: 'line', hidden: true, style: { border: { fg: '#ea9a97' } }
+  border: 'line', hidden: true, tags: true, padding: 1,
+  style: { fg: 'white', bold: true, border: { fg: '#ea9a97' } }
 });
 
 let currentCategoryIndex = 0;
@@ -104,41 +127,41 @@ let currentCategoryIndex = 0;
 function renderOptions() {
   const opts = [];
   if (currentCategoryIndex === 0) {
-    opts.push(`Title: ${apiData.site.title || ''}`);
-    opts.push(`Description: ${apiData.site.description || ''}`);
-    opts.push(`Base URL: ${apiData.site.base_url || ''}`);
-    opts.push(`Accent Color: ${apiData.site.accent || ''}`);
-    opts.push(`Language: ${apiData.site.lang || 'en-US'}`);
-    opts.push(`Favicon: ${apiData.site.favicon || ''}`);
+    opts.push(`{cyan-fg}Title:{/cyan-fg} ${apiData.site.title || ''}`);
+    opts.push(`{cyan-fg}Description:{/cyan-fg} ${apiData.site.description || ''}`);
+    opts.push(`{cyan-fg}Base URL:{/cyan-fg} ${apiData.site.base_url || ''}`);
+    opts.push(`{cyan-fg}Accent Color:{/cyan-fg} ${apiData.site.accent || ''}`);
+    opts.push(`{cyan-fg}Language:{/cyan-fg} ${apiData.site.lang || 'en-US'}`);
+    opts.push(`{cyan-fg}Favicon:{/cyan-fg} ${apiData.site.favicon || ''}`);
   } else if (currentCategoryIndex === 1) {
-    opts.push(`Desktop Columns: ${apiData.settings.layout.columns_desktop}`);
-    opts.push(`Tablet Columns: ${apiData.settings.layout.columns_tablet}`);
-    opts.push(`Mobile Columns: ${apiData.settings.layout.columns_mobile}`);
-    opts.push(`Show Thumbnails: ${apiData.settings.show_thumbnails ? 'Yes' : 'No'} (Press Enter to toggle)`);
-    opts.push(`Monospace Font: ${apiData.settings.ui.monospace_font || 'monospace'}`);
+    opts.push(`{cyan-fg}Desktop Columns:{/cyan-fg} ${apiData.settings.layout.columns_desktop}`);
+    opts.push(`{cyan-fg}Tablet Columns:{/cyan-fg} ${apiData.settings.layout.columns_tablet}`);
+    opts.push(`{cyan-fg}Mobile Columns:{/cyan-fg} ${apiData.settings.layout.columns_mobile}`);
+    opts.push(`{cyan-fg}Show Thumbnails:{/cyan-fg} ${apiData.settings.show_thumbnails ? 'Yes' : 'No'} (Press Enter to toggle)`);
+    opts.push(`{cyan-fg}Monospace Font:{/cyan-fg} ${apiData.settings.ui.monospace_font || 'monospace'}`);
   } else if (currentCategoryIndex === 2) {
-    opts.push(`Field: ${apiData.settings.sort.field || 'place'} (Press Enter to toggle)`);
-    opts.push(`Order: ${apiData.settings.sort.order || 'asc'} (Press Enter to toggle)`);
+    opts.push(`{cyan-fg}Field:{/cyan-fg} ${apiData.settings.sort.field || 'place'} (Press Enter to toggle)`);
+    opts.push(`{cyan-fg}Order:{/cyan-fg} ${apiData.settings.sort.order || 'asc'} (Press Enter to toggle)`);
   } else if (currentCategoryIndex === 3) {
-    opts.push(`Albums per page: ${apiData.pagination.page_size || 12}`);
+    opts.push(`{cyan-fg}Albums per page:{/cyan-fg} ${apiData.pagination.page_size || 12}`);
   } else if (currentCategoryIndex === 4) {
-    opts.push(`[+] Add New Link`);
+    opts.push(`{green-fg}[+] Add New Link{/green-fg}`);
     apiData.socials.links.forEach(link => {
-      opts.push(`[Delete] ${link.platform}: ${link.url}`);
+      opts.push(`{red-fg}[Delete]{/red-fg} {cyan-fg}${link.platform}:{/cyan-fg} ${link.url}`);
     });
   } else if (currentCategoryIndex === 5) {
-    opts.push(`[+] Add New Author`);
+    opts.push(`{green-fg}[+] Add New Author{/green-fg}`);
     apiData.site.authors.forEach((author, i) => {
-      opts.push(`[Author ${i+1}] Name: ${author.name || ''}`);
-      opts.push(`[Author ${i+1}] URL: ${author.url || ''}`);
-      opts.push(`[Author ${i+1}] Avatar: ${author.avatar || ''}`);
-      opts.push(`[Author ${i+1}] [-] Delete Author`);
+      opts.push(`{magenta-fg}[Author ${i+1}]{/magenta-fg} {cyan-fg}Name:{/cyan-fg} ${author.name || ''}`);
+      opts.push(`{magenta-fg}[Author ${i+1}]{/magenta-fg} {cyan-fg}URL:{/cyan-fg} ${author.url || ''}`);
+      opts.push(`{magenta-fg}[Author ${i+1}]{/magenta-fg} {cyan-fg}Avatar:{/cyan-fg} ${author.avatar || ''}`);
+      opts.push(`{magenta-fg}[Author ${i+1}]{/magenta-fg} {red-fg}[-] Delete Author{/red-fg}`);
     });
   } else if (currentCategoryIndex === 6) {
-    opts.push(`[+] Add New Author Link`);
+    opts.push(`{green-fg}[+] Add New Author Link{/green-fg}`);
     apiData.site.authors.forEach((author, i) => {
       (author.socials || []).forEach(link => {
-        opts.push(`[Author ${i+1}] [Delete] ${link.platform}: ${link.url}`);
+        opts.push(`{magenta-fg}[Author ${i+1}]{/magenta-fg} {red-fg}[Delete]{/red-fg} {cyan-fg}${link.platform}:{/cyan-fg} ${link.url}`);
       });
     });
   }
@@ -170,6 +193,7 @@ optionList.key(['enter', 'e'], () => {
       if (!err && val !== null) {
         apiData.site[field] = val;
         saveData();
+        toast('Settings saved.');
         renderOptions();
         optionList.select(idx);
       } else {
@@ -186,6 +210,7 @@ optionList.key(['enter', 'e'], () => {
           if (!isNaN(parsed) && parsed > 0) {
             apiData.settings.layout[fields[idx]] = parsed;
             saveData();
+            toast('Settings saved.');
             renderOptions();
             optionList.select(idx);
           }
@@ -195,6 +220,7 @@ optionList.key(['enter', 'e'], () => {
     } else if (idx === 3) { // Toggle Show Thumbnails
       apiData.settings.show_thumbnails = !apiData.settings.show_thumbnails;
       saveData();
+      toast('Settings saved.');
       renderOptions();
       optionList.select(idx);
     } else if (idx === 4) { // Monospace Font
@@ -202,6 +228,7 @@ optionList.key(['enter', 'e'], () => {
         if (!err && val !== null) {
           apiData.settings.ui.monospace_font = val;
           saveData();
+          toast('Settings saved.');
           renderOptions();
           optionList.select(idx);
         } else {
@@ -218,6 +245,7 @@ optionList.key(['enter', 'e'], () => {
       apiData.settings.sort.order = apiData.settings.sort.order === 'asc' ? 'desc' : 'asc';
     }
     saveData();
+    toast('Settings saved.');
     renderOptions();
     optionList.select(idx);
   } else if (currentCategoryIndex === 3) { // Pagination
@@ -227,6 +255,7 @@ optionList.key(['enter', 'e'], () => {
         if (!isNaN(parsed) && parsed > 0) {
           apiData.pagination.page_size = parsed;
           saveData();
+          toast('Settings saved.');
           renderOptions();
           optionList.select(idx);
         }
@@ -241,6 +270,7 @@ optionList.key(['enter', 'e'], () => {
           if (!err && url) {
             apiData.socials.links.push({ platform: platform.toLowerCase(), url });
             saveData();
+            toast('Settings saved.');
             renderOptions();
             optionList.select(apiData.socials.links.length); // select newly added
           } else {
@@ -254,6 +284,7 @@ optionList.key(['enter', 'e'], () => {
         if (!err && val) {
           apiData.socials.links.splice(linkIdx, 1);
           saveData();
+          toast('Settings saved.');
           renderOptions();
           optionList.select(Math.max(0, idx - 1));
         } else {
@@ -266,6 +297,7 @@ optionList.key(['enter', 'e'], () => {
     if (idx === 0) {
       apiData.site.authors.push({ name: '', url: '', avatar: '', socials: [] });
       saveData();
+      toast('Settings saved.');
       renderOptions();
       optionList.select(apiData.site.authors.length * 4 - 3);
     } else {
@@ -276,6 +308,7 @@ optionList.key(['enter', 'e'], () => {
           if (!err && val) {
             apiData.site.authors.splice(authorIdx, 1);
             saveData();
+            toast('Settings saved.');
             renderOptions();
             optionList.select(0);
           } else {
@@ -315,6 +348,7 @@ optionList.key(['enter', 'e'], () => {
               if (!apiData.site.authors[aIdx].socials) apiData.site.authors[aIdx].socials = [];
               apiData.site.authors[aIdx].socials.push({ platform: platform.toLowerCase(), url });
               saveData();
+              toast('Settings saved.');
               renderOptions();
               optionList.select(idx);
             } else {
@@ -341,6 +375,7 @@ optionList.key(['enter', 'e'], () => {
           if (!err && val) {
             apiData.site.authors[foundAIdx].socials.splice(foundSIdx, 1);
             saveData();
+            toast('Settings saved.');
             renderOptions();
             optionList.select(Math.max(0, idx - 1));
           } else {

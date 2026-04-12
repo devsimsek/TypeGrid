@@ -85,8 +85,7 @@ async function runUpdate() {
       const latestChanges = changelog.split('\n## ').slice(0, 2).join('\n## ');
 
       question.ask(`Update to v${remotePkg.version}?\n\n${latestChanges.substring(0, 300)}...\n\n(y/n)`, async (err, val) => {
-        const answer = val ? val.toLowerCase() : 'n';
-        if (!err && (answer === 'y' || answer === 'yes')) {
+        if (!err && val) {
           logBox.setContent('Updating files from GitHub...\n');
           screen.render();
 

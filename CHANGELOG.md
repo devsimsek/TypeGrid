@@ -5,6 +5,12 @@ All notable changes to TypeGrid will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.5] - 2026-04-14
+
+### Fixed
+- Resolved a `TypeError: val.toLowerCase is not a function` crash in the OTA Updater (`cli/update.js`) when confirming the prompt to download the latest updates. The `blessed` TUI library internally returns booleans for question prompts, not strings.
+
+
 ## [3.0.4] - 2026-04-14
 
 ### Fixed

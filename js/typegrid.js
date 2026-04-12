@@ -79,6 +79,32 @@ document.addEventListener('alpine:init', () => {
     startX: 0,
     startY: 0,
     
+    init() {
+      // Wheel to zoom
+      window.addEventListener('wheel', (e) => {
+        if (!this.isOpen) return;
+        const main = document.querySelector('.lightbox-main');
+        if (main && main.contains(e.target)) {
+          e.preventDefault();
+          if (e.deltaY < 0) this.zoomIn();
+          else this.zoomOut();
+        }
+      }, { passive: false });
+
+      // Click to zoom
+      window.addEventListener('click', (e) => {
+        if (!this.isOpen) return;
+        if (this.hasDragged) {
+          setTimeout(() => this.hasDragged = false, 50);
+          return;
+        }
+        if (e.target.tagName === 'IMG' && e.target.classList.contains('lightbox-image')) {
+          if (this.zoom === 1) this.zoomIn();
+          else this.resetZoom();
+        }
+      });
+    },
+
     open(images, index = 0) {
       this.images = images;
       this.currentIndex = index;
@@ -87,7 +113,7 @@ document.addEventListener('alpine:init', () => {
       this.resetZoom();
       document.body.style.overflow = 'hidden';
     },
-    
+
     close() {
       this.isOpen = false;
       document.body.style.overflow = '';
@@ -130,17 +156,25 @@ document.addEventListener('alpine:init', () => {
     startPan(e) {
       if (this.zoom <= 1) return;
       this.isDragging = true;
+      this.hasDragged = false;
       // Handle both mouse and touch events
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
       const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      this.initialClientX = clientX;
+      this.initialClientY = clientY;
       this.startX = clientX - this.panX;
       this.startY = clientY - this.panY;
     },
-    
+
     doPan(e) {
       if (!this.isDragging) return;
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
       const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      
+      if (Math.abs(clientX - this.initialClientX) > 5 || Math.abs(clientY - this.initialClientY) > 5) {
+        this.hasDragged = true;
+      }
+      
       this.panX = clientX - this.startX;
       this.panY = clientY - this.startY;
     },

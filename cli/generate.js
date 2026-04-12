@@ -95,7 +95,7 @@ screen.key(['q', 'C-c'], () => process.exit(0));
 
 // --- Async Prompts ---
 const ask = (query, defaultVal = '') => new Promise(resolve => {
-  prompt.input(query, defaultVal, (err, val) => {
+  prompt.input(query, defaultVal.toString(), (err, val) => {
     if (err || val === null) resolve(defaultVal);
     else resolve(val.trim() || defaultVal.toString());
   });

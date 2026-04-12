@@ -25,10 +25,29 @@ const projects = typegridData.projects || [];
 let currentAlbumIndex = 0;
 let currentImageIndex = 0;
 
+let cliVersion = '1.0.0';
+try {
+  const pkgRaw = fs.readFileSync(path.join(__dirname, '../package.json'), 'utf-8');
+  cliVersion = JSON.parse(pkgRaw).version;
+} catch (e) {}
+
+let needsSave = false;
+if (typegridData.site && typegridData.site.version !== cliVersion) {
+  typegridData.site.version = cliVersion;
+  needsSave = true;
+}
+if (!typegridData.meta) typegridData.meta = {};
+if (typegridData.meta.version !== cliVersion) {
+  typegridData.meta.version = cliVersion;
+  needsSave = true;
+}
+
 // Save helper
 function saveData() {
   fs.writeFileSync(dataPath, JSON.stringify(typegridData, null, 2), 'utf-8');
 }
+
+if (needsSave) saveData();
 
 // Create screen
 const screen = blessed.screen({
@@ -111,7 +130,7 @@ const helpModal = blessed.box({
   top: 'center', left: 'center', width: '80%', height: '80%',
   border: 'line', hidden: true,
   style: { border: { fg: '#ea9a97' } },
-  label: ` Help & Info (v${typegridData.site?.version || '2.3.0'}) `,
+  label: ` Help & Info (v${cliVersion}) `,
   content: '\n Global:\n  [q / C-c] Quit\n  [?] Toggle Help\n  [u] Check for Updates\n\n Albums List:\n  [l / Enter / Right] Focus Images\n  [J / K] Move Album Down/Up\n  [c] Create Album\n  [e] Edit Album Info\n  [d] Delete Album\n  [s] Autoscan Folder\n\n Images List:\n  [h / Esc / Left] Back to Albums\n  [J / K] Move Image Down/Up\n  [a] Add Image\n  [d] Delete Image\n  [e] Edit All Metadata\n  [t] Edit Tags\n  [c] Edit Camera\n  [l] Edit Lens\n  [p] Set as Primary\n  [o] Open Image\n  [s] Autoscan Folder\n\nPress any key to close.'
 });
 
@@ -567,6 +586,16 @@ function fetchUrl(url) {
   });
 }
 
+function compareVersions(v1, v2) {
+  const p1 = v1.split('.').map(Number);
+  const p2 = v2.split('.').map(Number);
+  for (let i = 0; i < 3; i++) {
+    if ((p1[i] || 0) > (p2[i] || 0)) return 1;
+    if ((p1[i] || 0) < (p2[i] || 0)) return -1;
+  }
+  return 0;
+}
+
 async function handleUpdate() {
   previewBox.setContent('Checking for updates...');
   screen.render();
@@ -575,7 +604,7 @@ async function handleUpdate() {
     const remotePkg = JSON.parse(pkgStr);
     const localPkg = JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'), 'utf-8'));
     
-    if (remotePkg.version !== localPkg.version) {
+    if (compareVersions(remotePkg.version, localPkg.version) > 0) {
       previewBox.setContent(`New version found: v${remotePkg.version} (Current: v${localPkg.version})\nFetching changelog...`);
       screen.render();
       

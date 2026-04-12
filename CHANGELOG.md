@@ -5,6 +5,16 @@ All notable changes to TypeGrid will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.1] - 2026-04-14
+
+### Added
+- **Explicit Reorder (`r`)**: Added a dedicated `r` keybinding to both Album and Image lists in the TUI to easily move items to specific positions.
+
+### Fixed
+- Fixed an issue where the `?` Help menu displayed the outdated site version instead of the CLI version.
+- Improved the OTA updater to use strict Semantic Versioning comparisons.
+- Auto-syncs `typegrid.json` version strings with `package.json` upon TUI launch.
+
 ## [2.3.0] - 2026-04-14
 
 ### Added

@@ -430,10 +430,15 @@ async function showImagePreview(index) {
       }
 
       if (fs.existsSync(renderPath)) {
-        const availableWidth = Math.max(10, previewBox.width - 4);
-        const availableHeight = Math.max(5, previewBox.height - 10);
-        const imageStr = await terminalImage.file(renderPath, { width: availableWidth, height: availableHeight });
-        previewBox.setContent(metaText + imageStr);
+        const stats = fs.statSync(renderPath);
+        if (stats.size > 5 * 1024 * 1024) {
+          previewBox.setContent(metaText + '[Image too large for terminal preview (Max 5MB)]\n\n[Press \'x\' to generate an optimized thumbnail]');
+        } else {
+          const availableWidth = Math.max(10, previewBox.width - 4);
+          const availableHeight = Math.max(5, previewBox.height - 10);
+          const imageStr = await terminalImage.file(renderPath, { width: availableWidth, height: availableHeight });
+          previewBox.setContent(metaText + imageStr);
+        }
       } else {
         previewBox.setContent(metaText + '[Local file not found]\nPath: ' + fullPath);
       }

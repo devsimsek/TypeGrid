@@ -5,6 +5,12 @@ All notable changes to TypeGrid will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.5] - 2026-04-14
+
+### Fixed
+- Added a strict 5MB physical file size limit on the terminal ASCII image rendering pipeline to completely prevent V8 memory crashes when a user previews a giant un-optimized camera JPEG. The TUI will now display a placeholder instructing them to press `x` to generate a lightweight thumbnail if the image is too large.
+
+
 ## [3.1.4] - 2026-04-14
 
 ### Fixed

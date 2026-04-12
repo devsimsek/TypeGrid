@@ -122,7 +122,7 @@ const helpBox = blessed.box({
     fg: 'gray',
     border: { fg: 'gray' }
   },
-  content: ' [?] Help | [q] Quit | [u] Update | Albums: [c]reate [e]dit [d]elete [s]can [J/K]move | Images: [a]dd [d]elete [e]dit [t]ags [c]amera [l]ens [p]rimary [o]pen [J/K]move'
+  content: ' [?] Help | [q] Quit | [u] Update | Albums: [c]reate [e]dit [d]elete [s]can [r]eorder | Images: [a]dd [d]elete [e]dit [t]ags [c]amera [l]ens [p]rimary [o]pen [r]eorder'
 });
 
 const helpModal = blessed.box({
@@ -131,7 +131,7 @@ const helpModal = blessed.box({
   border: 'line', hidden: true,
   style: { border: { fg: '#ea9a97' } },
   label: ` Help & Info (v${cliVersion}) `,
-  content: '\n Global:\n  [q / C-c] Quit\n  [?] Toggle Help\n  [u] Check for Updates\n\n Albums List:\n  [l / Enter / Right] Focus Images\n  [J / K] Move Album Down/Up\n  [c] Create Album\n  [e] Edit Album Info\n  [d] Delete Album\n  [s] Autoscan Folder\n\n Images List:\n  [h / Esc / Left] Back to Albums\n  [J / K] Move Image Down/Up\n  [a] Add Image\n  [d] Delete Image\n  [e] Edit All Metadata\n  [t] Edit Tags\n  [c] Edit Camera\n  [l] Edit Lens\n  [p] Set as Primary\n  [o] Open Image\n  [s] Autoscan Folder\n\nPress any key to close.'
+  content: '\n Global:\n  [q / C-c] Quit\n  [?] Toggle Help\n  [u] Check for Updates\n\n Albums List:\n  [l / Enter / Right] Focus Images\n  [J / K] Move Album Down/Up\n  [r] Reorder Album\n  [c] Create Album\n  [e] Edit Album Info\n  [d] Delete Album\n  [s] Autoscan Folder\n\n Images List:\n  [h / Esc / Left] Back to Albums\n  [J / K] Move Image Down/Up\n  [r] Reorder Image\n  [a] Add Image\n  [d] Delete Image\n  [e] Edit All Metadata\n  [t] Edit Tags\n  [c] Edit Camera\n  [l] Edit Lens\n  [p] Set as Primary\n  [o] Open Image\n  [s] Autoscan Folder\n\nPress any key to close.'
 });
 
 // Modals
@@ -359,6 +359,27 @@ async function showImagePreview(index) {
 }
 
 // Album reorder helper
+function handleReorderAlbum() {
+  const project = projects[currentAlbumIndex];
+  if (!project) return;
+  prompt.input(`Enter new position (1-${projects.length}):`, String(currentAlbumIndex + 1), (err, val) => {
+    if (err || val === null) { screen.render(); return; }
+    const newPos = parseInt(val, 10) - 1;
+    if (!isNaN(newPos) && newPos >= 0 && newPos < projects.length) {
+      projects.splice(currentAlbumIndex, 1);
+      projects.splice(newPos, 0, project);
+      projects.forEach((p, i) => { p.place = i + 1; });
+      saveData();
+      currentAlbumIndex = newPos;
+      updateAlbumList();
+      albumList.select(currentAlbumIndex);
+      showAlbumImages(currentAlbumIndex);
+    }
+    albumList.focus();
+    screen.render();
+  });
+}
+
 function swapAlbums(idx1, idx2) {
   if (idx1 < 0 || idx2 < 0 || idx1 >= projects.length || idx2 >= projects.length) return;
   const temp = projects[idx1];
@@ -372,6 +393,26 @@ function swapAlbums(idx1, idx2) {
   albumList.select(idx2);
   showAlbumImages(idx2);
   screen.render();
+}
+
+function handleReorderImage() {
+  const project = projects[currentAlbumIndex];
+  if (!project || !project.images || project.images.length === 0) return;
+  const img = project.images[currentImageIndex];
+  prompt.input(`Enter new position (1-${project.images.length}):`, String(currentImageIndex + 1), (err, val) => {
+    if (err || val === null) { screen.render(); return; }
+    const newPos = parseInt(val, 10) - 1;
+    if (!isNaN(newPos) && newPos >= 0 && newPos < project.images.length) {
+      project.images.splice(currentImageIndex, 1);
+      project.images.splice(newPos, 0, img);
+      saveData();
+      currentImageIndex = newPos;
+      showAlbumImages(currentAlbumIndex);
+      imageList.select(currentImageIndex);
+    }
+    imageList.focus();
+    screen.render();
+  });
 }
 
 // Reorder helper
@@ -726,6 +767,10 @@ imageList.key(['s'], () => {
   handleAutoscan();
 });
 
+imageList.key(['r'], () => {
+  handleReorderImage();
+});
+
 imageList.key(['t'], () => handleEditImageField('tags'));
 imageList.key(['c'], () => handleEditImageField('camera'));
 imageList.key(['l'], () => handleEditImageField('lens'));
@@ -745,6 +790,10 @@ albumList.key(['s'], () => {
 
 albumList.key(['e'], () => {
   handleEditAlbum();
+});
+
+albumList.key(['r'], () => {
+  handleReorderAlbum();
 });
 
 albumList.key(['d', 'delete'], () => {

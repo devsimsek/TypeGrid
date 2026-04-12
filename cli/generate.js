@@ -9,7 +9,7 @@ const blessed = require('blessed');
 const IMAGES_DIR = path.join(__dirname, '../images');
 const DATA_FILE = path.join(__dirname, '../data/typegrid.json');
 const VALID_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.avif']);
-const TARGET_VERSION = "3.1.5";
+const TARGET_VERSION = "3.1.6";
 
 // --- Helpers ---
 function slugify(text) {
@@ -331,10 +331,29 @@ async function runWizard() {
       });
     }
 
+    // Garbage Collection: Delete orphaned thumbnails
+    const allProjectFiles = fs.readdirSync(projectDir);
+    const thumbs = allProjectFiles.filter(f => f.endsWith('-thumb.webp'));
+    let gcCount = 0;
+    for (const thumb of thumbs) {
+      const baseName = thumb.replace('-thumb.webp', '');
+      // Check if any original file has this base name
+      const hasOriginal = allProjectFiles.some(f => !f.endsWith('-thumb.webp') && VALID_EXTENSIONS.has(path.extname(f).toLowerCase()) && path.parse(f).name === baseName);
+      if (!hasOriginal) {
+        try {
+          fs.unlinkSync(path.join(projectDir, thumb));
+          gcCount++;
+        } catch(e) {}
+      }
+    }
+
     if (newImagesCount > 0) {
       logBox.add(`    Added ${newImagesCount} new photo(s).`);
     } else {
       logBox.add(`    No new photos added.`);
+    }
+    if (gcCount > 0) {
+      logBox.add(`    [GC] Cleaned up ${gcCount} orphaned thumbnail(s).`);
     }
     screen.render();
 

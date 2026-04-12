@@ -5,6 +5,13 @@ All notable changes to TypeGrid will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.6] - 2026-04-14
+
+### Fixed
+- Generator Garbage Collection: `cli/generate.js` now actively unlinks any orphaned `-thumb.webp` files if the original hi-res file was manually deleted from the disk by the user.
+- Unsafe OTA Updates: Both `cli/update.js` and `cli/albums.js` OTA updaters now explicitly prompt the user before downloading and overwriting `index.html`, preserving any custom `<head>` tags, analytics, or CSS edits the user might have deployed.
+
+
 ## [3.1.5] - 2026-04-14
 
 ### Fixed

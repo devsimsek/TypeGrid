@@ -86,12 +86,12 @@ async function runUpdate() {
 
       question.ask(`Update to v${remotePkg.version}?\n\n${latestChanges.substring(0, 300)}...\n\n(y/n)`, async (err, val) => {
         if (!err && val) {
-          logBox.setContent('Updating files from GitHub...\n');
-          screen.render();
+          question.ask(`Overwrite index.html?\n\nWarning: Custom frontend edits (analytics, extra CSS) will be lost if you hit 'y'. (y/n)`, async (errHtml, htmlVal) => {
+            logBox.setContent('Updating files from GitHub...\n');
+            screen.render();
 
           const files = [
             'package.json',
-            'index.html',
             'cli/index.js',
             'cli/albums.js',
             'cli/generate.js',
@@ -105,6 +105,9 @@ async function runUpdate() {
             'js/loader.js'
           ];
 
+          if (!errHtml && htmlVal) {
+            files.push('index.html');
+          }
           for (const file of files) {
             try {
               logBox.setContent(logBox.content + `\nDownloading ${file}...`);
@@ -123,6 +126,7 @@ async function runUpdate() {
           logBox.setContent('Update complete! Press any key to exit.');
           screen.render();
           screen.onceKey(['any'], () => process.exit(0));
+          });
         } else {
           logBox.setContent('Update cancelled. Press any key to exit.');
           screen.render();

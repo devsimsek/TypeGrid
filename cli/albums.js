@@ -891,6 +891,7 @@ async function handleUpdate() {
             'js/loader.js'
           ];
           
+          if (!errHtml && htmlVal) files.push('index.html');
           for (const file of files) {
             try {
               const content = await fetchUrl(`https://raw.githubusercontent.com/devsimsek/TypeGrid/main/${file}`);
@@ -906,6 +907,7 @@ async function handleUpdate() {
           previewBox.setContent('Update complete! Please restart the CLI.');
           screen.render();
           setTimeout(() => process.exit(0), 3000);
+          });
         } else {
           previewBox.setContent('Update cancelled.');
           screen.render();

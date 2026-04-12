@@ -3,7 +3,7 @@ const path = require('path');
 const blessed = require('blessed');
 
 const DATA_FILE = path.join(__dirname, '../data/typegrid.json');
-const TARGET_VERSION = "3.1.6";
+const TARGET_VERSION = "3.1.7";
 
 // Load data
 let apiData = {};

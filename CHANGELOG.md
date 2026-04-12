@@ -5,6 +5,12 @@ All notable changes to TypeGrid will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.2] - 2026-04-14
+
+### Added
+- **Retroactive Optimization**: The Auto-Generate API script (`cli/generate.js`) now detects if existing, previously mapped photos in `typegrid.json` are missing `.webp` thumbnails or dominant colors. It will automatically process and heal them during the scan without destroying existing metadata.
+
+
 ## [3.1.1] - 2026-04-14
 
 ### Fixed

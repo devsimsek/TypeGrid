@@ -9,7 +9,7 @@ const blessed = require('blessed');
 const IMAGES_DIR = path.join(__dirname, '../images');
 const DATA_FILE = path.join(__dirname, '../data/typegrid.json');
 const VALID_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.avif']);
-const TARGET_VERSION = "3.1.1";
+const TARGET_VERSION = "3.1.2";
 
 // --- Helpers ---
 function slugify(text) {
@@ -241,6 +241,28 @@ async function runWizard() {
 
       const existingImage = projectImages.find(img => img.filename === file);
       if (existingImage) {
+        // Retroactively generate missing thumbnails and colors for existing images
+        try {
+          const parsed = path.parse(path.join(projectDir, file));
+          const thumbName = `${parsed.name}-thumb.webp`;
+          const thumbPath = path.join(projectDir, thumbName);
+          
+          if (!fs.existsSync(thumbPath)) {
+            await sharp(path.join(projectDir, file)).resize({ width: 1200, withoutEnlargement: true }).webp({ quality: 80 }).toFile(thumbPath);
+            logBox.add(`      -> Generated missing thumbnail for ${file}`);
+            screen.render();
+          }
+          if (!existingImage.url_thumb) {
+            existingImage.url_thumb = `/images/${entry.name}/${thumbName}`;
+          }
+          if (!existingImage.color) {
+            const imgStats = await sharp(path.join(projectDir, file)).stats();
+            if (imgStats && imgStats.dominant) {
+              const { r, g, b } = imgStats.dominant;
+              existingImage.color = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+            }
+          }
+        } catch (e) {}
         continue;
       }
 

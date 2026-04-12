@@ -537,10 +537,11 @@ function handleAddImage() {
       screen.render();
       return;
     }
+    const normalizedUrl = value.split(path.sep).join('/');
     const newImage = {
       id: `img-${Date.now()}`,
-      filename: value.split('/').pop(),
-      url: value,
+      filename: normalizedUrl.split('/').pop(),
+      url: normalizedUrl,
       width: 1920,
       height: 1080,
       primary: project.images.length === 0
@@ -665,7 +666,7 @@ async function handleScanExif() {
       }
       
       const folderName = path.basename(path.dirname(targetPath));
-      img.url_thumb = `./images/${folderName}/${thumbName}`;
+      img.url_thumb = `./images/${folderName}/${thumbName}`.split(path.sep).join('/');
       updated = true;
 
       const imgStats = await sharp(targetPath).stats();
@@ -746,7 +747,7 @@ function handleAutoscan() {
 
   const folderName = path.basename(albumFolder);
   const unmapped = files.filter(f => {
-    const relUrl = `./images/${folderName}/${f}`;
+    const relUrl = `./images/${folderName}/${f}`.split(path.sep).join('/');
     return !existingUrls.includes(relUrl) && !existingFilenames.includes(f);
   });
 
@@ -771,7 +772,7 @@ function handleAutoscan() {
       if (!err && val) {
         const fullPath = path.join(albumFolder, file);
         const folderName = path.basename(albumFolder);
-        const relUrl = `./images/${folderName}/${file}`;
+        const relUrl = `./images/${folderName}/${file}`.split(path.sep).join('/');
         
         let width = 1920, height = 1080;
         try { const dims = sizeOf(fullPath); width = dims.width; height = dims.height; } catch(e) {}
@@ -785,7 +786,7 @@ function handleAutoscan() {
           if (!fs.existsSync(thumbPath)) {
             await sharp(fullPath).resize({ width: 1200, withoutEnlargement: true }).webp({ quality: 80 }).toFile(thumbPath);
           }
-          url_thumb = `./images/${folderName}/${thumbName}`;
+          url_thumb = `./images/${folderName}/${thumbName}`.split(path.sep).join('/');
 
           const imgStats = await sharp(fullPath).stats();
           if (imgStats && imgStats.dominant) {
@@ -938,7 +939,11 @@ function handleDeleteImage() {
           if (!err2 && val2) {
             try {
               fs.unlinkSync(targetPath);
-              toast('Image removed and file deleted.');
+              if (img.url_thumb && (img.url_thumb.startsWith('/images/') || img.url_thumb.startsWith('./images/'))) {
+                const thumbPath = path.join(publicImagesPath, img.url_thumb);
+                if (fs.existsSync(thumbPath)) fs.unlinkSync(thumbPath);
+              }
+              toast('Image and thumbnail removed from disk.');
             } catch (e) {
               toast('Image removed, but failed to delete file.');
             }

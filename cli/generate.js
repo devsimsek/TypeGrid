@@ -240,7 +240,7 @@ async function runWizard() {
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      const relativeUrl = `./images/${entry.name}/${file}`;
+      const relativeUrl = `./images/${entry.name}/${file}`.split(path.sep).join('/');
 
       const existingImage = projectImages.find(img => img.filename && img.filename.toLowerCase() === file.toLowerCase());
       if (existingImage) {
@@ -257,7 +257,7 @@ async function runWizard() {
             screen.render();
           }
           if (!existingImage.url_thumb) {
-            existingImage.url_thumb = `./images/${entry.name}/${thumbName}`;
+            existingImage.url_thumb = `./images/${entry.name}/${thumbName}`.split(path.sep).join('/');
           }
           if (!existingImage.color) {
             const imgStats = await sharp(path.join(projectDir, file)).stats();
@@ -288,7 +288,7 @@ async function runWizard() {
         if (!fs.existsSync(thumbPath)) {
           await sharp(filePath).resize({ width: 1200, withoutEnlargement: true }).webp({ quality: 80 }).toFile(thumbPath);
         }
-        url_thumb = `./images/${entry.name}/${thumbName}`;
+        url_thumb = `./images/${entry.name}/${thumbName}`.split(path.sep).join('/');
 
         const imgStats = await sharp(filePath).stats();
         if (imgStats && imgStats.dominant) {

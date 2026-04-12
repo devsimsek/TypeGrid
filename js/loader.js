@@ -290,8 +290,15 @@ class DataLoader {
 
       // Handle different types
       if (typeof aVal === 'string' && typeof bVal === 'string') {
-        aVal = aVal.toLowerCase();
-        bVal = bVal.toLowerCase();
+        const dateA = Date.parse(aVal);
+        const dateB = Date.parse(bVal);
+        if (!isNaN(dateA) && !isNaN(dateB)) {
+          aVal = dateA;
+          bVal = dateB;
+        } else {
+          aVal = aVal.toLowerCase();
+          bVal = bVal.toLowerCase();
+        }
       }
 
       if (aVal < bVal) return order === 'asc' ? -1 : 1;

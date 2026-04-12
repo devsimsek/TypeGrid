@@ -1,17 +1,20 @@
 {
   "name": "typegrid-api-generator",
-  "version": "1.0.0",
+  "version": "2.3.0",
   "description": "A CLI tool to read local images and generate the typegrid.json API file.",
-  "main": "generate.js",
+  "main": "cli/generate.js",
   "scripts": {
     "serve": "npx serve -s .",
-    "generate": "node generate.js",
-    "config": "node config.js",
+    "generate": "node cli/generate.js",
+    "config": "node cli/config.js",
+    "albums": "node cli/albums.js",
     "serve-docs": "mkdocs serve"
   },
   "dependencies": {
+    "blessed": "^0.1.81",
     "exifr": "^7.1.3",
-    "image-size": "^1.0.2"
+    "image-size": "^1.0.2",
+    "terminal-image": "^2.0.0"
   },
   "author": "TypeGrid",
   "license": "MIT"

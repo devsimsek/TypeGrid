@@ -50,10 +50,20 @@ The UI is built from the ground up for mobile devices first.
 Your entire site is generated from a single `data/typegrid.json` file. 
 There is no database to configure. Simply update the JSON file to add new projects, collections, or change site-wide SEO metadata. TypeGrid handles the rest, automatically paginating large galleries and generating dynamic routes.
 
-## 🛠️ Interactive API Generator CLI
-If you prefer to host images locally, TypeGrid includes a powerful interactive CLI (`npm run generate`) to build your API automatically:
-- **Smart EXIF Extraction**: Automatically extracts Camera, Lens, and Date metadata from your photos.
-- **Non-Destructive**: Never overwrites existing custom titles, descriptions, SEO configurations, or manually added tags.
-- **Interactive Prompts**: Prompts you for tags when it detects a new album folder, and asks for confirmation before removing albums that are missing from the disk.
-- **Image-Level Schemas**: Supports individual image tags, camera, and lens data, gracefully falling back to album-level defaults.
-- **Automated Version Migrations**: Seamlessly upgrades older `typegrid.json` shapes to the latest schema without data loss.
+## 🛠️ Interactive CLI Tools & TUI
+If you prefer to host images locally, TypeGrid includes a suite of powerful interactive CLI tools to manage your portfolio effortlessly:
+
+### 🖥️ Terminal User Interface (TUI)
+Run `npm run albums` to launch a fully-featured, raw mode Album Manager right in your terminal.
+- **Visual Previews**: View your local images as ASCII/ANSI previews directly in your terminal.
+- **Album Management**: Create, edit (title, year, description, tags), and delete albums without touching JSON.
+- **Image Management**: Add, delete, and reorder images using Vim bindings (`Shift+J` / `Shift+K`).
+- **Granular Edits**: Quickly edit individual image properties (`t` for tags, `c` for camera, `l` for lens).
+- **Set Primary**: Mark any image as the album cover instantly (`p`).
+- **Autoscan**: Press `s` to automatically scan an album's folder on disk, extracting EXIF data and adding new photos.
+- **OTA Updates**: Press `u` to check for and install over-the-air updates from the TypeGrid repository.
+
+### ⚙️ API Generator & Configurator
+- **API Generator (`npm run generate`)**: A batch scanner that auto-generates your `typegrid.json` from the `/images/` directory. It features smart EXIF extraction, collision handling, and non-destructive updates.
+- **Configurator (`npm run config`)**: An interactive wizard to maintain site settings, sorting algorithms, pagination, themes, and footer social links.
+- **Automated Migrations**: Upgrades older `typegrid.json` shapes to the latest schema without data loss.

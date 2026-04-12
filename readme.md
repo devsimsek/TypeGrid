@@ -4,6 +4,47 @@
 
 TypeGrid is a static, minimal photographers' portfolio with a monospace, retro-UI aesthetic. The app reads a single JSON "API" (typegrid.json) and renders per-project pages with SEO/Open Graph and social share support. Client-side edits export a new JSON (and optional ZIP with images). Pagination is supported per-project (page files optional).
 
+## Quick Start
+
+Since TypeGrid requires no build tools, you can run it using any static file server.
+
+```bash
+git clone https://github.com/devsimsek/TypeGrid.git
+cd TypeGrid
+python3 -m http.server 8000
+```
+
+Then visit `http://localhost:8000` in your browser.
+
+## Managing Your Portfolio
+
+TypeGrid reads from `data/typegrid.json` on load. This file acts as your database and API. While you can edit it manually, TypeGrid comes with powerful interactive CLI tools to manage your portfolio effortlessly.
+
+First, install the required Node.js dependencies for the CLI:
+```bash
+npm install
+```
+
+### The Interactive Album Manager (TUI)
+
+TypeGrid includes a full Terminal User Interface (TUI) built for keyboard-first management of your photo library:
+
+```bash
+npm run albums
+```
+
+- **Visual Navigation:** View your albums, images, and visual ASCII previews directly in the terminal.
+- **Album Management:** Create (`c`), edit (`e`), and delete (`d`) albums.
+- **Image Management:** Add (`a`), delete (`d`), and reorder images using Vim bindings (`Shift+J` / `Shift+K`).
+- **Metadata Editing:** Quickly edit tags (`t`), camera (`c`), lens (`l`), or edit everything (`e`). Set primary images (`p`).
+- **Autoscan:** Press `s` to automatically scan an album's folder on disk, extract EXIF data, calculate dimensions, and import new photos seamlessly.
+- **Updates:** Press `u` to check for and install OTA updates from the TypeGrid repository.
+
+### Configuration & Generation CLI
+
+- `npm run config`: An interactive wizard to update your site title, description, SEO, themes, and social links.
+- `npm run generate`: A batch scanner that auto-generates your `typegrid.json` from the `/images/` directory, extracting EXIF data and handling collisions.
+
 ## Top-level JSON structure
 
 - site: site-wide settings and OG defaults

@@ -108,7 +108,7 @@
             <div class="flex items-center gap-2" x-show="availableTags && availableTags.length > 0" x-cloak>
               <span class="text-sm text-muted">Filter:</span>
               <select class="text-sm" style="padding: 4px 8px; cursor: pointer;" :value="currentFilter || ''" @change="window.location.hash = $event.target.value ? '#/tag/' + $event.target.value : '#/'">
-                <option value="">All Categories</option>
+                <option value="">All Tags</option>
                 <template x-for="tag in availableTags" :key="tag">
                   <option :value="tag" x-text="tag"></option>
                 </template>
@@ -120,6 +120,7 @@
                 <option value="place,asc">Curated</option>
                 <option value="year,desc">Latest</option>
                 <option value="year,asc">Oldest</option>
+                <option value="created_at,desc">Recently Added</option>
                 <option value="title,asc">A-Z</option>
               </select>
             </div>
@@ -323,7 +324,7 @@
           <span class="meta-item" x-show="$store.lightbox.currentImage?.size"><span class="meta-label">Size:</span> <span x-text="formatSize($store.lightbox.currentImage?.size)"></span></span>
           <span class="meta-item" x-show="$store.lightbox.currentImage?.camera || currentProject?.camera"><span class="meta-label">Camera:</span> <span x-text="$store.lightbox.currentImage?.camera || currentProject?.camera"></span></span>
           <span class="meta-item" x-show="$store.lightbox.currentImage?.lens || currentProject?.lens"><span class="meta-label">Lens:</span> <span x-text="$store.lightbox.currentImage?.lens || currentProject?.lens"></span></span>
-          <span class="meta-item" x-show="$store.lightbox.currentImage?.tags && $store.lightbox.currentImage.tags.length > 0"><span class="meta-label">Tags:</span> <span x-text="$store.lightbox.currentImage.tags.join(', ')"></span></span>
+          <span class="meta-item" x-show="$store.lightbox.currentImage && $store.lightbox.currentImage.tags && $store.lightbox.currentImage.tags.length > 0"><span class="meta-label">Tags:</span> <span x-text="($store.lightbox.currentImage?.tags || []).join(', ')"></span></span>
         </div>
 
         <div class="lightbox-actions flex gap-2 pt-4" style="flex-wrap: wrap;">

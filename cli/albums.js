@@ -131,7 +131,7 @@ const helpModal = blessed.box({
   border: 'line', hidden: true,
   style: { border: { fg: '#ea9a97' } },
   label: ` Help & Info (v${cliVersion}) `,
-  content: '\n Global:\n  [q / C-c] Quit\n  [?] Toggle Help\n  [u] Check for Updates\n\n Albums List:\n  [l / Enter / Right] Focus Images\n  [J / K] Move Album Down/Up\n  [r] Reorder Album\n  [c] Create Album\n  [e] Edit Album Info\n  [d] Delete Album\n  [s] Autoscan Folder\n\n Images List:\n  [h / Esc / Left] Back to Albums\n  [J / K] Move Image Down/Up\n  [r] Reorder Image\n  [a] Add Image\n  [d] Delete Image\n  [e] Edit All Metadata\n  [t] Edit Tags\n  [c] Edit Camera\n  [l] Edit Lens\n  [p] Set as Primary\n  [o] Open Image\n  [s] Autoscan Folder\n\nPress any key to close.'
+  content: '\n Global:\n  [q / C-c] Quit\n  [?] Toggle Help\n  [u] Check for Updates\n\n Albums List:\n  [l / Enter / Right] Focus Images\n  [J / K] Move Album Down/Up\n  [r] Reorder Album\n  [c] Create Album\n  [e] Edit Album Info\n  [d] Delete Album\n  [s] Autoscan Folder\n  [f] Toggle Favorite\n  [v] Toggle Draft Visibility\n\n Images List:\n  [h / Esc / Left] Back to Albums\n  [J / K] Move Image Down/Up\n  [r] Reorder Image\n  [a] Add Image\n  [d] Delete Image\n  [e] Edit All Metadata\n  [t] Edit Tags\n  [c] Edit Camera\n  [l] Edit Lens\n  [p] Set as Primary\n  [o] Open Image\n  [s] Autoscan Folder\n\nPress any key to close.'
 });
 
 // Modals
@@ -305,7 +305,7 @@ function handleDeleteAlbum() {
 }
 
 function updateAlbumList() {
-  albumList.setItems(projects.map(p => `${p.title} (${p.images ? p.images.length : 0})`));
+  albumList.setItems(projects.map(p => `${p.title} (${p.images ? p.images.length : 0})${p.favorite ? ' [Fav]' : ''}${p.draft ? ' [Draft]' : ''}`));
   screen.render();
 }
 
@@ -794,6 +794,24 @@ albumList.key(['e'], () => {
 
 albumList.key(['r'], () => {
   handleReorderAlbum();
+});
+
+albumList.key(['f'], () => {
+  const project = projects[currentAlbumIndex];
+  if (!project) return;
+  project.favorite = !project.favorite;
+  saveData();
+  updateAlbumList();
+  albumList.select(currentAlbumIndex);
+});
+
+albumList.key(['v'], () => {
+  const project = projects[currentAlbumIndex];
+  if (!project) return;
+  project.draft = !project.draft;
+  saveData();
+  updateAlbumList();
+  albumList.select(currentAlbumIndex);
 });
 
 albumList.key(['d', 'delete'], () => {

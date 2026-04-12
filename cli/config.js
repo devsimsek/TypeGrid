@@ -24,8 +24,10 @@ if (!apiData.settings) {
     ui: { monospace_font: "monospace", accent_color: apiData.site.accent || "#ea9a97" }
   };
 }
+if (!apiData.settings.layout) apiData.settings.layout = { columns_desktop: 3, columns_tablet: 2, columns_mobile: 1 };
 if (!apiData.settings.sort) apiData.settings.sort = { field: "place", order: "asc" };
-if (!apiData.settings.ui) apiData.settings.ui = { accent_color: "#ea9a97" };
+if (!apiData.settings.ui) apiData.settings.ui = { monospace_font: "monospace", accent_color: "#ea9a97" };
+if (apiData.settings.show_thumbnails === undefined) apiData.settings.show_thumbnails = true;
 
 if (!apiData.pagination) {
   apiData.pagination = { page_size: 12, total_projects: 0, total_pages: 1, pages: [] };
@@ -34,6 +36,10 @@ if (!apiData.socials) {
   apiData.socials = { links: [], share_templates: {} };
 }
 if (!apiData.socials.links) apiData.socials.links = [];
+
+if (!apiData.site.authors) apiData.site.authors = [{}];
+if (!apiData.site.authors[0]) apiData.site.authors[0] = {};
+if (!apiData.site.authors[0].socials) apiData.site.authors[0].socials = [];
 
 function saveData() {
   const total = (apiData.projects || []).length;
@@ -56,7 +62,15 @@ const categoryList = blessed.list({
   keys: true, vi: true, mouse: true, border: { type: 'line' },
   style: { fg: 'white', selected: { bg: '#ea9a97', fg: 'black' }, border: { fg: '#ea9a97' } },
   label: ' Configuration ',
-  items: ['Site Details', 'Sorting Configuration', 'Pagination Settings', 'Global Social Links', 'Author Details']
+  items: [
+    'Site Details', 
+    'UI & Layout Settings',
+    'Sorting Configuration', 
+    'Pagination Settings', 
+    'Global Social Links', 
+    'Author Details',
+    'Author Social Links'
+  ]
 });
 
 const optionList = blessed.list({
@@ -94,21 +108,35 @@ function renderOptions() {
     opts.push(`Description: ${apiData.site.description || ''}`);
     opts.push(`Base URL: ${apiData.site.base_url || ''}`);
     opts.push(`Accent Color: ${apiData.site.accent || ''}`);
+    opts.push(`Language: ${apiData.site.lang || 'en-US'}`);
+    opts.push(`Favicon: ${apiData.site.favicon || ''}`);
   } else if (currentCategoryIndex === 1) {
+    opts.push(`Desktop Columns: ${apiData.settings.layout.columns_desktop}`);
+    opts.push(`Tablet Columns: ${apiData.settings.layout.columns_tablet}`);
+    opts.push(`Mobile Columns: ${apiData.settings.layout.columns_mobile}`);
+    opts.push(`Show Thumbnails: ${apiData.settings.show_thumbnails ? 'Yes' : 'No'} (Press Enter to toggle)`);
+    opts.push(`Monospace Font: ${apiData.settings.ui.monospace_font || 'monospace'}`);
+  } else if (currentCategoryIndex === 2) {
     opts.push(`Field: ${apiData.settings.sort.field || 'place'} (Press Enter to toggle)`);
     opts.push(`Order: ${apiData.settings.sort.order || 'asc'} (Press Enter to toggle)`);
-  } else if (currentCategoryIndex === 2) {
-    opts.push(`Albums per page: ${apiData.pagination.page_size || 12}`);
   } else if (currentCategoryIndex === 3) {
+    opts.push(`Albums per page: ${apiData.pagination.page_size || 12}`);
+  } else if (currentCategoryIndex === 4) {
     opts.push(`[+] Add New Link`);
     apiData.socials.links.forEach(link => {
       opts.push(`[Delete] ${link.platform}: ${link.url}`);
     });
-  } else if (currentCategoryIndex === 4) {
-    const author = (apiData.site.authors && apiData.site.authors[0]) || {};
+  } else if (currentCategoryIndex === 5) {
+    const author = apiData.site.authors[0];
     opts.push(`Name: ${author.name || ''}`);
     opts.push(`URL: ${author.url || ''}`);
     opts.push(`Avatar: ${author.avatar || ''}`);
+  } else if (currentCategoryIndex === 6) {
+    const authorSocials = apiData.site.authors[0].socials;
+    opts.push(`[+] Add New Author Link`);
+    authorSocials.forEach(link => {
+      opts.push(`[Delete] ${link.platform}: ${link.url}`);
+    });
   }
   optionList.setItems(opts);
   screen.render();
@@ -129,10 +157,10 @@ optionList.key(['left', 'h', 'escape'], () => {
 
 optionList.key(['enter', 'e'], () => {
   const idx = optionList.selected;
-  
+
   if (currentCategoryIndex === 0) { // Site Details
-    const fields = ['title', 'description', 'base_url', 'accent'];
-    const labels = ['Site Title', 'Site Description', 'Base URL', 'Accent Color Hex'];
+    const fields = ['title', 'description', 'base_url', 'accent', 'lang', 'favicon'];
+    const labels = ['Site Title', 'Site Description', 'Base URL', 'Accent Color Hex', 'Language (e.g. en-US)', 'Favicon URL/Path'];
     const field = fields[idx];
     prompt.input(`Enter ${labels[idx]}:`, apiData.site[field] || '', (err, val) => {
       if (!err && val !== null) {
@@ -144,7 +172,40 @@ optionList.key(['enter', 'e'], () => {
         screen.render();
       }
     });
-  } else if (currentCategoryIndex === 1) { // Sorting
+  } else if (currentCategoryIndex === 1) { // UI & Layout
+    if (idx >= 0 && idx <= 2) {
+      const fields = ['columns_desktop', 'columns_tablet', 'columns_mobile'];
+      const labels = ['Desktop Columns', 'Tablet Columns', 'Mobile Columns'];
+      prompt.input(`Enter ${labels[idx]}:`, String(apiData.settings.layout[fields[idx]]), (err, val) => {
+        if (!err && val !== null) {
+          const parsed = parseInt(val, 10);
+          if (!isNaN(parsed) && parsed > 0) {
+            apiData.settings.layout[fields[idx]] = parsed;
+            saveData();
+            renderOptions();
+            optionList.select(idx);
+          }
+        }
+        screen.render();
+      });
+    } else if (idx === 3) { // Toggle Show Thumbnails
+      apiData.settings.show_thumbnails = !apiData.settings.show_thumbnails;
+      saveData();
+      renderOptions();
+      optionList.select(idx);
+    } else if (idx === 4) { // Monospace Font
+      prompt.input(`Enter Monospace Font Family:`, apiData.settings.ui.monospace_font || '', (err, val) => {
+        if (!err && val !== null) {
+          apiData.settings.ui.monospace_font = val;
+          saveData();
+          renderOptions();
+          optionList.select(idx);
+        } else {
+          screen.render();
+        }
+      });
+    }
+  } else if (currentCategoryIndex === 2) { // Sorting
     if (idx === 0) { // Field
       const fields = ['place', 'year', 'title', 'created_at'];
       let cur = fields.indexOf(apiData.settings.sort.field);
@@ -155,7 +216,7 @@ optionList.key(['enter', 'e'], () => {
     saveData();
     renderOptions();
     optionList.select(idx);
-  } else if (currentCategoryIndex === 2) { // Pagination
+  } else if (currentCategoryIndex === 3) { // Pagination
     prompt.input('Enter albums per page:', String(apiData.pagination.page_size || 12), (err, val) => {
       if (!err && val !== null) {
         const parsed = parseInt(val, 10);
@@ -168,7 +229,7 @@ optionList.key(['enter', 'e'], () => {
       }
       screen.render();
     });
-  } else if (currentCategoryIndex === 3) { // Socials
+  } else if (currentCategoryIndex === 4) { // Global Socials
     if (idx === 0) { // Add
       prompt.input('Enter platform name (e.g. twitter, github):', '', (err, platform) => {
         if (err || !platform) { screen.render(); return; }
@@ -197,9 +258,7 @@ optionList.key(['enter', 'e'], () => {
         optionList.focus();
       });
     }
-  } else if (currentCategoryIndex === 4) { // Author Details
-    if (!apiData.site.authors) apiData.site.authors = [{}];
-    if (!apiData.site.authors[0]) apiData.site.authors[0] = {};
+  } else if (currentCategoryIndex === 5) { // Author Details
     const fields = ['name', 'url', 'avatar'];
     const labels = ['Author Name', 'Author URL', 'Author Avatar URL'];
     const field = fields[idx];
@@ -213,6 +272,36 @@ optionList.key(['enter', 'e'], () => {
         screen.render();
       }
     });
+  } else if (currentCategoryIndex === 6) { // Author Socials
+    const authorSocials = apiData.site.authors[0].socials;
+    if (idx === 0) { // Add
+      prompt.input('Enter platform name (e.g. twitter, instagram):', '', (err, platform) => {
+        if (err || !platform) { screen.render(); return; }
+        prompt.input('Enter full URL:', '', (err, url) => {
+          if (!err && url) {
+            authorSocials.push({ platform: platform.toLowerCase(), url });
+            saveData();
+            renderOptions();
+            optionList.select(authorSocials.length);
+          } else {
+            screen.render();
+          }
+        });
+      });
+    } else { // Delete
+      const linkIdx = idx - 1;
+      question.ask(`Delete Author's ${authorSocials[linkIdx].platform} link? (y/n)`, (err, val) => {
+        if (!err && val) {
+          authorSocials.splice(linkIdx, 1);
+          saveData();
+          renderOptions();
+          optionList.select(Math.max(0, idx - 1));
+        } else {
+          screen.render();
+        }
+        optionList.focus();
+      });
+    }
   }
 });
 

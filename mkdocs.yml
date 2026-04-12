@@ -18,6 +18,7 @@ nav:
   - Features: features.md
   - Architecture: architecture.md
   - API Reference: api.md
+  - Contributing: contributing.md
 
 markdown_extensions:
   admonition:

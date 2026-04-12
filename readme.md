@@ -289,3 +289,7 @@ Per-item meta generation order:
 - Static-export per-project HTML with full meta tags and OG absolute URLs.
 - Include RSS/Atom for posts (future).
 - Provide robots.txt instructions and sitemap.xml generation from projects[].
+
+## Contributing
+
+Please see our [Contributing Guide](docs/contributing.md) for details on our development process, architecture philosophy, and how you can get involved in building TypeGrid.

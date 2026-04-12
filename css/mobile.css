@@ -575,7 +575,21 @@ nav a:hover {
 
 /* Utilities */
 .flex { display: flex; }
+.flex-wrap { flex-wrap: wrap; }
 .justify-between { justify-content: space-between; }
+
+/* Mobile sorting row wrap */
+@media (max-width: 640px) {
+  .flex.justify-between.items-end.border-b {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-4);
+  }
+  .sort-controls {
+    width: 100%;
+    justify-content: flex-start !important;
+  }
+}
 .items-center { align-items: center; }
 .justify-center { justify-content: center; }
 .gap-2 { gap: var(--spacing-2); }

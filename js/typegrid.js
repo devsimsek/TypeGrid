@@ -187,6 +187,7 @@ document.addEventListener('alpine:init', () => {
     route: 'grid', // 'grid', 'project', 'tag'
     currentProject: null,
     currentFilter: null,
+    availableTags: [],
     
     // Sorting state
     sortField: 'year',
@@ -221,6 +222,9 @@ document.addEventListener('alpine:init', () => {
           }
           
           this.projects = window.dataLoader.getProjects() || [];
+          if (typeof window.dataLoader.getAllTags === 'function') {
+            this.availableTags = window.dataLoader.getAllTags() || [];
+          }
           this.applySorting();
         }
         

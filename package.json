@@ -6,6 +6,7 @@
   "scripts": {
     "serve": "npx serve -s .",
     "generate": "node generate.js",
+    "config": "node config.js",
     "serve-docs": "mkdocs serve"
   },
   "dependencies": {

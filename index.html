@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  
+
   <!-- SEO & Meta -->
   <meta name="description" content="TypeGrid — A minimal photographers' portfolio">
-  
+
   <!-- Initial Theme Injection to prevent FOUC -->
   <script>
     (function() {
@@ -20,13 +20,13 @@
 
   <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75' font-family='monospace'>□</text></svg>">
-  
+
   <!-- Stylesheets - Mobile First -->
   <link rel="stylesheet" href="./css/variables.css">
   <link rel="stylesheet" href="./css/reset.css">
   <link rel="stylesheet" href="./css/mobile.css">
   <link rel="stylesheet" href="./css/responsive.css">
-  
+
   <title>TypeGrid</title>
 </head>
 <body x-data="typegrid" @keydown.window="handleKeydown($event)">
@@ -40,8 +40,8 @@
       <div class="header-actions">
         <!-- Theme Switcher bound to Alpine Store -->
         <div class="theme-switcher-container">
-          <button class="theme-switcher" 
-                  @click="$store.theme.toggle()" 
+          <button class="theme-switcher"
+                  @click="$store.theme.toggle()"
                   :data-theme="$store.theme.mode"
                   :title="$store.theme.isDark ? 'Switch to Light Mode (t)' : 'Switch to Dark Mode (t)'"
                   aria-label="Toggle Theme">
@@ -65,7 +65,7 @@
           <span></span><span></span><span></span>
         </button>
       </div>
-      
+
       <!-- Navigation Menu -->
       <nav :class="{'open': navOpen}" x-cloak>
         <ul>
@@ -88,7 +88,7 @@
     <!-- Grid View & Tag Filter View -->
     <div x-show="!isLoading && (route === 'grid' || route === 'tag')" x-cloak>
       <div class="container">
-        
+
         <!-- Header & Sorting -->
         <div class="flex justify-between items-end mb-6 border-b pb-4">
           <div>
@@ -103,23 +103,34 @@
               <h2 class="mb-0" style="margin-bottom: 0;">Projects</h2>
             </div>
           </div>
-          
-          <div class="sort-controls flex items-center gap-2">
-            <span class="text-sm text-muted">Sort:</span>
-            <select class="text-sm" style="padding: 4px 8px; cursor: pointer;" @change="changeSort($event.target.value.split(',')[0], $event.target.value.split(',')[1])">
-              <option value="place,asc" :selected="sortField === 'place' && sortOrder === 'asc'">Curated</option>
-              <option value="year,desc" :selected="sortField === 'year' && sortOrder === 'desc'">Latest</option>
-              <option value="year,asc" :selected="sortField === 'year' && sortOrder === 'asc'">Oldest</option>
-              <option value="title,asc" :selected="sortField === 'title' && sortOrder === 'asc'">A-Z</option>
-            </select>
+
+          <div class="sort-controls flex items-center gap-4" style="flex-wrap: wrap; justify-content: flex-end;">
+            <div class="flex items-center gap-2" x-show="availableTags && availableTags.length > 0" x-cloak>
+              <span class="text-sm text-muted">Filter:</span>
+              <select class="text-sm" style="padding: 4px 8px; cursor: pointer;" :value="currentFilter || ''" @change="window.location.hash = $event.target.value ? '#/tag/' + $event.target.value : '#/'">
+                <option value="">All Categories</option>
+                <template x-for="tag in availableTags" :key="tag">
+                  <option :value="tag" x-text="tag"></option>
+                </template>
+              </select>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-muted">Sort:</span>
+              <select class="text-sm" style="padding: 4px 8px; cursor: pointer;" :value="`${sortField},${sortOrder}`" @change="changeSort($event.target.value.split(',')[0], $event.target.value.split(',')[1])">
+                <option value="place,asc">Curated</option>
+                <option value="year,desc">Latest</option>
+                <option value="year,asc">Oldest</option>
+                <option value="title,asc">A-Z</option>
+              </select>
+            </div>
           </div>
         </div>
 
         <div class="grid">
           <template x-for="(project, index) in paginatedProjects" :key="project.id">
             <a :href="`#/project/${project.slug}`" class="card project-card" :class="{'ring-focus': focusedIndex === index}">
-              <img :src="project.images.find(img => img.primary)?.url || project.images[0]?.url" 
-                   :alt="project.title" 
+              <img :src="project.images.find(img => img.primary)?.url || project.images[0]?.url"
+                   :alt="project.title"
                    class="card-image" loading="lazy">
               <div class="card-content">
                 <h2 class="card-title" x-text="project.title"></h2>
@@ -136,7 +147,7 @@
             </a>
           </template>
         </div>
-        
+
         <!-- Empty State -->
         <div x-show="paginatedProjects.length === 0" class="text-center mt-8">
           <p class="text-muted">No projects found.</p>
@@ -170,7 +181,7 @@
               </div>
             </template>
           </div>
-          
+
           <!-- Project Info -->
           <div class="project-info">
             <div class="project-header">
@@ -190,9 +201,9 @@
                 </div>
               </div>
             </div>
-            
+
             <p class="project-description" x-show="currentProject?.description" x-text="currentProject?.description"></p>
-            
+
             <div class="mt-6" x-show="currentProject?.tags && currentProject.tags.length > 0">
               <p class="meta-label mb-2">Tags</p>
               <div class="card-tags">
@@ -217,7 +228,7 @@
   <footer>
     <div class="footer-content container">
       <div class="footer-description" x-show="site.description" x-text="site.description"></div>
-      
+
       <div class="authors-section" x-show="authors.length > 0" x-cloak>
         <template x-for="author in authors" :key="author.name">
           <div class="author-card">
@@ -254,16 +265,16 @@
   </footer>
 
   <!-- Lightbox Viewer (Alpine Managed) -->
-  <div class="lightbox" 
-       x-show="$store.lightbox.isOpen" 
-       x-cloak 
-       tabindex="0" 
-       role="dialog" 
+  <div class="lightbox"
+       x-show="$store.lightbox.isOpen"
+       x-cloak
+       tabindex="0"
+       role="dialog"
        aria-modal="true"
        @keydown.window.escape="$store.lightbox.close()">
-    
+
     <div class="lightbox-backdrop" @click="$store.lightbox.close()"></div>
-    
+
     <div class="lightbox-container">
       <div class="lightbox-header">
         <div class="lightbox-counter" x-text="`${$store.lightbox.currentIndex + 1} / ${$store.lightbox.images.length}`"></div>
@@ -281,22 +292,22 @@
       </div>
 
       <div class="lightbox-main"
-           @mousedown="$store.lightbox.startPan($event)" 
-           @mousemove="$store.lightbox.doPan($event)" 
-           @mouseup="$store.lightbox.endPan()" 
+           @mousedown="$store.lightbox.startPan($event)"
+           @mousemove="$store.lightbox.doPan($event)"
+           @mouseup="$store.lightbox.endPan()"
            @mouseleave="$store.lightbox.endPan()"
            @touchstart="$store.lightbox.startPan($event)"
            @touchmove="$store.lightbox.doPan($event)"
            @touchend="$store.lightbox.endPan()">
-        
+
         <button class="lightbox-prev" @click.stop="$store.lightbox.prev()" :disabled="$store.lightbox.currentIndex === 0" title="Previous (h, ←)">
           <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><polyline points="15 18 9 12 15 6"></polyline></svg>
         </button>
 
         <div class="lightbox-image-wrapper overflow-hidden relative w-full h-full flex items-center justify-center" style="flex: 1; min-height: 0;">
-          <img class="lightbox-image select-none" 
-               :src="$store.lightbox.currentImage?.url" 
-               :style="$store.lightbox.transformStyle" 
+          <img class="lightbox-image select-none"
+               :src="$store.lightbox.currentImage?.url"
+               :style="$store.lightbox.transformStyle"
                draggable="false">
         </div>
 
@@ -314,7 +325,7 @@
           <span class="meta-item" x-show="$store.lightbox.currentImage?.lens || currentProject?.lens"><span class="meta-label">Lens:</span> <span x-text="$store.lightbox.currentImage?.lens || currentProject?.lens"></span></span>
           <span class="meta-item" x-show="$store.lightbox.currentImage?.tags && $store.lightbox.currentImage.tags.length > 0"><span class="meta-label">Tags:</span> <span x-text="$store.lightbox.currentImage.tags.join(', ')"></span></span>
         </div>
-        
+
         <div class="lightbox-actions flex gap-2 pt-4" style="flex-wrap: wrap;">
           <button class="btn btn-small" @click="$store.lightbox.zoomOut()" title="Zoom Out (-)">-</button>
           <button class="btn btn-small" @click="$store.lightbox.resetZoom()" title="Reset Zoom (0)">1:1</button>
@@ -337,7 +348,7 @@
     <div class="lightbox-backdrop" @click="showHelp = false"></div>
     <div class="lightbox-container" style="width: 90%; max-width: 500px; margin: auto; height: auto; max-height: 90vh; background: var(--color-bg-primary); border: 1px solid var(--color-border); padding: var(--spacing-6); border-radius: 0; overflow-y: auto;">
       <h2 class="mb-4 border-b pb-4">Keyboard Shortcuts</h2>
-      
+
       <h3 class="text-sm text-muted mb-2">Global Navigation</h3>
       <ul class="mb-6" style="list-style: none;">
         <li class="mb-2"><code class="font-mono">?</code> <span class="ml-2">Toggle Help</span></li>
@@ -347,7 +358,7 @@
         <li class="mb-2"><code class="font-mono">t</code> <span class="ml-2">Toggle Theme</span></li>
         <li class="mb-2"><code class="font-mono">Esc</code> <span class="ml-2">Go back to Grid</span></li>
       </ul>
-      
+
       <h3 class="text-sm text-muted mb-2">Photo Viewer</h3>
       <ul class="mb-6" style="list-style: none;">
         <li class="mb-2"><code class="font-mono">h/l</code> or <code class="font-mono">←/→</code> <span class="ml-2">Previous/Next Photo</span></li>
@@ -358,7 +369,7 @@
         <li class="mb-2"><code class="font-mono">m</code> <span class="ml-2">Toggle Metadata</span></li>
         <li class="mb-2"><code class="font-mono">Esc</code> <span class="ml-2">Close Viewer</span></li>
       </ul>
-      
+
       <button class="btn w-full justify-center mt-4" @click="showHelp = false">Close</button>
     </div>
   </div>

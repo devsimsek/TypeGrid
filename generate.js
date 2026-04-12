@@ -74,11 +74,11 @@ function runMigrations(apiData) {
 
   if (version !== TARGET_VERSION) {
     console.log(`${colors.dim}[Migration] Upgrading database from v${version} to v${TARGET_VERSION}...${colors.reset}`);
-    
+
     if (apiData.projects) {
       apiData.projects.forEach(p => {
         if (p.place === undefined) p.place = null;
-        
+
         p.images.forEach(img => {
           if (!img.tags) img.tags = [];
           if (img.lens === undefined) img.lens = null;
@@ -86,7 +86,7 @@ function runMigrations(apiData) {
         });
       });
     }
-    
+
     apiData.meta.version = TARGET_VERSION;
   }
   return apiData;
@@ -118,9 +118,9 @@ async function runWizard() {
 
   // --- STEP 1: Site Configuration ---
   console.log(`${colors.pine}${colors.bold}--- Step 1: Site Configuration ---${colors.reset}`);
-  
+
   if (!apiData.site) apiData.site = {};
-  
+
   if (isFirstRun || await askBool('Update site settings?', false)) {
     apiData.site.title = await ask('Site Title', apiData.site.title || 'My Portfolio');
     apiData.site.description = await ask('Site Description', apiData.site.description || 'A minimal photography portfolio.');
@@ -134,13 +134,13 @@ async function runWizard() {
       description: apiData.site.description,
       image: ""
     };
-    
+
     // Author Setup
     if (!apiData.site.authors) apiData.site.authors = [];
     console.log(`\n${colors.dim}Let's set up the primary author for the footer.${colors.reset}`);
     const authorName = await ask('Author Name', apiData.site.authors[0]?.name || 'Photographer');
     const authorInsta = await ask('Instagram Username (optional)', '');
-    
+
     let socials = apiData.site.authors[0]?.socials || [];
     if (authorInsta) {
       // Update or add instagram
@@ -165,11 +165,11 @@ async function runWizard() {
 
   // --- STEP 2: Process Images ---
   console.log(`${colors.pine}${colors.bold}--- Step 2: Scanning Local Images ---${colors.reset}`);
-  
+
   const existingProjects = apiData.projects || [];
   const processedProjects = [];
   const entries = fs.readdirSync(IMAGES_DIR, { withFileTypes: true });
-  
+
   let scannedCount = 0;
 
   for (const entry of entries) {
@@ -193,8 +193,9 @@ async function runWizard() {
       const tagsInput = await ask(`Tags (comma separated)`, '');
       const tags = tagsInput.split(',').map(s => s.trim()).filter(Boolean);
       const placeInput = await ask(`Placement Order (1, 2, 3...)`, 'Auto');
-      const place = placeInput.toLowerCase() === 'auto' || placeInput === '' ? null : parseInt(placeInput, 10);
-      
+      const parsedPlace = parseInt(placeInput, 10);
+      const place = isNaN(parsedPlace) ? null : parsedPlace;
+
       project = {
         id: slug,
         slug: slug,
@@ -238,7 +239,7 @@ async function runWizard() {
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const relativeUrl = `./images/${entry.name}/${file}`;
-      
+
       // Prevent overwriting existing images
       const existingImage = project.images.find(img => img.filename === file);
       if (existingImage) {
@@ -250,7 +251,7 @@ async function runWizard() {
       const filePath = path.join(projectDir, file);
       const stats = fs.statSync(filePath);
       let dimensions = { width: 1920, height: 1080 };
-      
+
       try {
         dimensions = sizeOf(filePath);
       } catch (e) {
@@ -308,7 +309,7 @@ async function runWizard() {
     project.lens = project.lens || albumLens;
     project.year = albumYear;
     project.excerpt = `${projectImages.length} photos`;
-    
+
     if (isNewProject && projectImages.length > 0) {
       project.open_graph.image = projectImages[0].url;
     }
@@ -334,7 +335,7 @@ async function runWizard() {
       }
     }
   }
-  
+
   for (const processed of processedProjects) {
     if (!finalProjects.some(p => p.id === processed.id)) {
       finalProjects.push(processed);
@@ -348,13 +349,13 @@ async function runWizard() {
   finalProjects.sort((a, b) => {
     let valA = a[sortField];
     let valB = b[sortField];
-    
+
     if (valA === null || valA === undefined) valA = sortOrder === "asc" ? Infinity : -Infinity;
     if (valB === null || valB === undefined) valB = sortOrder === "asc" ? Infinity : -Infinity;
 
     if (valA < valB) return sortOrder === "asc" ? -1 : 1;
     if (valA > valB) return sortOrder === "asc" ? 1 : -1;
-    
+
     return b.year - a.year;
   });
 
@@ -384,12 +385,12 @@ async function runWizard() {
   };
 
   fs.writeFileSync(DATA_FILE, JSON.stringify(finalJSON, null, 2));
-  
+
   console.log(`\n${colors.rose}${colors.bold}======================================================${colors.reset}`);
   console.log(`${colors.green}${colors.bold}  SUCCESS! API Generated ✨${colors.reset}`);
   console.log(`${colors.dim}  Tracked ${finalProjects.length} albums. Saved to data/typegrid.json${colors.reset}`);
   console.log(`${colors.rose}${colors.bold}======================================================${colors.reset}\n`);
-  
+
   rl.close();
 }
 

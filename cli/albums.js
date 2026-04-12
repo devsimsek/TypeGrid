@@ -146,7 +146,7 @@ const helpBox = blessed.box({
     fg: 'gray',
     border: { fg: 'gray' }
   },
-  content: ' [?] Help | [q] Quit | [u] Update | Albums: [c]reate [e]dit [d]elete [s]can [r]eorder | Images: [a]dd [d]elete [e]dit [t]ags [c]amera [l]ens [p]rimary [o]pen [r]eorder'
+  content: ' [?] Help | [q] Quit | [u] Update | Albums: [c]reate [e]dit [d]elete [s]can [r]eorder | Images: [a]dd [d]elete [e]dit [t]ags [c]amera [l]ens [p]rimary [o]pen [r]eorder [x]exif'
 });
 
 const helpModal = blessed.box({
@@ -155,7 +155,7 @@ const helpModal = blessed.box({
   border: 'line', hidden: true,
   style: { border: { fg: '#ea9a97' } },
   label: ` Help & Info (v${cliVersion}) `,
-  content: '\n Global:\n  [q / C-c] Quit\n  [?] Toggle Help\n  [u] Check for Updates\n\n Albums List:\n  [l / Enter / Right] Focus Images\n  [J / K] Move Album Down/Up\n  [r] Reorder Album\n  [c] Create Album\n  [e] Edit Album Info\n  [d] Delete Album\n  [s] Autoscan Folder\n  [f] Toggle Favorite\n  [v] Toggle Draft Visibility\n\n Images List:\n  [h / Esc / Left] Back to Albums\n  [J / K] Move Image Down/Up\n  [r] Reorder Image\n  [a] Add Image\n  [d] Delete Image\n  [e] Edit All Metadata\n  [t] Edit Tags\n  [c] Edit Camera\n  [l] Edit Lens\n  [p] Set as Primary\n  [o] Open Image\n  [s] Autoscan Folder\n\nPress any key to close.'
+  content: '\n Global:\n  [q / C-c] Quit\n  [?] Toggle Help\n  [u] Check for Updates\n\n Albums List:\n  [l / Enter / Right] Focus Images\n  [J / K] Move Album Down/Up\n  [r] Reorder Album\n  [c] Create Album\n  [e] Edit Album Info\n  [d] Delete Album\n  [s] Autoscan Folder\n  [f] Toggle Favorite\n  [v] Toggle Draft Visibility\n\n Images List:\n  [h / Esc / Left] Back to Albums\n  [J / K] Move Image Down/Up\n  [r] Reorder Image\n  [a] Add Image\n  [d] Delete Image\n  [e] Edit All Metadata\n  [t] Edit Tags\n  [c] Edit Camera\n  [l] Edit Lens\n  [p] Set as Primary\n  [o] Open Image\n  [s] Autoscan Folder\n  [x] Scan EXIF\n\nPress any key to close.'
 });
 
 // Modals
@@ -581,6 +581,68 @@ function handleOpenImage() {
   });
 }
 
+async function handleScanExif() {
+  const project = projects[currentAlbumIndex];
+  if (!project || !project.images || project.images.length === 0) return;
+  const img = project.images[currentImageIndex];
+  if (!img.url) return;
+
+  let targetPath = img.url;
+  if (img.url.startsWith('/images/') || img.url.startsWith('./images/')) {
+    targetPath = path.join(publicImagesPath, img.url);
+  } else {
+    toast('Cannot scan remote images');
+    return;
+  }
+
+  if (!fs.existsSync(targetPath)) {
+    toast('Local image not found');
+    return;
+  }
+
+  try {
+    toast('Scanning EXIF & Size...');
+    let updated = false;
+    try {
+      const exifData = await exifr.parse(targetPath);
+      if (exifData) {
+        if (exifData.Make || exifData.Model) {
+          img.camera = `${exifData.Make || ''} ${exifData.Model || ''}`.trim();
+          updated = true;
+        }
+        if (exifData.LensModel) {
+          img.lens = exifData.LensModel;
+          updated = true;
+        }
+        if (exifData.CreateDate || exifData.DateTimeOriginal) {
+          const dateObj = exifData.CreateDate || exifData.DateTimeOriginal;
+          img.created_at = new Date(dateObj).toISOString();
+          updated = true;
+        }
+      }
+    } catch(e) {}
+
+    try { 
+      const dims = sizeOf(targetPath); 
+      if (dims.width && dims.height) {
+        img.width = dims.width; 
+        img.height = dims.height; 
+        updated = true;
+      }
+    } catch(e) {}
+    
+    if (updated) {
+      saveData();
+      toast('EXIF Data Extracted!');
+      showImagePreview(currentImageIndex);
+    } else {
+      toast('No EXIF found.');
+    }
+  } catch(e) {
+    toast('Error scanning EXIF.');
+  }
+}
+
 function handleAutoscan() {
   const project = projects[currentAlbumIndex];
   if (!project) return;
@@ -830,6 +892,10 @@ imageList.key(['o'], () => {
 
 imageList.key(['s'], () => {
   handleAutoscan();
+});
+
+imageList.key(['x'], () => {
+  handleScanExif();
 });
 
 imageList.key(['r'], () => {

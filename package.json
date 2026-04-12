@@ -1,6 +1,6 @@
 {
   "name": "typegrid-api-generator",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "A CLI tool to read local images and generate the typegrid.json API file.",
   "main": "cli/generate.js",
   "scripts": {

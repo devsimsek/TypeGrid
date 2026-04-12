@@ -44,6 +44,7 @@ This master menu allows you to navigate between:
 1. **Manage Albums**: The Interactive Album Manager
 2. **Site Configuration**: The Configurator Wizard
 3. **Auto-Generate API**: The Batch Scanner
+4. **Check for Updates**: The OTA Updater
 
 #### 1. Manage Albums
 - **Visual Navigation:** View your albums, images, and visual ASCII previews directly in the terminal.
@@ -51,7 +52,8 @@ This master menu allows you to navigate between:
 - **Image Management:** Add (`a`), delete (`d`), open in system viewer (`o`), and reorder (`r` or `Shift+J/K`) images.
 - **Metadata Editing:** Quickly edit tags (`t`), camera (`c`), lens (`l`), or edit everything (`e`). Set primary images (`p`).
 - **Autoscan:** Press `s` to automatically scan an album's folder on disk, extract EXIF data, calculate dimensions, and import new photos seamlessly.
-- **Updates:** Press `u` to check for and install OTA updates from the TypeGrid repository.
+- **Scan EXIF:** Press `x` on any individual image to instantly extract its Dimensions, Camera, Lens, and Creation Date.
+- **Updates:** Press `u` (or use the main menu) to check for and install OTA updates from the TypeGrid repository.
 
 #### 2. Site Configuration
 An interactive wizard to update your site title, description, SEO, themes, layout, multi-author settings, and social links.

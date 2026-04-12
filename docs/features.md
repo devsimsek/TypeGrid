@@ -54,7 +54,7 @@ There is no database to configure. Simply update the JSON file to add new projec
 If you prefer to host images locally, TypeGrid includes a suite of powerful interactive CLI tools to manage your portfolio effortlessly:
 
 ### 🖥️ Unified Master CLI (TUI)
-Run `npm run typegrid` to launch a fully-featured, raw mode master menu right in your terminal, which provides access to the Album Manager, Configurator, and API Generator.
+Run `npm run typegrid` to launch a fully-featured, raw mode master menu right in your terminal, which provides access to the Album Manager, Configurator, API Generator, and the OTA Updater.
 
 #### 📁 Album Manager
 - **Visual Previews**: View your local images as ASCII/ANSI previews directly in your terminal.
@@ -63,7 +63,8 @@ Run `npm run typegrid` to launch a fully-featured, raw mode master menu right in
 - **Granular Edits**: Quickly edit individual image properties (`t` for tags, `c` for camera, `l` for lens).
 - **Set Primary**: Mark any image as the album cover instantly (`p`).
 - **Autoscan**: Press `s` to automatically scan an album's folder on disk, extracting EXIF data and adding new photos.
-- **OTA Updates**: Press `u` to check for and install over-the-air updates from the TypeGrid repository.
+- **Scan EXIF**: Press `x` on any individual image to instantly extract its Dimensions, Camera, Lens, and Creation Date.
+- **OTA Updates**: Press `u` (or use the main menu) to check for and install over-the-air updates from the TypeGrid repository.
 
 #### ⚙️ Configurator & API Generator
 - **Configurator**: An interactive wizard to maintain site settings (language, favicon), layout & UI (columns, thumbnails, font), sorting algorithms, pagination, multiple authors, and global/author social links.

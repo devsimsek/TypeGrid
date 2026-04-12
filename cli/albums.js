@@ -375,7 +375,7 @@ async function showImagePreview(index) {
 
   try {
     // Attempt to render image if it's a local file path
-    if (img.url && img.url.startsWith('/images/')) {
+    if (img.url && (img.url.startsWith('/images/') || img.url.startsWith('./images/'))) {
       const fullPath = path.join(publicImagesPath, img.url);
       if (fs.existsSync(fullPath)) {
         const availableWidth = Math.max(10, previewBox.width - 4);
@@ -584,8 +584,22 @@ function handleOpenImage() {
 function handleAutoscan() {
   const project = projects[currentAlbumIndex];
   if (!project) return;
+
+  let albumFolder = path.join(publicImagesPath, 'images', project.slug || project.id);
   
-  const albumFolder = path.join(publicImagesPath, 'images', project.slug || project.id);
+  if (!fs.existsSync(albumFolder)) {
+    const imagesDir = path.join(publicImagesPath, 'images');
+    if (fs.existsSync(imagesDir)) {
+      const slugify = (text) => text.toString().toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-]+/g, '').replace(/\-\-+/g, '-').replace(/^-+/, '').replace(/-+$/, '');
+      const targetSlug = project.slug || project.id;
+      const folders = fs.readdirSync(imagesDir, { withFileTypes: true }).filter(d => d.isDirectory());
+      const matched = folders.find(f => slugify(f.name) === targetSlug);
+      if (matched) {
+        albumFolder = path.join(imagesDir, matched.name);
+      }
+    }
+  }
+
   if (!fs.existsSync(albumFolder)) {
     previewBox.setContent('Album folder not found on disk:\n' + albumFolder);
     screen.render();
@@ -596,8 +610,9 @@ function handleAutoscan() {
   const existingUrls = (project.images || []).map(img => img.url);
   const existingFilenames = (project.images || []).map(img => img.filename);
 
+  const folderName = path.basename(albumFolder);
   const unmapped = files.filter(f => {
-    const relUrl = `/images/${project.slug || project.id}/${f}`;
+    const relUrl = `/images/${folderName}/${f}`;
     return !existingUrls.includes(relUrl) && !existingFilenames.includes(f);
   });
 
@@ -621,7 +636,8 @@ function handleAutoscan() {
     question.ask(`Found new image ${file}. Add to album? (y/n)`, async (err, val) => {
       if (!err && val) {
         const fullPath = path.join(albumFolder, file);
-        const relUrl = `/images/${project.slug || project.id}/${file}`;
+        const folderName = path.basename(albumFolder);
+        const relUrl = `/images/${folderName}/${file}`;
         
         let width = 1920, height = 1080;
         try { const dims = sizeOf(fullPath); width = dims.width; height = dims.height; } catch(e) {}

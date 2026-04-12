@@ -701,12 +701,17 @@ async function handleUpdate() {
           
           const files = [
             'package.json',
+            'index.html',
+            'cli/index.js',
             'cli/albums.js',
             'cli/generate.js',
             'cli/config.js',
-            'css/theme-dawn.css',
-            'css/theme-moon.css',
-            'js/utils.js'
+            'css/reset.css',
+            'css/variables.css',
+            'css/responsive.css',
+            'css/mobile.css',
+            'js/typegrid.js',
+            'js/loader.js'
           ];
           
           for (const file of files) {

@@ -88,6 +88,7 @@ const albumList = blessed.list({
   keys: true,
   vi: true,
   mouse: true,
+  tags: true,
   border: { type: 'line' },
   style: {
     fg: 'white',
@@ -107,6 +108,7 @@ const imageList = blessed.list({
   keys: true,
   vi: true,
   mouse: true,
+  tags: true,
   border: { type: 'line' },
   style: {
     fg: 'white',

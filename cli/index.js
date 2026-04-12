@@ -27,7 +27,7 @@ function showMainMenu() {
     style: {
       fg: 'white',
       border: {
-        fg: '#f0f0f0'
+        fg: '#ea9a97'
       }
     }
   });
@@ -49,8 +49,8 @@ function showMainMenu() {
     ],
     style: {
       selected: {
-        bg: 'blue',
-        fg: 'white',
+        bg: '#ea9a97',
+        fg: 'black',
         bold: true
       },
       item: {

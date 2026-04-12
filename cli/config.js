@@ -80,7 +80,7 @@ function toast(text, time = 2) {
 // Layouts
 const categoryList = blessed.list({
   parent: screen, top: 0, left: 0, width: '30%', height: '90%',
-  keys: true, vi: true, mouse: true, border: { type: 'line' },
+  keys: true, vi: true, mouse: true, tags: true, border: { type: 'line' },
   style: { fg: 'white', selected: { bg: '#ea9a97', fg: 'black' }, border: { fg: '#ea9a97' } },
   label: ' Configuration ',
   items: [
@@ -96,7 +96,7 @@ const categoryList = blessed.list({
 
 const optionList = blessed.list({
   parent: screen, top: 0, left: '30%', width: '70%', height: '90%',
-  keys: true, vi: true, mouse: true, border: { type: 'line' },
+  keys: true, vi: true, mouse: true, tags: true, border: { type: 'line' },
   style: { fg: 'white', selected: { bg: '#ea9a97', fg: 'black' }, border: { fg: '#ea9a97' } },
   label: ' Options ',
   items: []

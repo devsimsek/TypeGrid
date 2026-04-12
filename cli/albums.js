@@ -528,13 +528,19 @@ function handleOpenImage() {
   const project = projects[currentAlbumIndex];
   if (!project || !project.images || project.images.length === 0) return;
   const img = project.images[currentImageIndex];
-  if (img.url && img.url.startsWith('/images/')) {
-    const fullPath = path.join(publicImagesPath, img.url);
-    let command = 'xdg-open';
-    if (process.platform === 'darwin') command = 'open';
-    if (process.platform === 'win32') command = 'start ""';
-    exec(`${command} "${fullPath}"`);
+  if (!img.url) return;
+
+  let targetPath = img.url;
+  if (img.url.startsWith('/images/') || img.url.startsWith('./images/')) {
+    targetPath = path.join(publicImagesPath, img.url);
   }
+
+  import('open').then((openModule) => {
+    openModule.default(targetPath);
+  }).catch(err => {
+    previewBox.setContent('Error opening image: ' + err.message);
+    screen.render();
+  });
 }
 
 function handleAutoscan() {

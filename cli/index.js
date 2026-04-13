@@ -43,10 +43,11 @@ function showMainMenu() {
     mouse: true,
     items: [
       '1. Manage Albums',
-      '2. Site Configuration',
-      '3. Auto-Generate API',
-      '4. Check for Updates',
-      '5. Exit'
+      '2. Manage Posts & Pages',
+      '3. Site Configuration',
+      '4. Auto-Generate API',
+      '5. Check for Updates',
+      '6. Exit'
     ],
     style: {
       selected: {
@@ -73,15 +74,18 @@ function showMainMenu() {
         script = 'albums.js';
         break;
       case 1:
-        script = 'config.js';
+        script = 'posts.js';
         break;
       case 2:
-        script = 'generate.js';
+        script = 'config.js';
         break;
       case 3:
-        script = 'update.js';
+        script = 'generate.js';
         break;
       case 4:
+        script = 'update.js';
+        break;
+      case 5:
         process.exit(0);
         break;
     }

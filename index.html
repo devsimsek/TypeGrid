@@ -371,6 +371,37 @@
           </div>
         </div>
       </div>
+
+      <!-- Post & Page View -->
+      <div x-show="!isLoading && (route === 'post' || route === 'page') && currentPost" x-cloak>
+        <div class="container" style="max-width: 768px; margin: 0 auto;">
+          <!-- Breadcrumb -->
+          <div class="album-controls flex justify-between items-center mb-6 pb-4 border-b">
+            <nav class="breadcrumb mb-0">
+              <a href="#/">Home</a> <span>/</span>
+              <span x-text="currentPost?.title"></span>
+            </nav>
+          </div>
+
+          <!-- Post Header -->
+          <div class="post-header mb-8">
+            <h1 class="mb-2" x-text="currentPost?.title"></h1>
+            <div class="text-muted flex gap-4" style="flex-wrap: wrap;">
+              <span x-show="currentPost?.date" x-text="currentPost?.date"></span>
+            </div>
+            <div class="mt-4" x-show="currentPost?.tags && currentPost.tags.length > 0">
+              <div class="card-tags">
+                <template x-for="tag in currentPost?.tags" :key="tag">
+                  <a :href="`#/tag/${tag}`" class="tag" x-text="tag"></a>
+                </template>
+              </div>
+            </div>
+          </div>
+
+          <!-- Post Content -->
+          <div class="post-content" x-html="htmlContent" style="line-height: 1.7; font-size: 1.1rem; padding-bottom: 4rem;"></div>
+        </div>
+      </div>
     </main>
 
     <!-- Footer with Powered by Branding -->

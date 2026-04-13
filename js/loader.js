@@ -90,6 +90,7 @@ class DataLoader {
     // Set defaults for optional fields
     data.collections = data.collections || [];
     data.posts = data.posts || [];
+    data.pages = data.pages || [];
     data.pagination = data.pagination || { page_size: 12, total_projects: data.projects.length, total_pages: 1, pages: [] };
     data.pagination.page_size = data.pagination.page_size || 12;
     data.socials = data.socials || { links: [], share_templates: {} };
@@ -146,6 +147,22 @@ class DataLoader {
   }
 
   /**
+   * Get all posts
+   */
+  getPosts() {
+    if (!this.data) return [];
+    return this.data.posts || [];
+  }
+
+  /**
+   * Get all pages
+   */
+  getPages() {
+    if (!this.data) return [];
+    return this.data.pages || [];
+  }
+
+  /**
    * Get projects for current page
    */
   getProjectsPage(pageNumber = 1) {
@@ -176,6 +193,22 @@ class DataLoader {
     if (!this.data) return null;
 
     return this.data.projects.find(p => p.id === idOrSlug || p.slug === idOrSlug) || null;
+  }
+
+  /**
+   * Get post by slug or ID
+   */
+  getPost(idOrSlug) {
+    if (!this.data) return null;
+    return this.data.posts.find(p => p.id === idOrSlug || p.slug === idOrSlug) || null;
+  }
+
+  /**
+   * Get page by slug or ID
+   */
+  getPage(idOrSlug) {
+    if (!this.data) return null;
+    return this.data.pages.find(p => p.id === idOrSlug || p.slug === idOrSlug) || null;
   }
 
   /**
@@ -385,6 +418,7 @@ class DataLoader {
     // Merge other collections
     this.data.collections = [...new Set([...this.data.collections, ...validated.collections])];
     this.data.posts = [...new Set([...this.data.posts, ...validated.posts])];
+    this.data.pages = [...new Set([...this.data.pages, ...validated.pages])];
 
     // Update pagination
     this.data.pagination.total_projects = this.data.projects.length;

@@ -218,8 +218,10 @@ document.addEventListener('alpine:init', () => {
     paginatedProjects: [],
     
     // Routing state
-    route: 'grid', // 'grid', 'project', 'tag'
+    route: 'grid', // 'grid', 'project', 'tag', 'post', 'page'
     currentProject: null,
+    currentPost: null,
+    htmlContent: '',
     currentFilter: null,
     availableTags: [],
     
@@ -272,14 +274,73 @@ document.addEventListener('alpine:init', () => {
       }
     },
     
+    parseMarkdown(md) {
+      if (!md) return '';
+      // Extremely minimal regex-based markdown parser
+      let html = md
+        .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+        .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+        .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+        .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
+        .replace(/\*(.*)\*/gim, '<em>$1</em>')
+        .replace(/\[(.*?)\]\((.*?)\)/gim, "<a href='$2' target='_blank'>$1</a>")
+        .replace(/\n$/gim, '<br />');
+
+      // Wrap paragraphs
+      html = html.split('\n\n').map(p => {
+        if (p.trim().startsWith('<h') || p.trim().length === 0) return p;
+        return `<p>${p}</p>`;
+      }).join('\n');
+      
+      return html;
+    },
+
     // --- Routing ---
-    
+
     handleRoute() {
       const hash = window.location.hash;
       this.focusedIndex = -1; // Reset focus on route change
       this.navOpen = false; // Close mobile nav
-      
-      if (hash.startsWith('#/project/')) {
+
+      if (hash.startsWith('#/post/')) {
+        const slug = hash.replace('#/post/', '');
+        this.currentPost = window.dataLoader.getPost(slug);
+        this.route = this.currentPost ? 'post' : 'grid';
+        this.htmlContent = '<div style="padding: 2rem;">Loading...</div>';
+        
+        if (this.currentPost) {
+          document.title = `${this.currentPost.title} — ${this.site.title || 'TypeGrid'}`;
+          if (this.currentPost.file) {
+            fetch(this.currentPost.file)
+              .then(res => res.ok ? res.text() : Promise.reject('Not found'))
+              .then(text => { this.htmlContent = this.parseMarkdown(text); })
+              .catch(err => { this.htmlContent = '<p>Error loading content.</p>'; });
+          } else {
+            this.htmlContent = '<p>No content file specified.</p>';
+          }
+        }
+        window.scrollTo(0, 0);
+
+      } else if (hash.startsWith('#/page/')) {
+        const slug = hash.replace('#/page/', '');
+        this.currentPost = window.dataLoader.getPage(slug);
+        this.route = this.currentPost ? 'page' : 'grid';
+        this.htmlContent = '<div style="padding: 2rem;">Loading...</div>';
+        
+        if (this.currentPost) {
+          document.title = `${this.currentPost.title} — ${this.site.title || 'TypeGrid'}`;
+          if (this.currentPost.file) {
+            fetch(this.currentPost.file)
+              .then(res => res.ok ? res.text() : Promise.reject('Not found'))
+              .then(text => { this.htmlContent = this.parseMarkdown(text); })
+              .catch(err => { this.htmlContent = '<p>Error loading content.</p>'; });
+          } else {
+            this.htmlContent = '<p>No content file specified.</p>';
+          }
+        }
+        window.scrollTo(0, 0);
+
+      } else if (hash.startsWith('#/project/')) {
         const slug = hash.replace('#/project/', '');
         this.currentProject = window.dataLoader.getProject(slug);
         this.route = this.currentProject ? 'project' : 'grid';
@@ -411,7 +472,7 @@ document.addEventListener('alpine:init', () => {
           
         case 'Escape':
           // If in project/tag view, go back to grid
-          if (this.route === 'project' || this.route === 'tag') {
+          if (this.route === 'project' || this.route === 'tag' || this.route === 'post' || this.route === 'page') {
             window.location.hash = '#/';
           }
           this.focusedIndex = -1;

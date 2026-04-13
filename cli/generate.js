@@ -116,6 +116,43 @@ const askBool = (query, defaultVal = true) => new Promise(resolve => {
   });
 });
 
+function generateSitemap(data) {
+  const baseUrl = data.site && data.site.base_url ? data.site.base_url.replace(/\/$/, '') : null;
+  if (!baseUrl) throw new Error("No base_url defined in Site Configuration.");
+
+  let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+  
+  // Home
+  xml += `  <url>\n    <loc>${baseUrl}/</loc>\n    <changefreq>daily</changefreq>\n    <priority>1.0</priority>\n  </url>\n`;
+
+  // Projects
+  if (data.projects) {
+    data.projects.forEach(p => {
+      if (p.draft) return;
+      xml += `  <url>\n    <loc>${baseUrl}/#/project/${p.slug || p.id}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
+    });
+  }
+
+  // Posts
+  if (data.posts) {
+    data.posts.forEach(p => {
+      if (p.draft) return;
+      xml += `  <url>\n    <loc>${baseUrl}/#/post/${p.slug || p.id}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
+    });
+  }
+
+  // Pages
+  if (data.pages) {
+    data.pages.forEach(p => {
+      if (p.draft) return;
+      xml += `  <url>\n    <loc>${baseUrl}/#/page/${p.slug || p.id}</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.6</priority>\n  </url>\n`;
+    });
+  }
+
+  xml += `</urlset>`;
+  fs.writeFileSync(path.join(__dirname, '../sitemap.xml'), xml, 'utf-8');
+}
+
 // --- Main Wizard ---
 async function runWizard() {
   logBox.add('Initializing TypeGrid Generator...');
@@ -434,7 +471,7 @@ async function runWizard() {
       layout: { columns_desktop: 3, columns_tablet: 2, columns_mobile: 1 },
       sort: { field: "place", order: "asc" },
       show_thumbnails: true,
-      ui: { monospace_font: "monospace", accent_color: apiData.site.accent }
+      ui: { monospace_font: "monospace", accent_color: apiData.site?.accent || "#ea9a97" }
     },
     meta: {
       next_project_id: finalProjects.length + 1,
@@ -445,13 +482,20 @@ async function runWizard() {
   fs.writeFileSync(DATA_FILE, JSON.stringify(finalJSON, null, 2));
   toast('API Generated Successfully!');
 
+  try {
+    generateSitemap(finalJSON);
+    logBox.add(`  Sitemap generated successfully (sitemap.xml).`);
+  } catch (e) {
+    logBox.add(`  Sitemap generation skipped: ${e.message}`);
+  }
+
   logBox.add(`\n======================================================`);
   logBox.add(`  SUCCESS! API Generated ✨`);
   logBox.add(`  Tracked ${finalProjects.length} albums. Saved to data/typegrid.json`);
   logBox.add(`======================================================\n`);
   logBox.add(`Exiting in 3 seconds...`);
   screen.render();
-  
+
   setTimeout(() => process.exit(0), 3000);
 }
 

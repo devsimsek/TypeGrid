@@ -50,8 +50,9 @@ function showMainMenu() {
       '2. Manage Posts & Pages',
       '3. Site Configuration',
       '4. Auto-Generate API',
-      '5. Check for Updates',
-      '6. Exit'
+      '5. Generate Sitemap',
+      '6. Check for Updates',
+      '7. Exit'
     ],
     style: {
       selected: {
@@ -87,9 +88,12 @@ function showMainMenu() {
         script = 'generate.js';
         break;
       case 4:
-        script = 'update.js';
+        script = 'sitemap.js';
         break;
       case 5:
+        script = 'update.js';
+        break;
+      case 6:
         process.exit(0);
         break;
     }

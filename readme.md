@@ -59,7 +59,8 @@ A batch scanner that auto-generates your `typegrid.json` from the `/images/` dir
 - site: site-wide settings and OG defaults
 - projects: array of project objects (each project contains its own SEO & OG)
 - collections: named lists of project ids
-- posts: (future) blog posts (same slug/SEO rules)
+- posts: text-heavy blog posts (markdown files + JSON metadata)
+- pages: standalone static pages (markdown files + JSON metadata)
 - pagination: pagination defaults & metadata
 - socials: share links and templates
 - settings: UI preferences
@@ -71,6 +72,7 @@ Example skeleton:
 "projects": [ ... ],
 "collections": [ ... ],
 "posts": [ ... ],
+"pages": [ ... ],
 "pagination": { ... },
 "socials": { ... },
 "settings": { ... },
@@ -152,10 +154,12 @@ Client behavior:
 - created_at: ISO8601
 - description?: string
 
-## Posts (future)
+## Posts & Pages
 
-- id, slug, title, excerpt, content (markdown), tags[], author, published_at, updated_at, featured_image, draft:boolean
-- seo & open_graph same structure as project
+TypeGrid supports text-heavy content natively by pairing JSON metadata with external Markdown files.
+- **posts**: Array of blog posts. Metadata (`id`/`slug`, `title`, `date`, `excerpt`, `tags`, `cover_image`, `seo`) is stored in `typegrid.json`. The body content is fetched dynamically from a Markdown file defined in the `file` property (e.g., `./posts/hello-world.md`).
+- **pages**: Array of standalone pages (e.g., "About", "Contact"). Similar to posts, but typically without dates or tags. Driven by the `file` property (e.g., `./pages/about.md`).
+- seo & open_graph use the same structure as projects.
 
 ## Socials
 
@@ -262,7 +266,8 @@ Per-item meta generation order:
 - ROUTES:
   - / -> grid (page query optional)
   - /projects/{slug}/ -> project detail (prerendered HTML recommended for SEO)
-  - /posts/{slug}/ -> blog post (future)
+  - /post/{slug}/ -> blog post
+  - /page/{slug}/ -> standalone page
 
 ## Sample metadata for a project page (HTML meta example)
 
@@ -287,8 +292,8 @@ Per-item meta generation order:
 ## Export / Build recommendations for best SEO
 
 - Static-export per-project HTML with full meta tags and OG absolute URLs.
-- Include RSS/Atom for posts (future).
-- Provide robots.txt instructions and sitemap.xml generation from projects[].
+- Include RSS/Atom for posts.
+- Provide robots.txt instructions and sitemap.xml generation mapping all active projects, posts, and pages to ensure optimal search engine crawling.
 
 ## Contributing
 

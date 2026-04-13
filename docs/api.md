@@ -16,6 +16,7 @@ The root of the JSON file contains the following top-level objects:
   "projects": [ ... ],
   "collections": [ ... ],
   "posts": [ ... ],
+  "pages": [ ... ],
   "pagination": { ... },
   "socials": { ... },
   "settings": { ... },
@@ -99,14 +100,14 @@ Named groups of projects, allowing you to create curated lists (e.g., "Favorites
 ---
 
 ## 4. Posts Array
-An array of text-heavy blog posts or standalone pages (e.g., "About", "Contact").
+An array of text-heavy blog posts.
 
 | Field | Type | Description |
 | :--- | :--- | :--- |
 | `id` / `slug` | `string` | Unique identifier used for the URL (`#/post/hello-world`). |
 | `title` | `string` | Display title of the post or page. |
 | `date` | `string` | ISO 8601 date string or similar format. |
-| `content` | `string` | Markdown or HTML body of the post. |
+| `file` | `string` | Path to the Markdown file containing the post body (e.g., `./posts/hello-world.md`). |
 | `excerpt` | `string` | Short description used on grid cards and SEO tags. |
 | `tags` | `array[string]` | (Optional) Tags for categorization. |
 | `cover_image` | `string` | (Optional) Relative or absolute URL to a header image. |
@@ -114,7 +115,19 @@ An array of text-heavy blog posts or standalone pages (e.g., "About", "Contact")
 
 ---
 
-## 5. Pagination Object
+## 5. Pages Array
+An array of standalone static pages (e.g., "About", "Contact").
+
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `id` / `slug` | `string` | Unique identifier used for the URL (`#/page/about`). |
+| `title` | `string` | Display title of the page. |
+| `file` | `string` | Path to the Markdown file containing the page body (e.g., `./pages/about.md`). |
+| `seo` | `object` | SEO overrides (`meta_title`, `meta_description`, `canonical_url`). |
+
+---
+
+## 6. Pagination Object
 Controls how the main grid renders and chunks data.
 
 | Field | Type | Description |
@@ -125,7 +138,7 @@ Controls how the main grid renders and chunks data.
 
 ---
 
-## 6. Socials & Settings
+## 7. Socials & Settings
 
 ### Socials
 Contains global share links and dynamic text templates.

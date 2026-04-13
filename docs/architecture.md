@@ -20,7 +20,8 @@ The JSON schema is strictly defined into functional areas:
 - **`site`**: Global metadata, Open Graph defaults, and Author profiles (including avatars and social links).
 - **`projects`**: The core entities. Arrays of project objects containing metadata, SEO overrides, and arrays of `images` (with exact dimensions, sizes, and a required `primary` flag).
 - **`collections`**: Curated lists referencing project IDs.
-- **`posts`**: Array of text-heavy blog posts or standalone pages (e.g., About, Contact).
+- **`posts`**: Array of text-heavy blog posts. Content is fetched dynamically from external Markdown files, while metadata remains in JSON.
+- **`pages`**: Array of standalone static pages (e.g., About, Contact). Content is fetched dynamically from external Markdown files.
 - **`pagination`**: Controls how the grid renders (e.g., `page_size`).
 - **`settings` & `socials`**: UI configurations and share templates.
 
@@ -73,3 +74,11 @@ The Lightbox utilizes CSS `transform: scale() translate()` bound to Alpine state
 
 ### Vim Navigation
 The application tracks a `focusedIndex` integer for grid navigation. Pressing `j` or `k` increments/decrements this index, adding a `.ring-focus` CSS class to the corresponding DOM element and calling native `scrollIntoView()` to ensure the focused item remains visible.
+
+---
+
+## 6. SEO & Discovery
+
+TypeGrid embraces static deployment for optimal indexability:
+- **Dynamic Metadata:** The Alpine.js router automatically injects the appropriate `<title>`, `<meta name="description">`, and Open Graph tags for every project, post, and page as the user navigates.
+- **Sitemap Generation:** The CLI tools auto-generate a `sitemap.xml` mapping all active projects, posts, and pages to ensure search engines can properly crawl the entire portfolio.

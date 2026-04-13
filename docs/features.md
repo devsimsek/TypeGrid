@@ -52,15 +52,15 @@ There is no database to configure. Simply update the JSON file to add new projec
 
 ## 📝 Integrated Blog & Pages
 Beyond photography portfolios, TypeGrid natively supports text-heavy content like blog posts and standalone pages (e.g., "About", "Contact").
-- **Markdown / HTML Support**: Write rich text content directly into the JSON.
+- **External Markdown**: Store your metadata cleanly in `typegrid.json` while fetching post and page content dynamically from standard `.md` files.
 - **Unified Routing**: Seamlessly handles `#/post/:slug` and `#/page/:slug` without any extra configuration.
-- **SEO Ready**: Every post supports dedicated metadata and cover images.
+- **Advanced SEO & Sitemap**: Every post supports dedicated metadata and cover images. The CLI tools automatically generate a `sitemap.xml` mapping all active projects, posts, and pages to ensure search engines can properly crawl your portfolio.
 
 ## 🛠️ Interactive CLI Tools & TUI
 If you prefer to host images locally, TypeGrid includes a suite of powerful interactive CLI tools to manage your portfolio effortlessly:
 
 ### 🖥️ Unified Master CLI (TUI)
-Run `npm run typegrid` to launch a fully-featured, raw mode master menu right in your terminal, which provides access to the Album Manager, Configurator, API Generator, and the OTA Updater.
+Run `npm run typegrid` to launch a fully-featured, raw mode master menu right in your terminal, which provides access to the Album Manager, Post & Page Managers, Configurator, API Generator, and the OTA Updater.
 
 #### 📁 Album Manager
 - **Visual Previews**: View your local images as ASCII/ANSI previews directly in your terminal.
@@ -71,6 +71,10 @@ Run `npm run typegrid` to launch a fully-featured, raw mode master menu right in
 - **Autoscan**: Press `s` to automatically scan an album's folder on disk, extracting EXIF data, generating WebP thumbnails, and adding new photos.
 - **Scan EXIF**: Press `x` on any individual image to instantly extract its Dimensions, Camera, Lens, Creation Date, and generate a dominant-color placeholder.
 - **OTA Updates**: Press `u` (or use the main menu) to check for and safely install over-the-air updates from the TypeGrid repository (prompts before overwriting user HTML).
+
+#### 📝 Post & Page Managers
+- **Content Management**: Interactive menus to create and manage your markdown blog posts and standalone pages directly from the terminal.
+- **Metadata Handling**: Easily update SEO tags, slugs, cover images, and publish dates while keeping your markdown files clean and separate.
 
 #### ⚙️ Configurator & API Generator
 - **Configurator**: An interactive wizard to maintain site settings (language, favicon), layout & UI (columns, thumbnails, font), sorting algorithms, pagination, multiple authors, and global/author social links.

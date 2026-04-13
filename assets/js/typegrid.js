@@ -252,8 +252,8 @@ document.addEventListener('alpine:init', () => {
           this.site = window.dataLoader.getSite() || {};
           this.authors = window.dataLoader.getAuthors() || [];
           this.socials = window.dataLoader.getSocials() || {};
-          this.posts = window.dataLoader.apiData?.posts || [];
-          this.pages = window.dataLoader.apiData?.pages || [];
+          this.posts = window.dataLoader.getPosts() || [];
+          this.pages = window.dataLoader.getPages() || [];
 
           const settings = window.dataLoader.getSettings();
           if (settings && settings.sort) {

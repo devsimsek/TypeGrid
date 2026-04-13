@@ -280,8 +280,22 @@ document.addEventListener('alpine:init', () => {
     
     parseMarkdown(md) {
       if (!md) return '';
-      // Extremely minimal regex-based markdown parser
-      let html = md
+      
+      // 1. Normalize line endings
+      let text = md.replace(/\r\n/g, '\n');
+      text = text.replace(/  \n/g, '<br />\n');
+      
+      // 2. Pad block elements with double newlines so they isolate properly
+      text = text.replace(/^(#{1,6} .*)$/gm, '\n\n$1\n\n');
+      text = text.replace(/((?:^> .*$\n?)+)/gm, '\n\n$1\n\n');
+      text = text.replace(/^(```[\s\S]*?```)$/gm, '\n\n$1\n\n');
+      text = text.replace(/((?:^[-*] .*$\n?)+)/gm, '\n\n$1\n\n');
+      
+      // 3. Clean up excessive newlines
+      text = text.replace(/\n{3,}/g, '\n\n').trim();
+
+      // 4. Inline formatting
+      let html = text
         .replace(/^### (.*$)/gim, '<h3>$1</h3>')
         .replace(/^## (.*$)/gim, '<h2>$1</h2>')
         .replace(/^# (.*$)/gim, '<h1>$1</h1>')
@@ -291,14 +305,18 @@ document.addEventListener('alpine:init', () => {
         .replace(/`([^`]+)`/g, '<code>$1</code>')
         .replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>')
         .replace(/\[(.*?)\]\((.*?)\)/gim, "<a href='$2' target='_blank'>$1</a>")
-        .replace(/^[-*] (.*$)/gim, '<li>$1</li>')
-        .replace(/\n$/gim, '<br />');
+        .replace(/^[-*] (.*$)/gim, '<li>$1</li>');
 
-      html = html.replace(/(<li>.*?<\/li>(\s*<li>.*?<\/li>)*)/gs, "<ul>$1</ul>");
+      // 5. Wrap lists
+      html = html.replace(/(<li>.*?<\/li>(\s*<li>.*?<\/li>)*)/gs, "<ul>\n$1\n</ul>");
 
-      // Wrap paragraphs
+      // 6. Wrap paragraphs
       html = html.split('\n\n').map(p => {
-        if (p.trim().startsWith('<h') || p.trim().startsWith('<pre') || p.trim().startsWith('<blockquote') || p.trim().startsWith('<ul') || p.trim().startsWith('<li') || p.trim().length === 0) return p;
+        p = p.trim();
+        if (!p) return '';
+        if (/^<(h[1-6]|ul|ol|li|pre|blockquote)/i.test(p)) {
+          return p;
+        }
         return `<p>${p}</p>`;
       }).join('\n');
 

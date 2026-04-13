@@ -287,36 +287,54 @@ const handleScan = () => {
 categoryList.key(['s'], handleScan);
 itemList.key(['s'], handleScan);
 
-itemList.key(['e'], () => {
+const handleEdit = () => {
   const arr = getActiveArray();
   if (arr.length === 0) return;
   const item = arr[currentItemIdx];
-  
+
   prompt.input(`Edit Title (current: ${item.title}):`, item.title, (err, title) => {
     if (err || !title) { itemList.focus(); screen.render(); return; }
     item.title = title;
-    
-    if (currentCategory === 0) {
-      prompt.input(`Edit Tags (comma separated):`, (item.tags || []).join(', '), (err, tags) => {
-        if (!err && tags !== null) item.tags = tags.split(',').map(t => t.trim()).filter(Boolean);
-        prompt.input(`Edit Excerpt:`, item.excerpt || '', (err, excerpt) => {
-          if (!err && excerpt !== null) item.excerpt = excerpt;
-          saveData();
-          toast('Saved!');
-          showPreview(currentItemIdx);
-          updateItemList();
-          itemList.focus();
+
+    prompt.input(`Edit Slug/ID (current: ${item.id}):`, item.id, (err, slug) => {
+      if (err || !slug) { itemList.focus(); screen.render(); return; }
+      item.id = slug;
+      item.slug = slug;
+
+      if (currentCategory === 0) {
+      prompt.input(`Edit Date (current: ${item.date}):`, item.date || new Date().toISOString().split('T')[0], (err, date) => {
+        if (!err && date !== null) item.date = date;
+        prompt.input(`Edit Tags (comma separated):`, (item.tags || []).join(', '), (err, tags) => {
+          if (!err && tags !== null) item.tags = tags.split(',').map(t => t.trim()).filter(Boolean);
+          prompt.input(`Edit Excerpt:`, item.excerpt || '', (err, excerpt) => {
+            if (!err && excerpt !== null) item.excerpt = excerpt;
+            prompt.input(`Edit File Path:`, item.file || '', (err, file) => {
+              if (!err && file !== null) item.file = file;
+              saveData();
+              toast('Saved!');
+              showPreview(currentItemIdx);
+              updateItemList();
+              itemList.focus();
+            });
+          });
         });
       });
     } else {
-      saveData();
-      toast('Saved!');
-      showPreview(currentItemIdx);
-      updateItemList();
-      itemList.focus();
+      prompt.input(`Edit File Path:`, item.file || '', (err, file) => {
+        if (!err && file !== null) item.file = file;
+        saveData();
+        toast('Saved!');
+        showPreview(currentItemIdx);
+        updateItemList();
+        itemList.focus();
+      });
     }
+    });
   });
-});
+};
+
+categoryList.key(['e'], handleEdit);
+itemList.key(['e'], handleEdit);
 
 itemList.key(['d'], () => {
   const arr = getActiveArray();

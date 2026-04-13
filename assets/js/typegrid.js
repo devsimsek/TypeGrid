@@ -216,7 +216,9 @@ document.addEventListener('alpine:init', () => {
     socials: {},
     projects: [],
     paginatedProjects: [],
-    
+    posts: [],
+    pages: [],
+
     // Routing state
     route: 'grid', // 'grid', 'project', 'tag', 'post', 'page'
     currentProject: null,
@@ -250,7 +252,9 @@ document.addEventListener('alpine:init', () => {
           this.site = window.dataLoader.getSite() || {};
           this.authors = window.dataLoader.getAuthors() || [];
           this.socials = window.dataLoader.getSocials() || {};
-          
+          this.posts = window.dataLoader.apiData?.posts || [];
+          this.pages = window.dataLoader.apiData?.pages || [];
+
           const settings = window.dataLoader.getSettings();
           if (settings && settings.sort) {
             this.sortField = settings.sort.field || 'year';

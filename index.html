@@ -98,6 +98,12 @@
         <nav :class="{'open': navOpen}" x-cloak>
           <ul>
             <li><a href="#/" @click="navOpen = false">Grid</a></li>
+            <template x-for="page in pages" :key="page.id">
+              <li><a :href="'#/page/' + (page.slug || page.id)" @click="navOpen = false" x-text="page.title"></a></li>
+            </template>
+            <template x-for="post in posts" :key="post.id">
+              <li><a :href="'#/post/' + (post.slug || post.id)" @click="navOpen = false" x-text="post.title"></a></li>
+            </template>
             <li>
               <a href="#" @click.prevent="showHelp = true; navOpen = false"
                 >Shortcuts (?)</a

@@ -50,6 +50,12 @@ The UI is built from the ground up for mobile devices first.
 Your entire site is generated from a single `data/typegrid.json` file. 
 There is no database to configure. Simply update the JSON file to add new projects, collections, or change site-wide SEO metadata. TypeGrid handles the rest, automatically paginating large galleries and generating dynamic routes.
 
+## 📝 Integrated Blog & Pages
+Beyond photography portfolios, TypeGrid natively supports text-heavy content like blog posts and standalone pages (e.g., "About", "Contact").
+- **Markdown / HTML Support**: Write rich text content directly into the JSON.
+- **Unified Routing**: Seamlessly handles `#/post/:slug` and `#/page/:slug` without any extra configuration.
+- **SEO Ready**: Every post supports dedicated metadata and cover images.
+
 ## 🛠️ Interactive CLI Tools & TUI
 If you prefer to host images locally, TypeGrid includes a suite of powerful interactive CLI tools to manage your portfolio effortlessly:
 

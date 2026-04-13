@@ -20,6 +20,7 @@ The JSON schema is strictly defined into functional areas:
 - **`site`**: Global metadata, Open Graph defaults, and Author profiles (including avatars and social links).
 - **`projects`**: The core entities. Arrays of project objects containing metadata, SEO overrides, and arrays of `images` (with exact dimensions, sizes, and a required `primary` flag).
 - **`collections`**: Curated lists referencing project IDs.
+- **`posts`**: Array of text-heavy blog posts or standalone pages (e.g., About, Contact).
 - **`pagination`**: Controls how the grid renders (e.g., `page_size`).
 - **`settings` & `socials`**: UI configurations and share templates.
 
@@ -27,7 +28,7 @@ The JSON schema is strictly defined into functional areas:
 
 ---
 
-## 2. Application Layer (`js/alpine-app.js`)
+## 2. Application Layer (`js/typegrid.js`)
 
 The imperative vanilla JavaScript logic was completely migrated to **Alpine.js**, which now acts as the primary runtime.
 
@@ -38,7 +39,7 @@ TypeGrid uses `Alpine.store` for global state management:
 
 ### The `typegrid` Component
 The main `<body x-data="typegrid">` component holds the application state:
-- **Routing:** Listens to `hashchange` events. It parses `#/project/:slug`, `#/tag/:tag`, or `?page=N` and updates the `route`, `currentProject`, and `paginatedProjects` state variables.
+- **Routing:** Listens to `hashchange` events. It parses `#/project/:slug`, `#/tag/:tag`, `#/post/:slug`, `#/page/:slug`, or `?page=N` and updates the `route`, `currentProject`, `currentPost`, and `paginatedProjects` state variables.
 - **Keyboard Manager:** A centralized `handleKeydown(e)` method intercepts keystrokes to provide Vim-like navigation (`h/j/k/l`, `gg`, `G`, `Enter`, `Esc`). It handles contextual logic (e.g., routing keyboard events to the Lightbox store if it's open, or navigating the grid if closed).
 
 ---

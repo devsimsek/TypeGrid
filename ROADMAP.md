@@ -18,6 +18,7 @@ Welcome to the TypeGrid Roadmap! This document outlines the planned features, ar
 - **Browser-Based Content Editing:** Replace the reliance on `$EDITOR` with a built-in split-pane Markdown editor for writing posts and pages directly in the browser.
 - **Live Theme & Config Preview:** Allow users to tweak UI variables, colors, typography, and sorting algorithms in the web UI and see the changes reflected live.
 - **API Consolidation:** Unify the disparate `cli/*.js` scripts into a clean local REST API that powers the new web dashboard.
+- **Git Management:** Integrate local Git operations (commit, push, branch management) directly into the dashboard and CLI to seamlessly version control configuration, images, and posts.
 
 ### Phase 3: Ecosystem & Extensibility (Long-term)
 - **Client-Side Search:** Implement a lightweight, zero-dependency static search index (e.g., using a pre-compiled JSON index) to search across posts, pages, and image tags.

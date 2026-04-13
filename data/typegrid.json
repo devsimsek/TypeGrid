@@ -816,7 +816,30 @@
       "description": "Selected 35mm and medium format film photography."
     }
   ],
-  "posts": [],
+  "posts": [
+    {
+      "id": "hello-world",
+      "slug": "hello-world",
+      "title": "Hello World",
+      "date": "2026-04-14",
+      "excerpt": "This is our first test post on the new platform.",
+      "tags": [
+        "test",
+        "welcome"
+      ],
+      "file": "./posts/hello-world.md",
+      "seo": {}
+    }
+  ],
+  "pages": [
+    {
+      "id": "about",
+      "slug": "about",
+      "title": "About",
+      "file": "./pages/about.md",
+      "seo": {}
+    }
+  ],
   "pagination": {
     "page_size": 12,
     "total_projects": 14,

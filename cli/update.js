@@ -97,6 +97,7 @@ async function runUpdate() {
             'cli/generate.js',
             'cli/config.js',
             'cli/update.js',
+            'cli/posts.js',
             'css/reset.css',
             'css/variables.css',
             'css/responsive.css',

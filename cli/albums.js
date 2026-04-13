@@ -887,6 +887,8 @@ async function handleUpdate() {
               'cli/albums.js',
               'cli/generate.js',
               'cli/config.js',
+              'cli/update.js',
+              'cli/posts.js',
               'css/reset.css',
               'css/variables.css',
               'css/responsive.css',

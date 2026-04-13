@@ -3,6 +3,9 @@ const path = require('path');
 const https = require('https');
 const blessed = require('blessed');
 
+const isDryRun = process.argv.includes('--dry-run');
+const isForce = process.argv.includes('--force');
+
 function fetchUrl(url) {
   return new Promise((resolve, reject) => {
     https.get(url, (res) => {
@@ -84,13 +87,11 @@ async function runUpdate() {
       const changelog = await fetchUrl('https://raw.githubusercontent.com/devsimsek/TypeGrid/main/CHANGELOG.md');
       const latestChanges = changelog.split('\n## ').slice(0, 2).join('\n## ');
 
-      question.ask(`Update to v${remotePkg.version}?\n\n${latestChanges.substring(0, 300)}...\n\n(y/n)`, async (err, val) => {
-        if (!err && val) {
-          question.ask(`Overwrite index.html?\n\nWarning: Custom frontend edits (analytics, extra CSS) will be lost if you hit 'y'. (y/n)`, async (errHtml, htmlVal) => {
-            logBox.setContent('Updating files from GitHub...\n');
-            screen.render();
+      const executeUpdate = async (updateHtml) => {
+        logBox.setContent(isDryRun ? 'DRY RUN: Simulating update...\n' : 'Updating files from GitHub...\n');
+        screen.render();
 
-          const files = [
+        const files = [
             'package.json',
             'cli/index.js',
             'cli/albums.js',
@@ -106,34 +107,48 @@ async function runUpdate() {
             'js/loader.js'
           ];
 
-          if (!errHtml && htmlVal) {
+          if (updateHtml) {
             files.push('index.html');
           }
           for (const file of files) {
             try {
-              logBox.setContent(logBox.content + `\nDownloading ${file}...`);
-              screen.render();
-              
               const content = await fetchUrl(`https://raw.githubusercontent.com/devsimsek/TypeGrid/main/${file}`);
               if (content && content !== '404: Not Found') {
                 const targetPath = path.join(__dirname, '../', file);
                 if (fs.existsSync(path.dirname(targetPath))) {
-                  fs.writeFileSync(targetPath, content, 'utf-8');
+                  const localContent = fs.existsSync(targetPath) ? fs.readFileSync(targetPath, 'utf-8') : '';
+                  if (localContent !== content) {
+                    logBox.setContent(logBox.content + `\n[Changed] ${file}`);
+                    if (!isDryRun) fs.writeFileSync(targetPath, content, 'utf-8');
+                  } else {
+                    logBox.setContent(logBox.content + `\n[Unchanged] ${file}`);
+                  }
+                  screen.render();
                 }
               }
             } catch(e) {}
           }
 
-          logBox.setContent('Update complete! Press any key to exit.');
+          logBox.setContent(logBox.content + `\n\n${isDryRun ? 'Dry run' : 'Update'} complete! Press any key to exit.`);
           screen.render();
           screen.onceKey(['any'], () => process.exit(0));
-          });
-        } else {
-          logBox.setContent('Update cancelled. Press any key to exit.');
-          screen.render();
-          screen.onceKey(['any'], () => process.exit(0));
-        }
-      });
+      };
+
+      if (isForce) {
+        executeUpdate(true);
+      } else {
+        question.ask(`Update to v${remotePkg.version}?\n\n${latestChanges.substring(0, 300)}...\n\n(y/n)`, async (err, val) => {
+          if (!err && val) {
+            question.ask(`Overwrite index.html?\n\nWarning: Custom frontend edits (analytics, extra CSS) will be lost if you hit 'y'. (y/n)`, async (errHtml, htmlVal) => {
+              executeUpdate(!errHtml && htmlVal);
+            });
+          } else {
+            logBox.setContent('Update cancelled. Press any key to exit.');
+            screen.render();
+            screen.onceKey(['any'], () => process.exit(0));
+          }
+        });
+      }
     } else {
       logBox.setContent(`You are up to date! (v${localPkg.version})\n\nPress any key to exit.`);
       screen.render();

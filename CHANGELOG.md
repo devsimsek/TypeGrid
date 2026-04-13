@@ -5,6 +5,12 @@ All notable changes to TypeGrid will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.3.1] - 2026-04-14
+
+### Added
+- **Scan Posts & Pages**: Added `s` (Scan) functionality in the Post & Page CLI Manager to automatically detect and import untracked `.md` files in the `/posts` and `/pages` directories.
+- **Updater Enhancements**: Added `--dry-run` and `--force` flags to the OTA updater (`cli/update.js`) to preview file changes without downloading, and bypass prompts for automated environments.
+
 ## [3.3.0] - 2026-04-14
 
 ### Added

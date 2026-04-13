@@ -68,7 +68,7 @@ const footer = blessed.box({
   parent: screen, bottom: 0, left: 0, width: '100%', height: '10%',
   tags: true, border: { type: 'line' },
   style: { fg: 'white', border: { fg: '#ea9a97' } },
-  content: ' {bold}q{/bold}: Quit | {bold}a{/bold}: Add | {bold}e{/bold}: Edit | {bold}d{/bold}: Delete | {bold}Enter{/bold}: View'
+  content: ' {bold}q{/bold}: Quit | {bold}a{/bold}: Add | {bold}s{/bold}: Scan | {bold}e{/bold}: Edit | {bold}d{/bold}: Delete | {bold}Enter{/bold}: View'
 });
 
 // Input Prompts
@@ -176,9 +176,7 @@ categoryList.on('select item', (item, index) => {
 });
 
 categoryList.key(['right', 'l', 'enter'], () => {
-  if (getActiveArray().length > 0) {
-    itemList.focus();
-  }
+  itemList.focus();
 });
 
 itemList.key(['left', 'h', 'escape'], () => {
@@ -190,7 +188,7 @@ itemList.on('select item', (item, index) => {
   showPreview(index);
 });
 
-itemList.key(['a'], () => {
+const handleAdd = () => {
   const isPost = currentCategory === 0;
   const arr = getActiveArray();
   
@@ -234,7 +232,60 @@ itemList.key(['a'], () => {
       itemList.focus();
     });
   });
-});
+};
+
+categoryList.key(['a'], handleAdd);
+itemList.key(['a'], handleAdd);
+
+const handleScan = () => {
+  const isPost = currentCategory === 0;
+  const folderName = isPost ? 'posts' : 'pages';
+  const folderPath = path.join(__dirname, '../', folderName);
+  const arr = getActiveArray();
+
+  if (!fs.existsSync(folderPath)) {
+    toast(`No ${folderName} folder found.`);
+    return;
+  }
+
+  const files = fs.readdirSync(folderPath).filter(f => f.endsWith('.md'));
+  let added = 0;
+
+  files.forEach(file => {
+    const slug = file.replace('.md', '');
+    const exists = arr.find(item => item.id === slug || item.slug === slug);
+
+    if (!exists) {
+      const newItem = {
+        id: slug,
+        slug: slug,
+        title: slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
+        file: `./${folderName}/${file}`,
+        seo: {}
+      };
+
+      if (isPost) {
+        newItem.date = new Date().toISOString().split('T')[0];
+        newItem.excerpt = '';
+        newItem.tags = [];
+      }
+
+      arr.push(newItem);
+      added++;
+    }
+  });
+
+  if (added > 0) {
+    saveData();
+    updateItemList();
+    toast(`Scanned ${added} new items!`);
+  } else {
+    toast('No new items found.');
+  }
+};
+
+categoryList.key(['s'], handleScan);
+itemList.key(['s'], handleScan);
 
 itemList.key(['e'], () => {
   const arr = getActiveArray();

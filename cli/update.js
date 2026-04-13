@@ -99,12 +99,12 @@ async function runUpdate() {
             'cli/config.js',
             'cli/update.js',
             'cli/posts.js',
-            'css/reset.css',
-            'css/variables.css',
-            'css/responsive.css',
-            'css/mobile.css',
-            'js/typegrid.js',
-            'js/loader.js'
+            'assets/css/reset.css',
+            'assets/css/variables.css',
+            'assets/css/responsive.css',
+            'assets/css/mobile.css',
+            'assets/js/typegrid.js',
+            'assets/js/loader.js'
           ];
 
           if (updateHtml) {

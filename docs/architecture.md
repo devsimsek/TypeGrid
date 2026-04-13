@@ -25,11 +25,11 @@ The JSON schema is strictly defined into functional areas:
 - **`pagination`**: Controls how the grid renders (e.g., `page_size`).
 - **`settings` & `socials`**: UI configurations and share templates.
 
-*Data Loading:* The `DataLoader` class (`js/loader.js`) is responsible for fetching, parsing, and caching this JSON. It provides helper methods to query projects by slug, tag, or page.
+*Data Loading:* The `DataLoader` class (`assets/js/loader.js`) is responsible for fetching, parsing, and caching this JSON. It provides helper methods to query projects by slug, tag, or page.
 
 ---
 
-## 2. Application Layer (`js/typegrid.js`)
+## 2. Application Layer (`assets/js/typegrid.js`)
 
 The imperative vanilla JavaScript logic was completely migrated to **Alpine.js**, which now acts as the primary runtime.
 
@@ -49,10 +49,10 @@ The main `<body x-data="typegrid">` component holds the application state:
 
 TypeGrid uses a strict Mobile-First CSS architecture, utilizing CSS Custom Properties (Variables) for theming.
 
-1. **`css/variables.css`**: Defines the Rose Pine color palettes. Media queries (`@media (prefers-color-scheme)`) and attribute selectors (`[data-theme="..."]`) flip the variables between Dark and Light modes seamlessly. It also enforces the global `border-radius: 0` (sharp edges) and monospace font stacks.
-2. **`css/reset.css`**: Normalizes browser styles, applying the monospace font to all elements (including form inputs and buttons) and stripping default browser styling.
-3. **`css/mobile.css`**: The baseline styles for the application. Everything is styled for a single-column, touch-friendly interface first.
-4. **`css/responsive.css`**: Progressively enhances the layout for larger screens (e.g., converting the 1-column grid to 2 and 3 columns, transforming the mobile hamburger menu into a desktop header, and re-flowing the footer).
+1. **`assets/css/variables.css`**: Defines the Rose Pine color palettes. Media queries (`@media (prefers-color-scheme)`) and attribute selectors (`[data-theme="..."]`) flip the variables between Dark and Light modes seamlessly. It also enforces the global `border-radius: 0` (sharp edges) and monospace font stacks.
+2. **`assets/css/reset.css`**: Normalizes browser styles, applying the monospace font to all elements (including form inputs and buttons) and stripping default browser styling.
+3. **`assets/css/mobile.css`**: The baseline styles for the application. Everything is styled for a single-column, touch-friendly interface first.
+4. **`assets/css/responsive.css`**: Progressively enhances the layout for larger screens (e.g., converting the 1-column grid to 2 and 3 columns, transforming the mobile hamburger menu into a desktop header, and re-flowing the footer).
 
 ---
 

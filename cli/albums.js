@@ -26,7 +26,7 @@ const projects = typegridData.projects || [];
 let currentAlbumIndex = 0;
 let currentImageIndex = 0;
 
-let cliVersion = '3.3.1';
+let cliVersion = '4.0.0';
 try {
   const pkgRaw = fs.readFileSync(path.join(__dirname, '../package.json'), 'utf-8');
   cliVersion = JSON.parse(pkgRaw).version;

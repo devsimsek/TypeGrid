@@ -1,6 +1,10 @@
 const blessed = require('blessed');
 const { spawnSync } = require('child_process');
 const path = require('path');
+const fs = require('fs');
+
+const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'), 'utf-8'));
+const version = pkg.version;
 
 function showMainMenu() {
   const screen = blessed.screen({
@@ -19,7 +23,7 @@ function showMainMenu() {
     left: 'center',
     width: '50%',
     height: '50%',
-    content: '{bold}TypeGrid CLI{/bold}\n\nSelect an option:',
+    content: `{bold}TypeGrid CLI v${version}{/bold}\n\nSelect an option:`,
     tags: true,
     border: {
       type: 'line'

@@ -5,6 +5,13 @@ All notable changes to TypeGrid will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.5.0] - 2026-04-14
+
+### Added
+- **Content Index Routes**: Added dedicated `#/projects`, `#/posts`, and `#/pages` index routes to cleanly display grouped lists of content.
+- **Home Dashboard**: The root `#/` route now acts as a true homepage, displaying recent projects alongside a new "Writing & Pages" summary section.
+- **Clean Navigation**: The main navigation menu now links to the distinct index categories instead of listing every individual file, improving UX for larger sites.
+
 ## [4.4.1] - 2026-04-14
 
 ### Added

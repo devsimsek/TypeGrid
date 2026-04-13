@@ -97,13 +97,10 @@
         <!-- Navigation Menu -->
         <nav :class="{'open': navOpen}" x-cloak>
           <ul>
-            <li><a href="#/" @click="navOpen = false">Grid</a></li>
-            <template x-for="page in pages" :key="page.id">
-              <li><a :href="'#/page/' + (page.slug || page.id)" @click="navOpen = false" x-text="page.title"></a></li>
-            </template>
-            <template x-for="post in posts" :key="post.id">
-              <li><a :href="'#/post/' + (post.slug || post.id)" @click="navOpen = false" x-text="post.title"></a></li>
-            </template>
+            <li><a href="#/" @click="navOpen = false">Home</a></li>
+            <li><a href="#/projects" @click="navOpen = false">Projects</a></li>
+            <li><a href="#/pages" @click="navOpen = false" x-show="pages.length > 0">Pages</a></li>
+            <li><a href="#/posts" @click="navOpen = false" x-show="posts.length > 0">Posts</a></li>
             <li>
               <a href="#" @click.prevent="showHelp = true; navOpen = false"
                 >Shortcuts (?)</a
@@ -129,14 +126,14 @@
       </div>
 
       <!-- Grid View & Tag Filter View -->
-      <div x-show="!isLoading && (route === 'grid' || route === 'tag')" x-cloak>
+      <div x-show="!isLoading && (route === 'home' || route === 'projects' || route === 'tag')" x-cloak>
         <div class="container">
           <!-- Header & Sorting -->
           <div class="flex justify-between items-end mb-6 border-b pb-4">
             <div>
               <div x-show="route === 'tag'">
                 <nav class="breadcrumb mb-2" aria-label="Breadcrumb">
-                  <a href="#/">Grid</a> <span>/</span>
+                  <a href="#/">Home</a> <span>/</span>
                   <span x-text="`Tag: ${currentFilter}`"></span>
                 </nav>
                 <h1 class="mb-0" style="margin-bottom: 0">
@@ -148,8 +145,15 @@
                   x-text="`${paginatedProjects.length} project(s) found`"
                 ></p>
               </div>
-              <div x-show="route === 'grid'">
+              <div x-show="route === 'projects'">
+                <nav class="breadcrumb mb-2" aria-label="Breadcrumb">
+                  <a href="#/">Home</a> <span>/</span>
+                  <span>Projects</span>
+                </nav>
                 <h2 class="mb-0" style="margin-bottom: 0">Projects</h2>
+              </div>
+              <div x-show="route === 'home'">
+                <h2 class="mb-0" style="margin-bottom: 0">Recent Projects</h2>
               </div>
             </div>
 
@@ -241,8 +245,8 @@
 
           <!-- Pagination -->
           <div
-            class="pagination flex justify-center items-center gap-4 mt-12"
-            x-show="totalPages > 1 && route === 'grid'"
+            class="flex justify-center items-center gap-4 mt-12"
+            x-show="totalPages > 1 && (route === 'home' || route === 'projects')"
           >
             <button
               class="btn btn-small"
@@ -265,6 +269,28 @@
               Next →
             </button>
           </div>
+
+          <!-- Home: Recent Posts & Pages Summaries -->
+          <div class="mt-12" x-show="route === 'home' && (posts.length > 0 || pages.length > 0)" x-cloak>
+            <div class="flex justify-between items-end mb-6 border-b pb-4">
+              <h2 class="mb-0" style="margin-bottom: 0">Writing & Pages</h2>
+            </div>
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--spacing-6);">
+              <template x-for="post in posts.slice(0, 3)" :key="'home-post-'+post.id">
+                <a :href="'#/post/' + (post.slug || post.id)" class="card project-card" style="padding: 1.5rem; text-decoration: none;">
+                  <h3 x-text="post.title" style="margin-bottom: 0.5rem; color: var(--color-text-primary);"></h3>
+                  <div class="text-sm text-muted mb-2" x-show="post.date" x-text="post.date"></div>
+                  <p x-show="post.excerpt" x-text="post.excerpt" style="margin: 0; color: var(--color-text-secondary);"></p>
+                </a>
+              </template>
+              <template x-for="page in pages.slice(0, 3)" :key="'home-page-'+page.id">
+                <a :href="'#/page/' + (page.slug || page.id)" class="card project-card" style="padding: 1.5rem; text-decoration: none;">
+                  <h3 x-text="page.title" style="margin-bottom: 0.5rem; color: var(--color-text-primary);"></h3>
+                  <div class="text-sm text-muted" style="color: var(--color-accent);">Page</div>
+                </a>
+              </template>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -276,7 +302,8 @@
             class="album-controls flex justify-between items-center mb-6 pb-4 border-b"
           >
             <nav class="breadcrumb mb-0">
-              <a href="#/">Grid</a> <span>/</span>
+              <a href="#/">Home</a> <span>/</span>
+              <a href="#/projects">Projects</a> <span>/</span>
               <span x-text="currentProject?.title"></span>
             </nav>
           </div>
@@ -379,12 +406,57 @@
       </div>
 
       <!-- Post & Page View -->
+      <div x-show="!isLoading && route === 'posts'" x-cloak>
+        <div class="container" style="max-width: 768px; margin: 0 auto;">
+          <div class="flex justify-between items-end mb-6 border-b pb-4">
+            <div>
+              <nav class="breadcrumb mb-2" aria-label="Breadcrumb">
+                <a href="#/">Home</a> <span>/</span>
+                <span>Posts</span>
+              </nav>
+              <h2 class="mb-0" style="margin-bottom: 0">Posts</h2>
+            </div>
+          </div>
+          <div class="flex flex-col gap-6">
+            <template x-for="post in posts" :key="post.id">
+              <a :href="'#/post/' + (post.slug || post.id)" class="card project-card" style="padding: 1.5rem; text-decoration: none;">
+                <h3 x-text="post.title" style="margin-bottom: 0.5rem; color: var(--color-text-primary);"></h3>
+                <div class="text-sm text-muted mb-2" x-show="post.date" x-text="post.date"></div>
+                <p x-show="post.excerpt" x-text="post.excerpt" style="margin: 0; color: var(--color-text-secondary);"></p>
+              </a>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <div x-show="!isLoading && route === 'pages'" x-cloak>
+        <div class="container" style="max-width: 768px; margin: 0 auto;">
+          <div class="flex justify-between items-end mb-6 border-b pb-4">
+            <div>
+              <nav class="breadcrumb mb-2" aria-label="Breadcrumb">
+                <a href="#/">Home</a> <span>/</span>
+                <span>Pages</span>
+              </nav>
+              <h2 class="mb-0" style="margin-bottom: 0">Pages</h2>
+            </div>
+          </div>
+          <div class="flex flex-col gap-4">
+            <template x-for="page in pages" :key="page.id">
+              <a :href="'#/page/' + (page.slug || page.id)" class="card project-card" style="padding: 1.5rem; text-decoration: none;">
+                <h3 x-text="page.title" style="margin: 0; color: var(--color-text-primary);"></h3>
+              </a>
+            </template>
+          </div>
+        </div>
+      </div>
+
       <div x-show="!isLoading && (route === 'post' || route === 'page') && currentPost" x-cloak>
         <div class="container" style="max-width: 768px; margin: 0 auto;">
           <!-- Breadcrumb -->
           <div class="album-controls flex justify-between items-center mb-6 pb-4 border-b">
             <nav class="breadcrumb mb-0">
               <a href="#/">Home</a> <span>/</span>
+              <a :href="route === 'post' ? '#/posts' : '#/pages'" x-text="route === 'post' ? 'Posts' : 'Pages'"></a> <span>/</span>
               <span x-text="currentPost?.title"></span>
             </nav>
           </div>

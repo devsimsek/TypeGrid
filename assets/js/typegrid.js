@@ -367,21 +367,39 @@ document.addEventListener('alpine:init', () => {
         document.title = `#${this.currentFilter} — ${this.site.title || 'TypeGrid'}`;
         window.scrollTo(0, 0);
         
-      } else {
-        // Default Grid
-        this.route = 'grid';
+      } else if (hash === '#/projects' || hash.startsWith('#/projects?')) {
+        this.route = 'projects';
         this.currentFilter = null;
-        
         const pageMatch = window.location.hash.match(/page=(\d+)/) || window.location.search.match(/page=(\d+)/);
         const page = pageMatch ? parseInt(pageMatch[1], 10) : 1;
+        const pageData = window.dataLoader.getProjectsPage(page);
+        this.paginatedProjects = pageData.projects;
+        this.currentPage = pageData.page;
+        this.totalPages = pageData.totalPages;
+        document.title = `Projects — ${this.site.title || 'TypeGrid'}`;
         
+      } else if (hash === '#/posts') {
+        this.route = 'posts';
+        document.title = `Posts — ${this.site.title || 'TypeGrid'}`;
+        
+      } else if (hash === '#/pages') {
+        this.route = 'pages';
+        document.title = `Pages — ${this.site.title || 'TypeGrid'}`;
+        
+      } else {
+        // Default Home
+        this.route = 'home';
+        this.currentFilter = null;
+
+        const pageMatch = window.location.hash.match(/page=(\d+)/) || window.location.search.match(/page=(\d+)/);
+        const page = pageMatch ? parseInt(pageMatch[1], 10) : 1;
+
         const pageData = window.dataLoader.getProjectsPage(page);
         this.paginatedProjects = pageData.projects;
         this.currentPage = pageData.page;
         this.totalPages = pageData.totalPages;
         
         document.title = this.site.title || 'TypeGrid';
-        window.scrollTo(0, 0);
       }
     },
     

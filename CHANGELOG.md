@@ -5,6 +5,15 @@ All notable changes to TypeGrid will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.2.0] - 2026-04-14
+
+### Added
+- **Content Editing**: Added the `o` (Edit Content) keybinding to the Post & Page CLI Manager to open the associated `.md` file directly in the system's default `$EDITOR` (e.g., nano, vim).
+- **Path Autocomplete**: Pressing `Tab` while editing a File Path in the CLI Manager now auto-completes local directory paths and `.md` files.
+
+### Fixed
+- **UI Bleed-through**: Fixed a visual bug in the CLI where the background list items visibly bled through the floating input prompts.
+
 ## [4.1.0] - 2026-04-14
 
 ### Added

@@ -68,23 +68,47 @@ const footer = blessed.box({
   parent: screen, bottom: 0, left: 0, width: '100%', height: '10%',
   tags: true, border: { type: 'line' },
   style: { fg: 'white', border: { fg: '#ea9a97' } },
-  content: ' {bold}q{/bold}: Quit | {bold}a{/bold}: Add | {bold}s{/bold}: Scan | {bold}e{/bold}: Edit | {bold}d{/bold}: Delete | {bold}Enter{/bold}: View'
+  content: ' {bold}q{/bold}: Quit | {bold}a{/bold}: Add | {bold}s{/bold}: Scan | {bold}e{/bold}: Edit Meta | {bold}o{/bold}: Edit Content | {bold}d{/bold}: Delete'
 });
 
 // Input Prompts
+const { spawnSync } = require('child_process');
+
 const promptBox = blessed.box({
   parent: screen, top: 'center', left: 'center', width: '60%', height: 'shrink',
   border: 'line', hidden: true, tags: true, padding: 1,
-  style: { fg: 'white', border: { fg: '#ea9a97' } }
+  style: { bg: 'black', fg: 'white', border: { bg: 'black', fg: '#ea9a97' } }
 });
 
 const promptText = blessed.text({
-  parent: promptBox, top: 0, left: 0, width: '100%', content: '', tags: true
+  parent: promptBox, top: 0, left: 0, width: '100%', content: '', tags: true, style: { bg: 'black', fg: 'white' }
 });
 
 const promptInput = blessed.textbox({
   parent: promptBox, top: 2, left: 0, height: 1, width: '100%',
   keys: true, mouse: true, inputOnFocus: true, style: { bg: 'black', fg: 'white' }
+});
+
+promptInput.on('keypress', (ch, key) => {
+  if (key && key.name === 'tab' && promptText.content.includes('File Path')) {
+    const val = promptInput.value;
+    const dir = val.endsWith('/') ? val : path.dirname(val) || '.';
+    const base = val.endsWith('/') ? '' : path.basename(val);
+    
+    try {
+      const targetDir = path.join(__dirname, '../', dir);
+      if (fs.existsSync(targetDir)) {
+        const files = fs.readdirSync(targetDir);
+        const matches = files.filter(f => f.startsWith(base) && (f.endsWith('.md') || fs.statSync(path.join(targetDir, f)).isDirectory()));
+        if (matches.length === 1) {
+          const match = matches[0];
+          const isDir = fs.statSync(path.join(targetDir, match)).isDirectory();
+          promptInput.value = path.join(dir, match) + (isDir ? '/' : '');
+          screen.render();
+        }
+      }
+    } catch (e) {}
+  }
 });
 
 const prompt = {
@@ -336,10 +360,37 @@ const handleEdit = () => {
 categoryList.key(['e'], handleEdit);
 itemList.key(['e'], handleEdit);
 
+const handleOpenContent = () => {
+  const arr = getActiveArray();
+  if (arr.length === 0) return;
+  const item = arr[currentItemIdx];
+
+  if (!item.file) {
+    toast('No file associated with this item.');
+    return;
+  }
+
+  const fullPath = path.join(__dirname, '../', item.file);
+  if (!fs.existsSync(fullPath)) {
+    toast('File not found: ' + item.file);
+    return;
+  }
+
+  screen.leave();
+  const editor = process.env.EDITOR || 'nano';
+  spawnSync(editor, [fullPath], { stdio: 'inherit' });
+  screen.enter();
+  showPreview(currentItemIdx);
+  screen.render();
+};
+
+categoryList.key(['o'], handleOpenContent);
+itemList.key(['o'], handleOpenContent);
+
 itemList.key(['d'], () => {
   const arr = getActiveArray();
   if (arr.length === 0) return;
-  
+
   question.ask('Are you sure you want to delete this item? (y/n)', (err, val) => {
     if (!err && val) {
       arr.splice(currentItemIdx, 1);

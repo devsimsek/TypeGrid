@@ -5,6 +5,12 @@ All notable changes to TypeGrid will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.3.0] - 2026-04-14
+
+### Added
+- **CLI Markdown Parsing**: The CLI Post & Page Manager now features a custom syntax highlighter that parses and formats Markdown content (headers, bold, italic, code blocks, blockquotes, lists, links) into terminal-friendly ANSI colors and styles for the preview window.
+- **Extended Preview**: The content preview length in the CLI has been expanded from 500 to 1500 characters.
+
 ## [4.2.0] - 2026-04-14
 
 ### Added

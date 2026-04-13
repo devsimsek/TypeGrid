@@ -9,7 +9,7 @@ const blessed = require('blessed');
 const IMAGES_DIR = path.join(__dirname, '../images');
 const DATA_FILE = path.join(__dirname, '../data/typegrid.json');
 const VALID_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.avif']);
-const TARGET_VERSION = "4.2.0";
+const TARGET_VERSION = "4.3.0";
 
 // --- Helpers ---
 function slugify(text) {

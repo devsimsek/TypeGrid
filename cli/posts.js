@@ -159,6 +159,29 @@ function updateItemList() {
   screen.render();
 }
 
+function formatMarkdownForCLI(md) {
+  if (!md) return '';
+  let str = blessed.escape(md);
+  
+  str = str.replace(/^# (.*$)/gim, '{bold}{#ea9a97-fg}# $1{/#ea9a97-fg}{/bold}');
+  str = str.replace(/^## (.*$)/gim, '{bold}{#3e8fb0-fg}## $1{/#3e8fb0-fg}{/bold}');
+  str = str.replace(/^### (.*$)/gim, '{bold}{#9ccfd8-fg}### $1{/#9ccfd8-fg}{/bold}');
+  
+  str = str.replace(/\*\*(.*?)\*\*/g, '{bold}$1{/bold}');
+  str = str.replace(/(?<!\*)\*(.*?)\*(?!\*)/g, '{underline}$1{/underline}');
+  
+  str = str.replace(/```([\s\S]*?)```/gm, '{#f6c177-fg}$1{/#f6c177-fg}');
+  str = str.replace(/`([^`]+)`/g, '{#ebbcba-fg}$1{/#ebbcba-fg}');
+  
+  str = str.replace(/^> (.*$)/gim, '{#c4a7e7-fg}> $1{/#c4a7e7-fg}');
+  
+  str = str.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '{underline}{#31748f-fg}$1{/#31748f-fg}{/underline} ({#9ccfd8-fg}$2{/#9ccfd8-fg})');
+  
+  str = str.replace(/^[-*] (.*$)/gim, '{#eb6f92-fg}•{/#eb6f92-fg} $1');
+  
+  return str;
+}
+
 function showPreview(idx) {
   const arr = getActiveArray();
   if (!arr[idx]) {
@@ -181,13 +204,14 @@ function showPreview(idx) {
   if (item.file) {
     const fullPath = path.join(__dirname, '../', item.file);
     if (fs.existsSync(fullPath)) {
-      fileContent = fs.readFileSync(fullPath, 'utf-8').substring(0, 500) + '...';
+      const rawContent = fs.readFileSync(fullPath, 'utf-8').substring(0, 1500) + '...';
+      fileContent = formatMarkdownForCLI(rawContent);
     } else {
       fileContent = '[File not found]';
     }
   }
-  
-  text += `\n{bold}--- File Preview ---{/bold}\n${fileContent}`;
+
+  text += `\n{bold}--- File Preview ---{/bold}\n\n${fileContent}`;
   previewBox.setContent(text);
   screen.render();
 }

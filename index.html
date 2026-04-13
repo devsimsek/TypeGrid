@@ -99,8 +99,8 @@
           <ul>
             <li><a href="#/" @click="navOpen = false">Home</a></li>
             <li><a href="#/projects" @click="navOpen = false">Projects</a></li>
-            <li><a href="#/pages" @click="navOpen = false" x-show="pages.length > 0">Pages</a></li>
-            <li><a href="#/posts" @click="navOpen = false" x-show="posts.length > 0">Posts</a></li>
+            <li x-show="pages.length > 0"><a href="#/pages" @click="navOpen = false">Pages</a></li>
+            <li x-show="posts.length > 0"><a href="#/posts" @click="navOpen = false">Posts</a></li>
             <li>
               <a href="#" @click.prevent="showHelp = true; navOpen = false"
                 >Shortcuts (?)</a

@@ -5,6 +5,16 @@ All notable changes to TypeGrid will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.3.0] - 2026-04-14
+
+### Added
+- **CLI Post & Page Managers**: Added an interactive terminal UI menu to seamlessly create, edit, and delete text-heavy markdown posts and static pages.
+- **Automatic Markdown Generation**: Creating a new post/page via the CLI automatically provisions a physical `.md` placeholder file locally.
+- **Frontend Markdown Rendering**: Added a lightweight, zero-dependency Markdown parser in Alpine.js that fetches and renders markdown files instantly on route change.
+- **New Routing**: Added `#/post/:slug` and `#/page/:slug` routes to support text content alongside the existing photography portfolio.
+- **Reading Layout**: Added a clean, typography-focused reading layout template in `index.html` specifically designed for long-form text (max-width 768px, optimized line height).
+- **Sitemap Generation**: The CLI auto-generator now outputs a comprehensive `sitemap.xml` mapping all active projects, posts, and pages using the `site.base_url` for optimal search engine crawling.
+
 ## [3.2.0] - 2026-04-14
 
 ### Added

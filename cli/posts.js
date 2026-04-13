@@ -414,17 +414,36 @@ itemList.key(['o'], handleOpenContent);
 itemList.key(['d'], () => {
   const arr = getActiveArray();
   if (arr.length === 0) return;
+  const item = arr[currentItemIdx];
 
   question.ask('Are you sure you want to delete this item? (y/n)', (err, val) => {
     if (!err && val) {
-      arr.splice(currentItemIdx, 1);
-      saveData();
-      currentItemIdx = Math.max(0, currentItemIdx - 1);
-      updateItemList();
-      showPreview(currentItemIdx);
-      toast('Deleted.');
+      const finishDelete = () => {
+        arr.splice(currentItemIdx, 1);
+        saveData();
+        currentItemIdx = Math.max(0, currentItemIdx - 1);
+        updateItemList();
+        showPreview(currentItemIdx);
+        toast('Deleted.');
+        itemList.focus();
+      };
+
+      if (item.file) {
+        const fullPath = path.join(__dirname, '../', item.file);
+        if (fs.existsSync(fullPath)) {
+          question.ask('Also delete associated markdown file on disk? (y/n)', (errFile, valFile) => {
+            if (!errFile && valFile) {
+              try { fs.unlinkSync(fullPath); } catch(e) {}
+            }
+            finishDelete();
+          });
+          return;
+        }
+      }
+      finishDelete();
+    } else {
+      itemList.focus();
     }
-    itemList.focus();
   });
 });
 

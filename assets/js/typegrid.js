@@ -281,17 +281,23 @@ document.addEventListener('alpine:init', () => {
         .replace(/^### (.*$)/gim, '<h3>$1</h3>')
         .replace(/^## (.*$)/gim, '<h2>$1</h2>')
         .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-        .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
-        .replace(/\*(.*)\*/gim, '<em>$1</em>')
+        .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
+        .replace(/(?<!\*)\*(.*?)\*(?!\*)/gim, '<em>$1</em>')
+        .replace(/```([\s\S]*?)```/gm, '<pre><code>$1</code></pre>')
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        .replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>')
         .replace(/\[(.*?)\]\((.*?)\)/gim, "<a href='$2' target='_blank'>$1</a>")
+        .replace(/^[-*] (.*$)/gim, '<li>$1</li>')
         .replace(/\n$/gim, '<br />');
+
+      html = html.replace(/(<li>.*?<\/li>(\s*<li>.*?<\/li>)*)/gs, "<ul>$1</ul>");
 
       // Wrap paragraphs
       html = html.split('\n\n').map(p => {
-        if (p.trim().startsWith('<h') || p.trim().length === 0) return p;
+        if (p.trim().startsWith('<h') || p.trim().startsWith('<pre') || p.trim().startsWith('<blockquote') || p.trim().startsWith('<ul') || p.trim().startsWith('<li') || p.trim().length === 0) return p;
         return `<p>${p}</p>`;
       }).join('\n');
-      
+
       return html;
     },
 

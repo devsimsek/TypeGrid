@@ -99,6 +99,7 @@ async function runUpdate() {
             'cli/config.js',
             'cli/update.js',
             'cli/posts.js',
+            'cli/sitemap.js',
             'assets/css/reset.css',
             'assets/css/variables.css',
             'assets/css/responsive.css',

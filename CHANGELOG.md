@@ -5,6 +5,15 @@ All notable changes to TypeGrid will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.4.1] - 2026-04-14
+
+### Added
+- **Physical File Deletion**: Deleting a post or page in the CLI Manager now prompts you to safely delete the associated `.md` file from your disk to prevent orphaned files.
+- **OTA Updates**: Added the newly created `cli/sitemap.js` to the OTA updater manifest to ensure it is properly synchronized during updates.
+
+### Fixed
+- **Frontend Markdown Parser**: Fixed greedy regex matching for bold and italic elements, and added complete rendering support for `<blockquote>`, `<code>` blocks, and properly grouped `<ul>` lists in the frontend client.
+
 ## [4.4.0] - 2026-04-14
 
 ### Added

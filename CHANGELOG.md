@@ -5,6 +5,12 @@ All notable changes to TypeGrid will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.0] - 2026-04-14
+
+### Added
+- **Expanded Post & Page Editing**: The `Manage Posts & Pages` CLI now allows comprehensive editing of all metadata fields (Slug/ID, Date, Tags, and File Path) sequentially, in addition to Title and Excerpt.
+- **Improved CLI Navigation**: The `e` (Edit) action can now be triggered directly from the Category list in the Post Manager without needing to focus the Items list first.
+
 ## [4.0.0] - 2026-04-14
 
 ### Changed

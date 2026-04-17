@@ -329,6 +329,11 @@ document.addEventListener('alpine:init', () => {
       const hash = window.location.hash;
       this.focusedIndex = -1; // Reset focus on route change
       this.navOpen = false; // Close mobile nav
+      
+      // Ensure lightbox is closed when navigating away via header links
+      if (Alpine.store('lightbox').isOpen) {
+        Alpine.store('lightbox').close();
+      }
 
       if (hash.startsWith('#/post/')) {
         const slug = hash.replace('#/post/', '');

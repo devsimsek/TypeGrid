@@ -5,6 +5,11 @@ All notable changes to TypeGrid will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.5.3] - 2026-04-14
+
+### Fixed
+- **Lightbox Navigation**: Fixed an issue where the fullscreen image lightbox would remain open and block the screen if a user clicked a navigation link (like "Home" or "Projects") while viewing an image.
+
 ## [4.5.2] - 2026-04-14
 
 ### Fixed
